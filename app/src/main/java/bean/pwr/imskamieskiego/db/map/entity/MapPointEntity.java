@@ -1,6 +1,8 @@
-package bean.pwr.imskamieskiego.db.map;
+package bean.pwr.imskamieskiego.db.map.entity;
 
 import android.arch.persistence.room.*;
+import android.support.annotation.Nullable;
+
 import bean.pwr.imskamieskiego.data.map.MapPoint;
 
 @Entity(tableName = "nodes")
@@ -13,12 +15,20 @@ public class MapPointEntity implements MapPoint {
     private int y;
     private int locationID;
 
+    public MapPointEntity(int id, int floor, int x, int y, int locationID) {
+        this.id = id;
+        this.floor = floor;
+        this.x = x;
+        this.y = y;
+        this.locationID = locationID;
+    }
+
     @Override
-    public int getID() {
+    public int getId() {
         return id;
     }
 
-    public void setID(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 

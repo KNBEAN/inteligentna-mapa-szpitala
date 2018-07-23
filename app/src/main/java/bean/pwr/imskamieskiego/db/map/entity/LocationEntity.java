@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.db.map;
+package bean.pwr.imskamieskiego.db.map.entity;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
