@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.data.map;
+package bean.pwr.imskamieskiego.model.map;
 
 public interface Edge {
 

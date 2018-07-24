@@ -1,9 +1,10 @@
 package bean.pwr.imskamieskiego.db.map.entity;
 
 import android.arch.persistence.room.*;
-import android.support.annotation.Nullable;
 
-import bean.pwr.imskamieskiego.data.map.MapPoint;
+import java.util.Objects;
+
+import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 @Entity(tableName = "nodes")
 public class MapPointEntity implements MapPoint {
@@ -66,5 +67,23 @@ public class MapPointEntity implements MapPoint {
 
     public void setLocationID(int locationID) {
         this.locationID = locationID;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MapPointEntity that = (MapPointEntity) o;
+        return id == that.id &&
+                floor == that.floor &&
+                x == that.x &&
+                y == that.y &&
+                locationID == that.locationID;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, floor, x, y, locationID);
     }
 }

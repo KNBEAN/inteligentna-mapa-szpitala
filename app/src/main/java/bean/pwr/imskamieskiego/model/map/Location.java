@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.data.map;
+package bean.pwr.imskamieskiego.model.map;
 
 import javax.annotation.Nullable;
 
@@ -8,7 +8,7 @@ public interface Location {
      * ID of the place on the map.
      * @return ID
      */
-    int getID();
+    int getId();
 
     /**
      * The short name of the place on the map. For example "Room 404".

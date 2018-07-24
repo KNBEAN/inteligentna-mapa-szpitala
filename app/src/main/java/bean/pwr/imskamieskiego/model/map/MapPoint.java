@@ -1,6 +1,4 @@
-package bean.pwr.imskamieskiego.data.map;
-
-import javax.annotation.Nullable;
+package bean.pwr.imskamieskiego.model.map;
 
 public interface MapPoint {
     /**

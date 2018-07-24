@@ -54,7 +54,7 @@ public class MapPointDaoTest {
         mapPointDao.insertAllPoints(data);
 
         MapPointEntity point = mapPointDao.getByID(data.get(1).getId());
-        assertEquals(data.get(1).getId(), point.getId());
+        assertEquals(data.get(1), point);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class MapPointDaoTest {
         mapPointDao.insertAllPoints(data);
 
         List<MapPointEntity> result = mapPointDao.getByLocationID(data.get(1).getLocationID());
-        assertEquals(data.size(), result.size());
+        assertEquals(data, result);
     }
 
     @Test

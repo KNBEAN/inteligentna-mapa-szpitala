@@ -4,7 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-import bean.pwr.imskamieskiego.data.map.Edge;
+import bean.pwr.imskamieskiego.model.map.Edge;
 
 @Entity(tableName = "edges")
 public class EdgeEntity implements Edge {
