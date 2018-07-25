@@ -12,6 +12,7 @@ import java.util.List;
 
 import bean.pwr.imskamieskiego.db.LocalDB;
 import bean.pwr.imskamieskiego.db.map.entity.MapPointEntity;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 import static org.junit.Assert.*;
 
@@ -55,6 +56,20 @@ public class MapPointDaoTest {
 
         MapPointEntity point = mapPointDao.getByID(data.get(1).getId());
         assertEquals(data.get(1), point);
+    }
+
+    @Test
+    public void getListOfMapPointByIDs() {
+        List<MapPointEntity> data = testData();
+        mapPointDao.insertAllPoints(data);
+
+        List<Integer> pointIDs = new ArrayList<>();
+        for (MapPoint point:data) {
+            pointIDs.add(point.getId());
+        }
+
+        List<MapPointEntity> point = mapPointDao.getByID(pointIDs);
+        assertEquals(data, point);
     }
 
     @Test

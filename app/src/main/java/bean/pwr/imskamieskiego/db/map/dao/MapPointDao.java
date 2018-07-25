@@ -1,7 +1,6 @@
 package bean.pwr.imskamieskiego.db.map.dao;
 
 import android.arch.persistence.room.Dao;
-import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
@@ -16,10 +15,13 @@ public interface MapPointDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllPoints(List<MapPointEntity> mapPoints);
 
-    @Query("SELECT * FROM nodes WHERE id = :ID")
-    MapPointEntity getByID(int ID);
+    @Query("SELECT * FROM nodes WHERE id = :id")
+    MapPointEntity getByID(int id);
 
-    @Query("SELECT * FROM nodes WHERE locationID = :locationID")
+    @Query("SELECT * FROM nodes WHERE id IN (:id)")
+    List<MapPointEntity> getByID(List<Integer> id);
+
+    @Query("SELECT * FROM nodes WHERE locationID = (:locationID)")
     List<MapPointEntity> getByLocationID(int locationID);
 
     @Query("SELECT * FROM nodes " +
