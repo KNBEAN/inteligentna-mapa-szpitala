@@ -11,6 +11,9 @@ import android.graphics.Path;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import java.util.ArrayList;
 import bean.pwr.imskamieskiego.R;
@@ -24,12 +27,15 @@ public class MapDrawer extends View {
     Bitmap [] tacktexture;
     Bitmap currtackbitmap=null;
     Matrix canvasMatrix;
-    ArrayList <TackObject> tackObjects; //tymaczowa tablica pinezek
-    int [][] trackpoints; //tymczasowa tablica do testów
+    ArrayList <TackObject> tackObjects;
+    int [][] trackpoints;
     int measurewidth,measureheight;
     int bmwidth,bmheight;
     float scaleX,scaleY,ratio;
     int redundantSpaceX,redundantSpaceY;
+
+    ScaleGestureDetector mScaleDetector;
+    public GestureDetector mGestureDetector;
 
     enum Types {
         START(1),
@@ -44,14 +50,38 @@ public class MapDrawer extends View {
     public MapDrawer(Context context) {
         super(context);
         this.context=context;
-        paint=new Paint();
-        setTacktexture();
+        SharedConstructing();
+
     }
 
     public MapDrawer(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.context=context;
+        SharedConstructing();
+    }
+
+    /**
+     * Operations common to both constructors
+     * -SET TEXTURES FOR TACKS
+     * -CREATE DETECTORS
+     * -CREATE PAINT
+     */
+    void SharedConstructing()
+    {
+        setClickable(true);
         paint=new Paint();
         setTacktexture();
+        mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        mGestureDetector=new GestureDetector(context,new ScaleListener());
+        setOnTouchListener(new OnTouchListener(){
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mGestureDetector.onTouchEvent(event);
+                mScaleDetector.onTouchEvent(event);
+                return true;
+            }
+        });
     }
 
     /**
@@ -153,7 +183,6 @@ public class MapDrawer extends View {
             paint.setStrokeWidth(10f);
             Path path = new Path();
             path.moveTo(trackpoints[0][0], trackpoints[0][1]);
-            int length=trackpoints.length;
             for (int i = 0; i < trackpoints.length; i++) {
                 path.lineTo(trackpoints[i][0],trackpoints[i][1]);
             }
@@ -204,8 +233,8 @@ public class MapDrawer extends View {
     void setTacktexture() //This void is only for current tests
     {
         tacktexture=new Bitmap[2];
-        tacktexture[1]= BitmapFactory.decodeResource(getResources(),R.drawable.blackcircle);
-        tacktexture[0]= BitmapFactory.decodeResource(getResources(),R.drawable.blackcircle);
+        tacktexture[1]= BitmapFactory.decodeResource(context.getResources(),R.drawable.blackcircle);
+        tacktexture[0]= BitmapFactory.decodeResource(context.getResources(),R.drawable.blackcircle);
         tackObjects=new ArrayList<>();
         canvasMatrix=new Matrix();
     }
@@ -225,7 +254,6 @@ public class MapDrawer extends View {
 
         invalidate();
     }
-    void removePath(){}
     void removeAllTacks(){}
     void removeMapTack(){}
     //void setPath(ArrayList<MapPoint> path){};
