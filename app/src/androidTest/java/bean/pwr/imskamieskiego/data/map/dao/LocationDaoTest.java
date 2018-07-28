@@ -9,6 +9,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
@@ -43,11 +44,11 @@ public class LocationDaoTest {
 
     @Test
     public void getLocationByID() {
-        List<LocationEntity> locations = new ArrayList<>();
-        locations.add(new LocationEntity(
-                1,
-                "Place 1",
-                "Very nice place."));
+        List<LocationEntity> locations = Arrays.asList(
+                new LocationEntity(
+                        1,
+                        "Place 1",
+                        "Very nice place."));
 
         locationDao.insertAllPoints(locations);
 
@@ -61,14 +62,14 @@ public class LocationDaoTest {
     @Test
     public void getLocationByName() {
         //List of locations, because searching by name doesn't have to use explicit name.
-        List<LocationEntity> similarLocations = new ArrayList<>();
-        similarLocations.add(new LocationEntity(1, "Koński ogon",null));
-        similarLocations.add(new LocationEntity(2, "kończyna",null));
-        similarLocations.add(new LocationEntity(3, "OkoŃ",null));
+        List<LocationEntity> similarLocations = Arrays.asList(
+                new LocationEntity(1, "Koński ogon",null),
+                new LocationEntity(2, "kończyna",null),
+                new LocationEntity(3, "OkoŃ",null));
 
-        List<LocationEntity> nonSimilarLocations = new ArrayList<>();
-        nonSimilarLocations.add(new LocationEntity(4, "pietruszka",null));
-        nonSimilarLocations.add(new LocationEntity(5, "kiełbasa",null));
+        List<LocationEntity> nonSimilarLocations = Arrays.asList(
+                new LocationEntity(4, "pietruszka",null),
+                new LocationEntity(5, "kiełbasa",null));
 
         locationDao.insertAllPoints(similarLocations);
         locationDao.insertAllPoints(nonSimilarLocations);
@@ -79,11 +80,11 @@ public class LocationDaoTest {
 
     @Test
     public void getLocationWithNullDescription() {
-        List<LocationEntity> locations = new ArrayList<>();
-        locations.add(new LocationEntity(
-                1,
-                "Place 1",
-                null));
+        List<LocationEntity> locations = Arrays.asList(
+                new LocationEntity(
+                        1,
+                        "Place 1",
+                        null));
 
         locationDao.insertAllPoints(locations);
 
@@ -94,11 +95,11 @@ public class LocationDaoTest {
 
     @Test
     public void getLocationByNonExistID() {
-        List<LocationEntity> locations = new ArrayList<>();
-        locations.add(new LocationEntity(
-                1,
-                "Place 1",
-                null));
+        List<LocationEntity> locations = Arrays.asList(
+                new LocationEntity(
+                        1,
+                        "Place 1",
+                        null));
 
         locationDao.insertAllPoints(locations);
 

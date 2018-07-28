@@ -8,12 +8,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EdgeDaoTest {
 
@@ -39,36 +41,36 @@ public class EdgeDaoTest {
 
     @Test
     public void getEdgesListForOnePoint() {
-        List<EdgeEntity> edges = new ArrayList<>();
-        edges.add(new EdgeEntity(1, 1, 2, 1));
-        edges.add(new EdgeEntity(2, 1, 3, 1));
-        edges.add(new EdgeEntity(5, 3, 1, 1));
-        edges.add(new EdgeEntity(6, 3, 2, 1));
-        edges.add(new EdgeEntity(7, 3, 4, 1));
-        edges.add(new EdgeEntity(8, 4, 3, 1));
+        List<EdgeEntity> edges = Arrays.asList(
+                new EdgeEntity(1, 1, 2, 1),
+                new EdgeEntity(2, 1, 3, 1),
+                new EdgeEntity(5, 3, 1, 1),
+                new EdgeEntity(6, 3, 2, 1),
+                new EdgeEntity(7, 3, 4, 1),
+                new EdgeEntity(8, 4, 3, 1));
 
-        List<EdgeEntity> expectedEdges = new ArrayList<>();
-        expectedEdges.add(new EdgeEntity(3, 2, 1, 1));
-        expectedEdges.add(new EdgeEntity(4, 2, 3, 1));
+        List<EdgeEntity> expectedEdges = Arrays.asList(
+                new EdgeEntity(3, 2, 1, 1),
+                new EdgeEntity(4, 2, 3, 1));
 
         edgeDao.insertAllEdges(edges);
         edgeDao.insertAllEdges(expectedEdges);
 
-        List<EdgeEntity> result = edgeDao.getOngoingEdges(2);
+        List<EdgeEntity> result = edgeDao.getOutgoingEdges(2);
         assertEquals(expectedEdges, result);
     }
 
     @Test
     public void getEdgesListForListOfPoints() {
-        List<EdgeEntity> edges = new ArrayList<>();
-        edges.add(new EdgeEntity(1, 1, 2, 1));
-        edges.add(new EdgeEntity(2, 1, 3, 1));
-        edges.add(new EdgeEntity(3, 2, 1, 1));
-        edges.add(new EdgeEntity(4, 2, 3, 1));
-        edges.add(new EdgeEntity(5, 3, 1, 1));
-        edges.add(new EdgeEntity(6, 3, 2, 1));
-        edges.add(new EdgeEntity(7, 3, 4, 1));
-        edges.add(new EdgeEntity(8, 4, 3, 1));
+        List<EdgeEntity> edges = Arrays.asList(
+                new EdgeEntity(1, 1, 2, 1),
+                new EdgeEntity(2, 1, 3, 1),
+                new EdgeEntity(3, 2, 1, 1),
+                new EdgeEntity(4, 2, 3, 1),
+                new EdgeEntity(5, 3, 1, 1),
+                new EdgeEntity(6, 3, 2, 1),
+                new EdgeEntity(7, 3, 4, 1),
+                new EdgeEntity(8, 4, 3, 1));
 
         List<Integer> fromIDs = new ArrayList<>();
         fromIDs.add(1);
@@ -78,8 +80,15 @@ public class EdgeDaoTest {
 
         edgeDao.insertAllEdges(edges);
 
-        List<EdgeEntity> result = edgeDao.getOngoingEdges(fromIDs);
+        List<EdgeEntity> result = edgeDao.getOutgoingEdges(fromIDs);
 
         assertEquals(edges, result);
+    }
+
+    @Test
+    public void getEdgesListWhenListOfPointsIsEmpty() {
+
+        List<EdgeEntity> result = edgeDao.getOutgoingEdges(new ArrayList<Integer>());
+        assertTrue(result.isEmpty());
     }
 }

@@ -7,7 +7,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
 import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
@@ -35,10 +34,7 @@ public class MapRepositoryImpl implements MapRepository {
 
     @Override
     public List<MapPoint> getPointByID(@NonNull List<Integer> id) {
-
-        List<MapPoint> result = new ArrayList<>();
-        result.addAll(mapPointDao.getByID(id));
-        return result;
+        return new ArrayList<MapPoint>(mapPointDao.getByID(id));
     }
 
     @Override
@@ -48,9 +44,7 @@ public class MapRepositoryImpl implements MapRepository {
 
     @Override
     public List<MapPoint> getPointsByLocationID(int id) {
-        List<MapPoint> result = new ArrayList<>();
-        result.addAll(mapPointDao.getByLocationID(id));
-        return result;
+        return new ArrayList<MapPoint>(mapPointDao.getByLocationID(id));
     }
 
     @Override
@@ -60,15 +54,14 @@ public class MapRepositoryImpl implements MapRepository {
 
     @Override
     public List<Edge> getOutgoingEdges(int pointID) {
-        List<Edge> result = new ArrayList<>();
-        result.addAll(edgeDao.getOngoingEdges(pointID));
-        return result;
+        return  new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
     }
 
     @Override
     public Map<Integer, List<Edge>> getOutgoingEdges(@NonNull List<Integer> pointID) {
-        List<Edge> edges = new ArrayList<>();
-        edges.addAll(edgeDao.getOngoingEdges(pointID));
+        if (pointID == null) throw new NullPointerException();
+
+        List<Edge> edges = new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
 
         Map<Integer, List<Edge>> map = new Hashtable<>();
         for (Edge edge:edges) {
@@ -80,6 +73,7 @@ public class MapRepositoryImpl implements MapRepository {
                 map.put(edge.getFrom(), edgeList);
             }
         }
+
         return map;
     }
 }

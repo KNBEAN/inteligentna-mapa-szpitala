@@ -16,9 +16,10 @@ public interface EdgeDao {
     void insertAllEdges(List<EdgeEntity> edges);
 
     @Query("SELECT * FROM edges WHERE from_id = :fromID")
-    List<EdgeEntity> getOngoingEdges(int fromID);
+    List<EdgeEntity> getOutgoingEdges(int fromID);
 
     @Query("SELECT * FROM edges WHERE from_id IN (:fromID)")
-    List<EdgeEntity> getOngoingEdges(List<Integer> fromID);
+    List<EdgeEntity> getOutgoingEdges(List<Integer> fromID);
 
 }
+
