@@ -32,16 +32,19 @@ public class MapDrawer extends View {
     Bitmap connectedBitmap;
     Bitmap currtackbitmap;
     Bitmap mapbitmap;
-    Matrix canvasMatrix;
     Matrix bitmapmatrix;
     PointF pointFlast = new PointF();
     PointF pointFstart = new PointF();
     ArrayList <TackObject> tackObjects;
-
+    boolean horizontal;
     int [][] trackpoints;
     int measurewidth,measureheight;
     int bmwidth,bmheight,origbmwidth,origbmheight;
+    float tackx,tacky;
     float origScaleX,origScaleY,scaleX,scaleY,ratio;
+    float tackScaleX,tackScaleY;
+    float maxScale = 1f;
+    float minScale = 0.1f;
     int redundantSpaceX,redundantSpaceY;
 
     ScaleGestureDetector mScaleDetector;
@@ -92,6 +95,7 @@ public class MapDrawer extends View {
         origScaleX=0;
 
         origScaleY=0;
+
 
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
         setOnTouchListener(new OnTouchListener(){
@@ -184,10 +188,11 @@ public class MapDrawer extends View {
         int  bmwidth=bitmap.getWidth();
 
         redundantSpaceX=(measurewidth-bmwidth)/2;
+        Log.i(TAG, "centerBitmap: REDUNDANTX: " + redundantSpaceX );
 
         redundantSpaceY=(measureheight-bmheight)/2;
+        Log.i(TAG, "centerBitmap: REDUNDANTY: " + redundantSpaceY );
     }
-
 
 
     /** Main function to create one bitmap from path,
@@ -209,7 +214,7 @@ public class MapDrawer extends View {
                     redundantSpaceY,
                     null);
 
-            Log.i(TAG, "connectLayers: Map drawn");
+            //Log.i(TAG, "connectLayers: Map drawn");
         }
         else return bitmap;
 
@@ -225,20 +230,40 @@ public class MapDrawer extends View {
             }
             canvas.drawPath(path,paint);
 
-            Log.i(TAG, "connectLayers: Path drawn");
+           // Log.i(TAG, "connectLayers: Path drawn");
         }
 
         if (!tackObjects.isEmpty()){
-
-            for (TackObject currtack:tackObjects){
-                canvas.drawBitmap(currtackbitmap,
-                        currtack.getX()-(currtackbitmap.getWidth()/2)+redundantSpaceX,
-                        currtack.getY()-(currtackbitmap.getHeight()/2)+redundantSpaceY,
-                        null);
+            if(tackScaleX!=0)
+            {
+                for (TackObject currtack:tackObjects) {
+                    tackx = (currtack.getX()*scaleX) - currtackbitmap.getWidth() / 2 + redundantSpaceX;
+                    tacky = (currtack.getY()*scaleY)   - currtackbitmap.getHeight() / 2 + redundantSpaceY;
+                    canvas.drawBitmap(currtackbitmap
+                            , tackx
+                            , tacky
+                            , null);
+                    Log.i(TAG, "connectLayers: TackScale - scaleX : " + (1-(tackScaleX-scaleX)));
+                }
             }
+            else {
+                for (TackObject currtack : tackObjects) {
+                    tackx = currtack.getX() - currtackbitmap.getWidth() / 2 + redundantSpaceX;
+                    tacky = currtack.getY() - currtackbitmap.getHeight() / 2 + redundantSpaceY;
+                    canvas.drawBitmap(currtackbitmap
+                            , tackx
+                            , tacky
+                            , null);
+                    Log.i(TAG, "connectLayers: Tacks drawing - X: " + (currtack.getX() * scaleX + (currtack.getX() * (1 - scaleX)) - currtackbitmap.getWidth() / 2 + redundantSpaceX));
+                    Log.i(TAG, "connectLayers: Tacks drawing - Y: " + (currtack.getY() * scaleY + (currtack.getX() * (1 - scaleY)) - currtackbitmap.getHeight() / 2 + redundantSpaceY));
+                    tackScaleX=currtack.getX()*(1-scaleX);
+                    tackScaleY=currtack.getY()*(1-scaleY) ;
+                    Log.i(TAG, "connectLayers: tackscale: " + tackScaleX);
+                }
 
-            Log.i(TAG, "connectLayers: Tacks drawn");
 
+                // Log.i(TAG, "connectLayers: Tacks drawn");
+            }
         }
         return result;
     }
@@ -253,6 +278,7 @@ public class MapDrawer extends View {
 
             Log.i(TAG, "onDraw: NONE");
             setBitmapScale(bitmap);
+
             connectedBitmap = connectLayers();
             canvas.drawBitmap(connectedBitmap, 0, 0, null);
             break;
@@ -264,6 +290,7 @@ public class MapDrawer extends View {
 
             case ZOOM:
                 setScale(scaleFDetector);
+
                 connectedBitmap = connectLayers();
                 canvas.drawBitmap(connectedBitmap, 0, 0, null);
                 Log.i(TAG, "onDraw: ZOOM");
@@ -286,11 +313,45 @@ public class MapDrawer extends View {
 
     }
 
+    /**
+     * Setting max scale
+     */
+    void setMaxScale(float maxScale)
+    {
+        this.maxScale=maxScale;
+    }
+
+    /**
+     * Setting min scale
+     */
+    void setMinScale(float minScale)
+    {
+        this.minScale=minScale;
+    }
+
+
     void setScale(float scalefactor)
     {
-        scaleX=scaleX*scalefactor;
-        Log.i(TAG, "setScale: scaleX: "+scaleX);
-        scaleY=scaleY*scalefactor;
+
+            scaleX = scaleX * scalefactor;
+            Log.i(TAG, "setScale: scaleX: " + scaleX);
+            scaleY = scaleY * scalefactor;
+            Log.i(TAG, "setScale: scaleY: " + scaleY);
+            if (horizontal)
+            {
+                if ((scaleX > maxScale*2) || (scaleY > maxScale*2) || (scaleX < minScale) || (scaleY < minScale)){
+                    scaleX = origScaleX;
+                    scaleY = origScaleY;
+                }
+            }
+            else {
+                if ((scaleX > maxScale) || (scaleY > maxScale) || (scaleX < minScale) || (scaleY > maxScale)) {
+                    scaleX = origScaleX;
+                    scaleY = origScaleY;
+                }
+            }
+        Log.i(TAG, "setScale: PASSED");
+
     }
 
     @Override
@@ -306,6 +367,10 @@ public class MapDrawer extends View {
 
         setMeasuredDimension(measurewidth,measureheight);
 
+        tackScaleX=0;
+        tackScaleY=0;
+        if (measureheight>measurewidth) horizontal=false;
+        if (measurewidth>measureheight) horizontal=true;
         setBitmapScale(bitmap);
 
     }
@@ -315,8 +380,8 @@ public class MapDrawer extends View {
     void setTacktexture() //This void is only for current tests
     {
         tacktexture=new Bitmap[2];
-        tacktexture[1]= BitmapFactory.decodeResource(context.getResources(),R.drawable.blackcircle);
-        tacktexture[0]= BitmapFactory.decodeResource(context.getResources(),R.drawable.blackcircle);
+        tacktexture[1]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
+        tacktexture[0]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
         tackObjects=new ArrayList<>();
     }
 
@@ -327,10 +392,10 @@ public class MapDrawer extends View {
         tackObjects.add(tack);
         if (rodzaj==Types.START.typo)
         {
-         currtackbitmap= tacktexture[1];
+         currtackbitmap= Bitmap.createBitmap(tacktexture[1],0,0,50,50,null,false);
         }
         else {
-            currtackbitmap=tacktexture[2];
+            currtackbitmap=Bitmap.createBitmap(tacktexture[2],0,0,50,50,null,false);
         }
 
         invalidate();
@@ -383,7 +448,6 @@ private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureLis
     public boolean onScale(ScaleGestureDetector detector) {
         scaleFDetector=detector.getScaleFactor();
         invalidate();
-        Log.i(TAG, "onScale: "+ scaleFDetector);
         return true;
 
     }
