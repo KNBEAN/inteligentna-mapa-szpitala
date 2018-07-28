@@ -30,17 +30,9 @@ public class EdgeEntity implements Edge {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Override
     public int getFrom() {
         return from;
-    }
-
-    public void setFrom(int fromID) {
-        this.from = fromID;
     }
 
     @Override
@@ -48,17 +40,9 @@ public class EdgeEntity implements Edge {
         return to;
     }
 
-    public void setTo(int toID) {
-        this.to = toID;
-    }
-
     @Override
     public int getLength() {
         return length;
-    }
-
-    public void setLength(int length) {
-        this.length = length;
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface MapRepository {
     /**
      * Returns the point on the map represented by the given ID.
      * @param id id of point
-     * @return MapPoint object. Can be null, when object for passed ID not exist.
+     * @return MapPoint object. Can be null, when object for passed ID does not exist.
      */
     MapPoint getPointByID(int id);
 
