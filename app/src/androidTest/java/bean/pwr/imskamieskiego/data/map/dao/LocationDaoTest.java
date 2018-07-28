@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.db.map.dao;
+package bean.pwr.imskamieskiego.data.map.dao;
 
 import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
@@ -11,10 +11,12 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.pwr.imskamieskiego.db.LocalDB;
-import bean.pwr.imskamieskiego.db.map.entity.LocationEntity;
+import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class LocationDaoTest {
 
@@ -54,9 +56,9 @@ public class LocationDaoTest {
         assertEquals(locations.get(0), result);
     }
 
+
+    @Ignore("Ignore this test, because this feature will not by implement in current sprint (25.07.18)")
     @Test
-    @Ignore
-    //Ignore this test, because this feature will not by implement in current sprint (25.07.18)
     public void getLocationByName() {
         //List of locations, because searching by name doesn't have to use explicit name.
         List<LocationEntity> similarLocations = new ArrayList<>();
@@ -105,8 +107,9 @@ public class LocationDaoTest {
         assertNull(result);
     }
 
-    @Test
+
     @Ignore
+    @Test
     public void getLocationByNotMatchingName() {
 
         fail();

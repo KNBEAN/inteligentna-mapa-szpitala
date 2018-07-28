@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.db.map.entity;
+package bean.pwr.imskamieskiego.data.map.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;

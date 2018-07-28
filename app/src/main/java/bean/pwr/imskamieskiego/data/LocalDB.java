@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.db;
+package bean.pwr.imskamieskiego.data;
 
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
@@ -6,12 +6,13 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.Room;
 
-import bean.pwr.imskamieskiego.db.map.dao.EdgeDao;
-import bean.pwr.imskamieskiego.db.map.dao.LocationDao;
-import bean.pwr.imskamieskiego.db.map.dao.MapPointDao;
-import bean.pwr.imskamieskiego.db.map.entity.EdgeEntity;
-import bean.pwr.imskamieskiego.db.map.entity.LocationEntity;
-import bean.pwr.imskamieskiego.db.map.entity.MapPointEntity;
+import bean.pwr.imskamieskiego.data.converters.IntegerConverter;
+import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
+import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
+import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
+import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
+import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
+import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
 
 
 @Database(entities =

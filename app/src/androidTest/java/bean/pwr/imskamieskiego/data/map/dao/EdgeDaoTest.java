@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.db.map.dao;
+package bean.pwr.imskamieskiego.data.map.dao;
 
 import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
@@ -10,10 +10,10 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import bean.pwr.imskamieskiego.db.LocalDB;
-import bean.pwr.imskamieskiego.db.map.entity.EdgeEntity;
+import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class EdgeDaoTest {
 

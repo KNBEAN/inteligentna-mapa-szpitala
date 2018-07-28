@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.db.map.dao;
+package bean.pwr.imskamieskiego.data.map.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
@@ -7,7 +7,7 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
-import bean.pwr.imskamieskiego.db.map.entity.LocationEntity;
+import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 
 @Dao
 public interface LocationDao {

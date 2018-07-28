@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.db;
+package bean.pwr.imskamieskiego.data.converters;
 
 import android.arch.persistence.room.TypeConverter;
 
