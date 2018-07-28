@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MapActivity"
-    tools:layout_editor_absoluteY="81dp"
+    tools:layout_editor_absoluteY="25dp"
     tools:showIn="@layout/app_bar_map">
 
     <ImageView
@@ -23,61 +23,64 @@
         android:id="@+id/extra_places_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="42dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/button_round_complementary_colour"
         android:src="@drawable/ic_widgets_black_24dp"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/zoom_in_button" />
 
     <ImageButton
         android:id="@+id/wc_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/button_round_complementary_colour"
         android:src="@drawable/ic_wc_black_24dp"
         android:text=""
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <ImageButton
         android:id="@+id/patient_assistant_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/button_round_complementary_colour"
         android:src="@drawable/ic_accessibility_black_24dp"
         android:text=""
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <ImageButton
         android:id="@+id/food_button"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@drawable/button_round_complementary_colour"
         android:src="@drawable/ic_restaurant_black_24dp"
         android:text=""
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <ImageButton
         android:id="@+id/zoom_in_button"
-        android:layout_width="0dp"
+        android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="336dp"
+        android:layout_marginTop="93dp"
         android:background="@drawable/button_round"
         android:src="@drawable/ic_layers_black_24dp"
         android:text=""
+        app:layout_constraintBottom_toTopOf="@+id/extra_places_button"
         app:layout_constraintEnd_toEndOf="@+id/extra_places_button"
         app:layout_constraintStart_toStartOf="@+id/extra_places_button"
         app:layout_constraintTop_toTopOf="parent" />

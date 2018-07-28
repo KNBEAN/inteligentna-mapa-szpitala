@@ -17,10 +17,8 @@ import android.widget.Button;
 public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    Button foodButton;
-    Button patientAssistantButton;
-    Button wcButton;
-    Button extraPlacesButton;
+
+
 
 
     @Override
@@ -30,14 +28,6 @@ public class MapActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        foodButton.findViewById(R.id.food_button);
-        foodButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
-        patientAssistantButton.findViewById(R.id.patient_assistant_button);
 
 
 
