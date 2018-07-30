@@ -31,8 +31,6 @@ public class MapDrawer extends View {
     MapModel model;
     Context context;
     Bitmap [] tacktexture;
-    Bitmap mapbitmap;
-    Matrix bitmapmatrix;
     PointF pointFlast = new PointF();
     PointF pointFstart = new PointF();
     ArrayList <TackObject> tackObjects;
@@ -43,14 +41,14 @@ public class MapDrawer extends View {
     int bmwidth,bmheight,origbmwidth,origbmheight;
     float origScale,scaleX,scaleY;
     float deltaX,deltaY;
-    float maxScale = 1f;
-    float minScale = 0.1f;
-
+    float offsetX,offsetY;
     ScaleGestureDetector mScaleDetector;
 
     float scaleFDetector;
     float scaleFDetectorXcenter;
     float scaleFDetectorYcenter;
+    float scaleFDetectorMAX = 3.f;
+    float scaleFDetectorMIN = 0.5f;
 
     static final int NONE = 0;
     static final int DRAG = 1;
@@ -92,6 +90,10 @@ public class MapDrawer extends View {
 
         scaleY = 1 ;
 
+        offsetX = 0;
+
+        offsetY = 0;
+
         scaleFDetector = 1.f;
 
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
@@ -102,7 +104,7 @@ public class MapDrawer extends View {
             public boolean onTouch(View v, MotionEvent event) {
 
                 mScaleDetector.onTouchEvent(event);
-
+                if (mScaleDetector.isInProgress()) return true;
                 PointF pointF=new PointF(event.getX(),event.getY());
 
                 switch (event.getAction()){
@@ -114,7 +116,9 @@ public class MapDrawer extends View {
 
                         MODE = DRAG;
 
-                        Log.i(TAG, "onTouch: MODE == DRAG");
+                        offsetX += deltaX;
+
+                        offsetY += deltaY;
 
                         break;
 
@@ -124,19 +128,13 @@ public class MapDrawer extends View {
 
                             deltaX = pointF.x - pointFlast.x;
 
-                            Log.i(TAG, "onTouch: DELTA X : " + deltaX);
-
                             deltaY = pointF.y - pointFlast.y;
-
-                            Log.i(TAG, "onTouch: DELTA Y : " + deltaY);
 
                                 invalidate();
 
                         }
-                    case MotionEvent.ACTION_UP:
 
-                       // pointFlast=pointF;
-
+                        
                 }
                 return true;
             }
@@ -182,8 +180,6 @@ public class MapDrawer extends View {
             return null;
         }
 
-        Log.i(TAG, "LayerMap: CREATED");
-
         return result;
     }
     private Bitmap LayerPath(){
@@ -203,8 +199,6 @@ public class MapDrawer extends View {
             return result;
         }
 
-        Log.i(TAG, "LayerPath: CREATED");
-
         return result;
     }
 
@@ -222,7 +216,6 @@ public class MapDrawer extends View {
             canvas.drawBitmap(tacktexture[tackObjects.indexOf(tack)],tack.getX()*scale,tack.getY()*scale,null);
         }
 
-        Log.i(TAG, "LayerTacks: CREATED");
      return result;
     }
 
@@ -268,7 +261,9 @@ public class MapDrawer extends View {
 
                     canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
 
-                    canvas.translate(deltaX,deltaY);
+                    canvas.translate(deltaX + offsetX ,deltaY + offsetY);
+
+                    Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " + offsetX + " y = " + deltaY + " offset x = " + offsetY);
 
                     canvas.drawBitmap(layerMap,0,0,null);
 
@@ -289,7 +284,8 @@ public class MapDrawer extends View {
                 if ((layerMap != null || (layerPath != null) || (layerTacks != null)) ){
 
                     canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
-                    Log.i(TAG, "onDraw: Canvas height: " + canvas.getHeight() + " and widht: " + canvas.getWidth());
+
+                    canvas.translate(offsetX,offsetY);
 
                     canvas.drawBitmap(layerMap,0,0,null);
 
@@ -319,11 +315,14 @@ public class MapDrawer extends View {
     }
 
     /**
-     * Setting max scale
+     * Setting max scale.
+     * Have in mind that too big
+     * scale can cause problems with rendering
+     * on canvas.
      */
     void setMaxScale(float maxScale)
     {
-        this.maxScale=maxScale;
+        scaleFDetectorMAX=maxScale;
     }
 
     /**
@@ -331,7 +330,7 @@ public class MapDrawer extends View {
      */
     void setMinScale(float minScale)
     {
-        this.minScale=minScale;
+        scaleFDetectorMIN=minScale;
     }
 
 
@@ -367,7 +366,7 @@ public class MapDrawer extends View {
         tackTypes= new ArrayList<>();
     }
 
-    /** Set object that implements or extends mapmodel
+    /** Set object that implements or extends mapmodel interface
      */
     public void setModel(MapModel model){
         this.model=model;
@@ -409,13 +408,19 @@ public class MapDrawer extends View {
         }
     }
 
-    
+    /**
+     * Clear mappoint arraylist
+     */
     public void removeAllTacks(){
         tackObjects.clear();
         tackTypes.clear();
         invalidate();
     }
 
+    /**
+     * Remove object from mappoint arraylist
+     * with given index
+     */
     public void removeMapTack(int index){
         if (index<tackObjects.size())
         {
@@ -443,7 +448,7 @@ public class MapDrawer extends View {
         trackpoints = null;
         invalidate();
     }
-    
+
     /**
      * Show map
      * If floor exceeds size, try getting last floor
@@ -462,8 +467,13 @@ private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureLis
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        scaleFDetector=scaleFDetector*detector.getScaleFactor();
+
+        if ((scaleFDetectorMAX<scaleFDetector*detector.getScaleFactor())||(scaleFDetectorMIN>scaleFDetector*detector.getScaleFactor())) return true;
+
+            scaleFDetector=scaleFDetector*detector.getScaleFactor();
+
         scaleFDetectorXcenter=detector.getFocusX();
+
         scaleFDetectorYcenter=detector.getFocusY();
         Log.i(TAG, "onScale: scaleFdetector: " + scaleFDetector);
         invalidate();
