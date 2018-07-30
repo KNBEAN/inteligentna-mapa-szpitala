@@ -55,18 +55,18 @@ public class MapActivity extends AppCompatActivity
                     foodButton.setVisibility(GONE);
                     patientAssistantButton.setVisibility(GONE);
                     toolsButton.startAnimation(rotateHide);
-                    wcButton.startAnimation(showButtonAnimation);
-                    foodButton.startAnimation(showButtonAnimation);
-                    patientAssistantButton.startAnimation(showButtonAnimation);
+                    wcButton.startAnimation(hideButtonAnimation);
+                    foodButton.startAnimation(hideButtonAnimation);
+                    patientAssistantButton.startAnimation(hideButtonAnimation);
                 }
                 else {
                     wcButton.setVisibility(View.VISIBLE);
                     foodButton.setVisibility(View.VISIBLE);
                     patientAssistantButton.setVisibility(View.VISIBLE);
                     toolsButton.startAnimation(rotateShow);
-                    wcButton.startAnimation(hideButtonAnimation);
-                   foodButton.startAnimation(hideButtonAnimation);
-                   patientAssistantButton.startAnimation(hideButtonAnimation);
+                    wcButton.startAnimation(showButtonAnimation);
+                   foodButton.startAnimation(showButtonAnimation);
+                   patientAssistantButton.startAnimation(showButtonAnimation);
                 }
             }
         });
