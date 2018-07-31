@@ -80,9 +80,9 @@ public class MapDrawer extends View {
 
         setClickable(true);
 
-        paint=new Paint();
-
         setTacktexture();
+
+        paint=new Paint();
 
         origScale = 1;
 
@@ -104,7 +104,9 @@ public class MapDrawer extends View {
             public boolean onTouch(View v, MotionEvent event) {
 
                 mScaleDetector.onTouchEvent(event);
+
                 if (mScaleDetector.isInProgress()) return true;
+
                 PointF pointF=new PointF(event.getX(),event.getY());
 
                 switch (event.getAction()){
@@ -132,6 +134,15 @@ public class MapDrawer extends View {
 
                                 invalidate();
 
+                                //temporary statement to stop map getting out of sight
+                                // adding animation for smoother back
+
+                                if ((Math.abs(deltaX+offsetX)>origScale*bmwidth*scaleFDetector/3) || (Math.abs(deltaY+offsetY)>origScale*bmheight*scaleFDetector/3))
+                            {
+                                deltaX = 0;
+                                deltaY = 0;
+                                return true;
+                            }
                         }
 
                         
@@ -225,82 +236,57 @@ public class MapDrawer extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-            if (origbitmap==null) return;
-        Bitmap layerMap;
-        Bitmap layerPath;
-        Bitmap layerTacks;
+        if (origbitmap==null) return;
+
+        Bitmap layer;
+
         switch (MODE) {
 
             case NONE:
+
                 Log.i(TAG, "onDraw: NONE");
+
                 fitBitmapToScreen(origbitmap);
-                 layerMap = LayerMap(origbitmap,0,0,origScale);
-                layerPath = LayerPath();
-                layerTacks = LayerTacks(tackObjects,origScale);
 
-                if ((layerMap != null || (layerPath != null) || (layerTacks != null)) ){
-
-                    canvas.drawBitmap(layerMap,0,0,null);
-
-                    canvas.drawBitmap(layerPath,0,0,null);
-
-                    canvas.drawBitmap(layerTacks,0,0,null);
-
-                }
-
-            break;
+                break;
 
             case DRAG:
+
                 Log.i(TAG, "onDraw: DRAG");
-                fitBitmapToScreen(origbitmap);
-                layerMap = LayerMap(origbitmap,0,0,origScale);
-                layerPath = LayerPath();
-                layerTacks = LayerTacks(tackObjects,origScale);
 
-                if ((layerMap != null || (layerPath != null) || (layerTacks != null)) ){
+                canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
 
-                    canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
+                canvas.translate(deltaX + offsetX ,deltaY + offsetY);
 
-                    canvas.translate(deltaX + offsetX ,deltaY + offsetY);
+                Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " + offsetX + " y = " + deltaY + " offset x = " + offsetY);
 
-                    Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " + offsetX + " y = " + deltaY + " offset x = " + offsetY);
-
-                    canvas.drawBitmap(layerMap,0,0,null);
-
-                    canvas.drawBitmap(layerPath,0,0,null);
-
-                    canvas.drawBitmap(layerTacks,0,0,null);
-
-                }
                 break;
 
             case ZOOM:
 
                 Log.i(TAG, "onDraw: ZOOM");
-                layerMap = LayerMap(origbitmap,0,0,origScale);
-                layerPath = LayerPath();
-                layerTacks = LayerTacks(tackObjects,origScale);
 
-                if ((layerMap != null || (layerPath != null) || (layerTacks != null)) ){
+                canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
 
-                    canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
-
-                    canvas.translate(offsetX,offsetY);
-
-                    canvas.drawBitmap(layerMap,0,0,null);
-
-                    canvas.drawBitmap(layerPath,0,0,null);
-
-                    canvas.drawBitmap(layerTacks,0,0,null);
-
-                }
+                canvas.translate(offsetX,offsetY);
 
                 break;
+
         }
 
+        layer = LayerMap(origbitmap,0,0,origScale);
 
+        canvas.translate((canvas.getWidth()-layer.getWidth())/2,(canvas.getHeight()-layer.getHeight())/2);
 
+        canvas.drawBitmap(layer,0,0,null);
 
+        layer = LayerTacks(tackObjects,origScale);
+
+        canvas.drawBitmap(layer,0,0,null);
+
+        layer= LayerPath();
+
+        canvas.drawBitmap(layer,0,0,null);
 
 
     }
@@ -412,8 +398,11 @@ public class MapDrawer extends View {
      * Clear mappoint arraylist
      */
     public void removeAllTacks(){
+
         tackObjects.clear();
+
         tackTypes.clear();
+
         invalidate();
     }
 
@@ -475,6 +464,7 @@ private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureLis
         scaleFDetectorXcenter=detector.getFocusX();
 
         scaleFDetectorYcenter=detector.getFocusY();
+
         Log.i(TAG, "onScale: scaleFdetector: " + scaleFDetector);
         invalidate();
         return true;
@@ -496,53 +486,47 @@ private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureLis
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        Log.i(TAG, "onSingleTapConfirmed: TRUE");
         return false;
     }
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        Log.i(TAG, "onDoubleTap: TRUE");
         return false;
     }
 
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
-        Log.i(TAG, "onDoubleTapEvent: TRUE");
         return false;
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        Log.i(TAG, "onDown: TRUE");
+
         return false;
     }
 
     @Override
     public void onShowPress(MotionEvent e) {
-        Log.i(TAG, "onShowPress: TRUE");
+
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        Log.i(TAG, "onSingleTapUp: TRUE");
         return false;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        //Log.i(TAG, "onScroll: TRUE");
         return false;
     }
 
     @Override
     public void onLongPress(MotionEvent e) {
-        Log.i(TAG, "onLongPress: TRUE");
+
     }
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        //Log.i(TAG, "onFling: TRUE");
         return false;
     }
 }
