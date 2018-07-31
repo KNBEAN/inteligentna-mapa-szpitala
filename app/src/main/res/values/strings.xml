@@ -13,6 +13,7 @@
     <string name="navigation_drawer_ap">Asystent Pacjenta</string>
     <string name="navigation_drawer_info">O szpitalu</string>
     <string name="navigation_drawer_help">Pomoc</string>
+    <string name="search_view_hint">Czego szukasz?</string>
     <string name="todo">TODO</string>
 
 </resources>

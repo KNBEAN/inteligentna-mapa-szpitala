@@ -1,12 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/search_item"
-        android:icon="@drawable/ic_search_black_24dp"
-        app:showAsAction="ifRoom"
-        android:title="Floor" />
+        android:title="@string/search_view_hint"
+        android:visible="true"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/pick_action_provider"
+        android:title="P:0"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/action_sort_size"
+                android:title="P:1" />
+            <item
+                android:id="@+id/action_sort_alpha"
+                android:title="P:2" />
+        </menu>
+    </item>
+
+
 
 
 </menu>

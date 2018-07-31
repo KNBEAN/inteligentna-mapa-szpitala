@@ -29,7 +29,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/patient_assistant_button"
@@ -47,7 +48,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tools_button"
-        app:srcCompat="@drawable/ic_accessibility_black_24dp" />
+        app:srcCompat="@drawable/ic_accessibility_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/food_button"
@@ -65,7 +67,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tools_button"
-        app:srcCompat="@drawable/ic_restaurant_black_24dp" />
+        app:srcCompat="@drawable/ic_restaurant_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/wc_button"
@@ -82,7 +85,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tools_button"
-        app:srcCompat="@drawable/ic_wc_black_24dp" />
+        app:srcCompat="@drawable/ic_wc_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/tools_button"
@@ -98,6 +102,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_widgets_black_24dp" />
+        app:srcCompat="@drawable/ic_widgets_black_24dp"
+        tools:ignore="VectorDrawableCompat"
+        />
 
 </android.support.constraint.ConstraintLayout>
