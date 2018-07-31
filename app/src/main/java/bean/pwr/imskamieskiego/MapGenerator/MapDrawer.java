@@ -20,47 +20,50 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import java.util.ArrayList;
+import java.util.Map;
+
 import bean.pwr.imskamieskiego.R;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
+
 import static android.content.ContentValues.TAG;
 
 
 public class MapDrawer extends View {
 
-    Bitmap origbitmap;
-    Paint paint;
-    MapModel model;
-    Context context;
-    Bitmap [] tacktexture;
-    PointF pointFlast = new PointF();
-    PointF pointFstart = new PointF();
-    ArrayList <TackObject> tackObjects;
-    ArrayList <Integer> tackTypes;
-    boolean horizontal;
-    int [][] trackpoints;
-    int measurewidth,measureheight;
-    int bmwidth,bmheight,origbmwidth,origbmheight;
-    float origScale,scaleX,scaleY;
-    float deltaX,deltaY;
-    float offsetX,offsetY;
-    ScaleGestureDetector mScaleDetector;
+    private Bitmap originalMap;
+    private Paint paint;
+    private MapModel model;
+    private Context context;
+    private Bitmap [] tackTexture;
+    private PointF pointFlast = new PointF();
+    private PointF pointFstart = new PointF();
+    private ArrayList <MapPoint> mapObjects;
+    private ArrayList <Integer> mapObjectTypes;
+    private boolean horizontal;
+    private ArrayList<MapPoint> pathPoints;
+    private int measureWidth,measureHeight;
+    private int bitmapWidth,bitmapHeight,originalBitmapWidth,originalBitmapHeight;
+    private float originalScale,scaleX,scaleY;
+    private float deltaX,deltaY;
+    private float offsetX,offsetY;
+    private ScaleGestureDetector mScaleDetector;
 
-    float scaleFDetector;
-    float scaleFDetectorXcenter;
-    float scaleFDetectorYcenter;
-    float scaleFDetectorMAX = 3.f;
-    float scaleFDetectorMIN = 0.5f;
+    float scaleFromDetector;
+    float scaleFromDetectorXcenter;
+    float scaleFromDetectorYcenter;
+    float scaleFromDetectorMAX = 3.f;
+    float scaleFromDetectorMIN = 0.5f;
 
-    static final int NONE = 0;
-    static final int DRAG = 1;
-    static final int ZOOM = 2;
-    static int MODE;
+   final int NONE = 0;
+   final int DRAG = 1;
+   final int ZOOM = 2;
+   int MODE;
 
 
     public MapDrawer(Context context) {
         super(context);
         this.context=context;
         SharedConstructing();
-
     }
 
     public MapDrawer(Context context, @Nullable AttributeSet attrs) {
@@ -79,22 +82,16 @@ public class MapDrawer extends View {
     void SharedConstructing() {
 
         setClickable(true);
-
-        setTacktexture();
-
+        setTackTexture();
         paint=new Paint();
 
-        origScale = 1;
-
+        originalScale = 1;
         scaleX = 1 ;
-
         scaleY = 1 ;
-
         offsetX = 0;
-
         offsetY = 0;
-
-        scaleFDetector = 1.f;
+        scaleFromDetector = 1.f;
+        pathPoints = new ArrayList<MapPoint>();
 
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 
@@ -112,16 +109,11 @@ public class MapDrawer extends View {
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN :
 
-                        pointFlast=pointF;
-
-                        pointFstart=pointF;
-
-                        MODE = DRAG;
-
+                        pointFlast = pointF;
+                        pointFstart = pointF;
                         offsetX += deltaX;
-
                         offsetY += deltaY;
-
+                        MODE = DRAG;
                         break;
 
                     case MotionEvent.ACTION_MOVE :
@@ -129,7 +121,6 @@ public class MapDrawer extends View {
                         if (MODE == DRAG){
 
                             deltaX = pointF.x - pointFlast.x;
-
                             deltaY = pointF.y - pointFlast.y;
 
                                 invalidate();
@@ -137,15 +128,14 @@ public class MapDrawer extends View {
                                 //temporary statement to stop map getting out of sight
                                 // adding animation for smoother back
 
-                                if ((Math.abs(deltaX+offsetX)>origScale*bmwidth*scaleFDetector/3) || (Math.abs(deltaY+offsetY)>origScale*bmheight*scaleFDetector/3))
+                                if ((Math.abs(deltaX+offsetX)>originalScale*bitmapWidth*scaleFromDetector/3) || (Math.abs(deltaY+offsetY)>originalScale*bitmapHeight*scaleFromDetector/3))
                             {
                                 deltaX = 0;
                                 deltaY = 0;
                                 return true;
                             }
                         }
-
-                        
+                        break;
                 }
                 return true;
             }
@@ -155,78 +145,66 @@ public class MapDrawer extends View {
     /** Setting map to be drawn on canvas
      * and getting dimensions from bitmap
      * to set up scale parameters
+     * If @floor exceeds size of
+     * floors list method gets the last one floor
+     * map possible
      */
-    public void setMap(Bitmap bitmap){
-
-        if (bitmap != null) {
-
-            origbitmap=bitmap;
-
-            Log.i(TAG, "setMap: Bitmap for layer map set");
-
-            bmheight=bitmap.getHeight();
-
-            bmwidth= bitmap.getWidth();
-
-            origbmwidth=bmwidth;
-
-            origbmheight=bmheight;
+    public void showFloor(int floor){
+        try {
+            originalMap=model.getFloorMap(floor);
         }
-        
+        catch (Exception e)
+        {
+            originalMap = model.getFloorMap(model.getFloorCount()-1);
+        }
+            Log.i(TAG, "setMap: Bitmap for layer map set");
+            bitmapHeight = originalMap.getHeight();
+            bitmapWidth = originalMap.getWidth();
+            originalBitmapWidth = bitmapWidth;
+            originalBitmapHeight = bitmapHeight;
     }
 
-    private Bitmap LayerMap(Bitmap origbitmap,int xfrom, int yfrom,float scale){
+    private Bitmap layerMap(Bitmap origbitmap,int xfrom, int yfrom,float scale){
 
-        Matrix tempmatrix=new Matrix();
-
+        Matrix tempMatrix=new Matrix();
         Bitmap result;
-
-        tempmatrix.postScale(scale,scale);
+        tempMatrix.postScale(scale,scale);
         try {
-            result=Bitmap.createBitmap(origbitmap,xfrom,yfrom,origbmwidth,origbmheight,tempmatrix,true);
+            result=Bitmap.createBitmap(origbitmap,xfrom,yfrom,originalBitmapWidth,originalBitmapHeight,tempMatrix,true);
         }
         catch (Exception e)
         {
             e.printStackTrace();
             return null;
         }
-
         return result;
     }
-    private Bitmap LayerPath(){
-
-        Bitmap result=Bitmap.createBitmap(measurewidth,measureheight, Bitmap.Config.ARGB_8888);
-
-        if (trackpoints != null) {
-
+    private Bitmap layerPath(){
+        Bitmap result=Bitmap.createBitmap(measureWidth,measureHeight, Bitmap.Config.ARGB_8888);
+        if (pathPoints != null) {
             Path path = new Path();
             /*
             ...
-             */
-
+            */
         }
         else
         {
             return result;
         }
-
         return result;
     }
 
 
 
-    private Bitmap LayerTacks(ArrayList <TackObject> tackObjects,float scale){
+    private Bitmap layerTacks(ArrayList <MapPoint> tackObjects,float scale){
 
-        Bitmap result = Bitmap.createBitmap(measurewidth,measureheight, Bitmap.Config.ARGB_8888);
-
+        Bitmap result = Bitmap.createBitmap(measureWidth,measureHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
-
         if (!tackObjects.isEmpty())
         {
-            for (TackObject tack:tackObjects)
-            canvas.drawBitmap(tacktexture[tackObjects.indexOf(tack)],tack.getX()*scale,tack.getY()*scale,null);
+            for (MapPoint tack:tackObjects)
+            canvas.drawBitmap(tackTexture[tackObjects.indexOf(tack)],tack.getX()*scale,tack.getY()*scale,null);
         }
-
      return result;
     }
 
@@ -236,56 +214,38 @@ public class MapDrawer extends View {
     @Override
     protected void onDraw(Canvas canvas) {
 
-        if (origbitmap==null) return;
-
+        if (originalMap == null) return;
         Bitmap layer;
-
         switch (MODE) {
 
             case NONE:
-
                 Log.i(TAG, "onDraw: NONE");
-
-                fitBitmapToScreen(origbitmap);
-
+                fitBitmapToScreen(originalMap);
                 break;
 
             case DRAG:
-
                 Log.i(TAG, "onDraw: DRAG");
-
-                canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
-
+                canvas.scale(scaleFromDetector,scaleFromDetector,scaleFromDetectorXcenter,scaleFromDetectorYcenter);
                 canvas.translate(deltaX + offsetX ,deltaY + offsetY);
-
                 Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " + offsetX + " y = " + deltaY + " offset x = " + offsetY);
-
                 break;
 
             case ZOOM:
-
                 Log.i(TAG, "onDraw: ZOOM");
-
-                canvas.scale(scaleFDetector,scaleFDetector,scaleFDetectorXcenter,scaleFDetectorYcenter);
-
+                canvas.scale(scaleFromDetector,scaleFromDetector,scaleFromDetectorXcenter,scaleFromDetectorYcenter);
                 canvas.translate(offsetX,offsetY);
-
                 break;
 
         }
 
-        layer = LayerMap(origbitmap,0,0,origScale);
-
+        layer = layerMap(originalMap,0,0,originalScale);
         canvas.translate((canvas.getWidth()-layer.getWidth())/2,(canvas.getHeight()-layer.getHeight())/2);
-
         canvas.drawBitmap(layer,0,0,null);
 
-        layer = LayerTacks(tackObjects,origScale);
-
+        layer = layerTacks(mapObjects,originalScale);
         canvas.drawBitmap(layer,0,0,null);
 
-        layer= LayerPath();
-
+        layer= layerPath();
         canvas.drawBitmap(layer,0,0,null);
 
 
@@ -293,10 +253,10 @@ public class MapDrawer extends View {
 
     void fitBitmapToScreen(Bitmap bitmap)
     {
-        if ((measurewidth==0) || (measureheight==0) ) return;
-            float origScaleX = (float) measureheight / bitmap.getHeight();
-            float origScaleY= (float) measurewidth / bitmap.getWidth();
-            origScale =  Math.min(origScaleX,origScaleY);
+        if ((measureWidth==0) || (measureHeight==0) ) return;
+            float origScaleX = (float) measureHeight / bitmap.getHeight();
+            float origScaleY = (float) measureWidth / bitmap.getWidth();
+            originalScale =  Math.min(origScaleX,origScaleY);
 
     }
 
@@ -308,7 +268,7 @@ public class MapDrawer extends View {
      */
     void setMaxScale(float maxScale)
     {
-        scaleFDetectorMAX=maxScale;
+        scaleFromDetectorMAX = maxScale;
     }
 
     /**
@@ -316,7 +276,7 @@ public class MapDrawer extends View {
      */
     void setMinScale(float minScale)
     {
-        scaleFDetectorMIN=minScale;
+        scaleFromDetectorMIN = minScale;
     }
 
 
@@ -325,31 +285,27 @@ public class MapDrawer extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 
         Log.i(TAG, "onMeasure: START");
+        measureWidth = MeasureSpec.getSize(widthMeasureSpec);
+        measureHeight = MeasureSpec.getSize(heightMeasureSpec);
+        setMeasuredDimension(measureWidth,measureHeight);
 
-        measurewidth = MeasureSpec.getSize(widthMeasureSpec);
-
-        measureheight = MeasureSpec.getSize(heightMeasureSpec);
-
-        setMeasuredDimension(measurewidth,measureheight);
-
-        if (measureheight>measurewidth) horizontal=false;
-
-        if (measurewidth>measureheight) horizontal=true;
+        if (measureHeight>measureWidth) horizontal=false;
+        if (measureWidth>measureHeight) horizontal=true;
 
         MODE = NONE;
     }
 
 
 
-    void setTacktexture() //This void is only for current tests
+    void setTackTexture() //This void is only for current tests
     {
-        tacktexture=new Bitmap[2];
-        tacktexture[1]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
-        tacktexture[1]= Bitmap.createBitmap(tacktexture[1],0,0,50,50);
-        tacktexture[0]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
-        tacktexture[0]= Bitmap.createBitmap(tacktexture[0],0,0,50,50);
-        tackObjects=new ArrayList<>();
-        tackTypes= new ArrayList<>();
+        tackTexture=new Bitmap[2];
+        tackTexture[1]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
+        tackTexture[1]= Bitmap.createBitmap(tackTexture[1],0,0,50,50);
+        tackTexture[0]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
+        tackTexture[0]= Bitmap.createBitmap(tackTexture[0],0,0,50,50);
+        mapObjects=new ArrayList<>();
+        mapObjectTypes= new ArrayList<>();
     }
 
     /** Set object that implements or extends mapmodel interface
@@ -365,14 +321,11 @@ public class MapDrawer extends View {
      * Method's first argument has to be changed to
      * MapPoint class
      */
-    public void addMapPoint(TackObject tack, Integer type){
+    public void addMapPoint(MapPoint tack, Integer type){
 
-        tackObjects.add(tack);
-
-        tackTypes.add(type);
-
+        mapObjects.add(tack);
+        mapObjectTypes.add(type);
         Log.i(TAG, "addMapPoint: Point Added");
-
         invalidate();
 
     }
@@ -384,13 +337,13 @@ public class MapDrawer extends View {
     public void showCurrentTacks()
     {
         Log.i(TAG, "showCurrentTacks: SHOWING");
-        for (TackObject x:tackObjects)
+        for (MapPoint x:mapObjects)
         {
-            Log.i(TAG, "addMapPoint: Current Point : " +tackObjects.indexOf(x)+" x: " + x.getX() +" and y: "+x.getY());
+            Log.i(TAG, "addMapPoint: Current Point : " +mapObjects.indexOf(x)+" x: " + x.getX() +" and y: "+x.getY());
         }
-        for (Integer x:tackTypes)
+        for (Integer x:mapObjectTypes)
         {
-            Log.i(TAG, "addMapPoint: Current Type : " + tackTypes.indexOf(x)+" type: " + x.toString());
+            Log.i(TAG, "addMapPoint: Current Type : " + mapObjectTypes.indexOf(x)+" type: " + x.toString());
         }
     }
 
@@ -399,10 +352,8 @@ public class MapDrawer extends View {
      */
     public void removeAllTacks(){
 
-        tackObjects.clear();
-
-        tackTypes.clear();
-
+        mapObjects.clear();
+        mapObjectTypes.clear();
         invalidate();
     }
 
@@ -411,10 +362,10 @@ public class MapDrawer extends View {
      * with given index
      */
     public void removeMapTack(int index){
-        if (index<tackObjects.size())
+        if (index<mapObjects.size())
         {
-            tackObjects.remove(index);
-            tackTypes.remove(index);
+            mapObjects.remove(index);
+            mapObjectTypes.remove(index);
             invalidate();
         }
         else 
@@ -426,24 +377,17 @@ public class MapDrawer extends View {
     /**
      * Set trace to be drawn as path to destined place
      */
-    public void setTrace(int [][] trace){
-        trackpoints = trace;
+    public void setTrace(ArrayList<MapPoint> trace){
+        pathPoints = trace;
         invalidate();
     }
     /**
      * Clear trace to be drawn as path to destined place
      */
-    public void removeTrace(){
-        trackpoints = null;
+    public void removeTrace() {
+        pathPoints = null;
         invalidate();
     }
-
-    /**
-     * Show map
-     * If floor exceeds size, try getting last floor
-     */
-    public void showFloor(int floor){    }
-
 
 
     /**
@@ -451,21 +395,18 @@ public class MapDrawer extends View {
     * TO RESPONSE TO MOTIONEVENTS
     */
 
-private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener implements GestureDetector.OnGestureListener,GestureDetector.OnDoubleTapListener {
+private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener  {
 
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
 
-        if ((scaleFDetectorMAX<scaleFDetector*detector.getScaleFactor())||(scaleFDetectorMIN>scaleFDetector*detector.getScaleFactor())) return true;
+        if ((scaleFromDetectorMAX<scaleFromDetector*detector.getScaleFactor())||(scaleFromDetectorMIN>scaleFromDetector*detector.getScaleFactor())) return true;
 
-            scaleFDetector=scaleFDetector*detector.getScaleFactor();
-
-        scaleFDetectorXcenter=detector.getFocusX();
-
-        scaleFDetectorYcenter=detector.getFocusY();
-
-        Log.i(TAG, "onScale: scaleFdetector: " + scaleFDetector);
+        scaleFromDetector=scaleFromDetector*detector.getScaleFactor();
+        scaleFromDetectorXcenter=detector.getFocusX();
+        scaleFromDetectorYcenter=detector.getFocusY();
+        Log.i(TAG, "onScale: scaleFdetector: " + scaleFromDetector);
         invalidate();
         return true;
 
@@ -475,7 +416,6 @@ private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureLis
     public boolean onScaleBegin(ScaleGestureDetector detector) {
         Log.i(TAG, "onScaleBegins");
         MODE = ZOOM;
-
         return true;
     }
 
@@ -484,51 +424,6 @@ private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureLis
         Log.i(TAG, "onScaleEnds");
     }
 
-    @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onDoubleTap(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onDown(MotionEvent e) {
-
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        return false;
-    }
 }
 
 
