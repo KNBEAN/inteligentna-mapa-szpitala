@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 
 import bean.pwr.imskamieskiego.R;
@@ -34,30 +35,28 @@ public class MapDrawer extends View {
     private Paint paint;
     private MapModel model;
     private Context context;
-    private Bitmap [] tackTexture;
     private PointF pointFlast = new PointF();
     private PointF pointFstart = new PointF();
     private ArrayList <MapPoint> mapObjects;
-    private ArrayList <Integer> mapObjectTypes;
-    private boolean horizontal;
+    private Hashtable <MapPoint,Integer> mapObjectTypes;
     private ArrayList<MapPoint> pathPoints;
     private int measureWidth,measureHeight;
     private int bitmapWidth,bitmapHeight,originalBitmapWidth,originalBitmapHeight;
-    private float originalScale,scaleX,scaleY;
+    private float originalScale;
     private float deltaX,deltaY;
     private float offsetX,offsetY;
+
     private ScaleGestureDetector mScaleDetector;
+    private float scaleFromDetector;
+    private float scaleFromDetectorXcenter;
+    private float scaleFromDetectorYcenter;
+    private float scaleFromDetectorMAX = 3.f;
+    private float scaleFromDetectorMIN = 0.5f;
 
-    float scaleFromDetector;
-    float scaleFromDetectorXcenter;
-    float scaleFromDetectorYcenter;
-    float scaleFromDetectorMAX = 3.f;
-    float scaleFromDetectorMIN = 0.5f;
-
-   final int NONE = 0;
-   final int DRAG = 1;
-   final int ZOOM = 2;
-   int MODE;
+   private final int NONE = 0;
+   private final int DRAG = 1;
+   private final int ZOOM = 2;
+   private int MODE;
 
 
     public MapDrawer(Context context) {
@@ -79,19 +78,18 @@ public class MapDrawer extends View {
      * -CREATE PAINT
      * -SEND MOTIONEVENTS TO LISTENER
      */
-    void SharedConstructing() {
+    private void SharedConstructing() {
 
         setClickable(true);
-        setTackTexture();
         paint=new Paint();
 
         originalScale = 1;
-        scaleX = 1 ;
-        scaleY = 1 ;
         offsetX = 0;
         offsetY = 0;
         scaleFromDetector = 1.f;
-        pathPoints = new ArrayList<MapPoint>();
+        pathPoints = new ArrayList<>();
+        mapObjects=new ArrayList<>();
+        mapObjectTypes= new Hashtable<>();
 
         mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 
@@ -127,7 +125,6 @@ public class MapDrawer extends View {
 
                                 //temporary statement to stop map getting out of sight
                                 // adding animation for smoother back
-
                                 if ((Math.abs(deltaX+offsetX)>originalScale*bitmapWidth*scaleFromDetector/3) || (Math.abs(deltaY+offsetY)>originalScale*bitmapHeight*scaleFromDetector/3))
                             {
                                 deltaX = 0;
@@ -164,13 +161,13 @@ public class MapDrawer extends View {
             originalBitmapHeight = bitmapHeight;
     }
 
-    private Bitmap layerMap(Bitmap origbitmap,int xfrom, int yfrom,float scale){
+    private Bitmap layerMap(Bitmap originalMap,int xFrom, int yFrom,float scale){
 
         Matrix tempMatrix=new Matrix();
         Bitmap result;
         tempMatrix.postScale(scale,scale);
         try {
-            result=Bitmap.createBitmap(origbitmap,xfrom,yfrom,originalBitmapWidth,originalBitmapHeight,tempMatrix,true);
+            result=Bitmap.createBitmap(originalMap,xFrom,yFrom,originalBitmapWidth,originalBitmapHeight,tempMatrix,true);
         }
         catch (Exception e)
         {
@@ -196,14 +193,16 @@ public class MapDrawer extends View {
 
 
 
-    private Bitmap layerTacks(ArrayList <MapPoint> tackObjects,float scale){
+    private Bitmap layerTacks(ArrayList <MapPoint> mapObjects,float scale){
 
         Bitmap result = Bitmap.createBitmap(measureWidth,measureHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
-        if (!tackObjects.isEmpty())
+        if (!mapObjects.isEmpty())
         {
-            for (MapPoint tack:tackObjects)
-            canvas.drawBitmap(tackTexture[tackObjects.indexOf(tack)],tack.getX()*scale,tack.getY()*scale,null);
+            for (MapPoint point:mapObjects) {
+                Log.i(TAG, "layerTacks: point.getX()*scale, = " + point.getX() * scale + " Y = " +point.getY() * scale);
+                canvas.drawBitmap(getTackTexture(mapObjectTypes.get(point)), point.getX() * scale, point.getY() * scale, null);
+            }
         }
      return result;
     }
@@ -251,7 +250,7 @@ public class MapDrawer extends View {
 
     }
 
-    void fitBitmapToScreen(Bitmap bitmap)
+    private void fitBitmapToScreen(Bitmap bitmap)
     {
         if ((measureWidth==0) || (measureHeight==0) ) return;
             float origScaleX = (float) measureHeight / bitmap.getHeight();
@@ -266,7 +265,7 @@ public class MapDrawer extends View {
      * scale can cause problems with rendering
      * on canvas.
      */
-    void setMaxScale(float maxScale)
+    public void setMaxScale(float maxScale)
     {
         scaleFromDetectorMAX = maxScale;
     }
@@ -274,7 +273,7 @@ public class MapDrawer extends View {
     /**
      * Setting min scale
      */
-    void setMinScale(float minScale)
+    public void setMinScale(float minScale)
     {
         scaleFromDetectorMIN = minScale;
     }
@@ -289,27 +288,36 @@ public class MapDrawer extends View {
         measureHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(measureWidth,measureHeight);
 
-        if (measureHeight>measureWidth) horizontal=false;
-        if (measureWidth>measureHeight) horizontal=true;
-
         MODE = NONE;
     }
 
 
 
-    void setTackTexture() //This void is only for current tests
+    private Bitmap getTackTexture(int type)
     {
-        tackTexture=new Bitmap[2];
-        tackTexture[1]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
-        tackTexture[1]= Bitmap.createBitmap(tackTexture[1],0,0,50,50);
-        tackTexture[0]= BitmapFactory.decodeResource(context.getResources(),R.drawable.small);
-        tackTexture[0]= Bitmap.createBitmap(tackTexture[0],0,0,50,50);
-        mapObjects=new ArrayList<>();
-        mapObjectTypes= new ArrayList<>();
+        Bitmap texture;
+        switch (type) {
+            case 1:
+            texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.start_tack);
+            texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
+            break;
+
+            case 2:
+            texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.end_tack);
+            texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
+            break;
+
+            default:
+            texture =BitmapFactory.decodeResource(context.getResources(), R.drawable.default_tack);
+            texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
+                break;
+        }
+        return texture;
     }
 
     /** Set object that implements or extends mapmodel interface
-     */
+     *  MapDrawer will get maps of floor from it
+     * */
     public void setModel(MapModel model){
         this.model=model;
     }
@@ -318,39 +326,19 @@ public class MapDrawer extends View {
      * Add mappoint which will be drawn
      * immediately with previous added tacks.
      * Add type to determine image for tack.
-     * Method's first argument has to be changed to
-     * MapPoint class
      */
     public void addMapPoint(MapPoint tack, Integer type){
 
         mapObjects.add(tack);
-        mapObjectTypes.add(type);
+        mapObjectTypes.put(tack,type);
         Log.i(TAG, "addMapPoint: Point Added");
         invalidate();
-
-    }
-
-    /**
-     * Return all currently saved tacks with their
-     * types
-     */
-    public void showCurrentTacks()
-    {
-        Log.i(TAG, "showCurrentTacks: SHOWING");
-        for (MapPoint x:mapObjects)
-        {
-            Log.i(TAG, "addMapPoint: Current Point : " +mapObjects.indexOf(x)+" x: " + x.getX() +" and y: "+x.getY());
-        }
-        for (Integer x:mapObjectTypes)
-        {
-            Log.i(TAG, "addMapPoint: Current Type : " + mapObjectTypes.indexOf(x)+" type: " + x.toString());
-        }
     }
 
     /**
      * Clear mappoint arraylist
      */
-    public void removeAllTacks(){
+    public void removeAllMapPoints(){
 
         mapObjects.clear();
         mapObjectTypes.clear();
@@ -361,17 +349,9 @@ public class MapDrawer extends View {
      * Remove object from mappoint arraylist
      * with given index
      */
-    public void removeMapTack(int index){
-        if (index<mapObjects.size())
-        {
-            mapObjects.remove(index);
-            mapObjectTypes.remove(index);
-            invalidate();
-        }
-        else 
-        {
-            Log.e(TAG, "removeMapTack: index exceeds size");
-        }
+    public void removeMapPoint(MapPoint mapPoint){
+        mapObjects.remove(mapPoint);
+        mapObjectTypes.remove(mapPoint);
         
     }
     /**
