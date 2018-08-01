@@ -2,8 +2,6 @@ package bean.pwr.imskamieskiego;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.text.Layout;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,82 +13,101 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import static android.view.View.GONE;
 
 public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-
-
+    private FloatingActionButton wcButton;
+    private FloatingActionButton patientAssistantButton;
+    private FloatingActionButton foodButton;
+    private FloatingActionButton toolsButton;
+    private ImageButton changeFloorButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //Animations declaration
-        final Animation rotateShow = AnimationUtils.loadAnimation(MapActivity.this, R.anim.rotate_show);
-        final Animation rotateHide = AnimationUtils.loadAnimation(MapActivity.this, R.anim.rotate_hide);
-        final Animation hideButtonAnimation = AnimationUtils.loadAnimation(MapActivity.this, R.anim.hide_anim);
-        final Animation showButtonAnimation = AnimationUtils.loadAnimation(MapActivity.this, R.anim.show_anim);
+
+        wcButton = findViewById(R.id.wc_button);
+        patientAssistantButton = findViewById(R.id.patient_assistant_button);
+        foodButton = findViewById(R.id.food_button);
+        toolsButton = findViewById(R.id.tools_button);
 
 
-        // Initialization of buttons from content_map.xml
-        final FloatingActionButton wcButton = findViewById(R.id.wc_button);
-        final FloatingActionButton patientAssistantButton = findViewById(R.id.patient_assistant_button);
-        final FloatingActionButton foodButton = findViewById(R.id.food_button);
-        final FloatingActionButton toolsButton = findViewById(R.id.tools_button);
         toolsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (foodButton.getVisibility() == View.VISIBLE &&
-                        (wcButton.getVisibility() == View.VISIBLE)) {
-                    wcButton.setVisibility(GONE);
-                    foodButton.setVisibility(GONE);
-                    patientAssistantButton.setVisibility(GONE);
-                    toolsButton.startAnimation(rotateHide);
-                    wcButton.startAnimation(hideButtonAnimation);
-                    foodButton.startAnimation(hideButtonAnimation);
-                    patientAssistantButton.startAnimation(hideButtonAnimation);
-                }
-                else {
-                    wcButton.setVisibility(View.VISIBLE);
-                    foodButton.setVisibility(View.VISIBLE);
-                    patientAssistantButton.setVisibility(View.VISIBLE);
-                    toolsButton.startAnimation(rotateShow);
-                    wcButton.startAnimation(showButtonAnimation);
-                   foodButton.startAnimation(showButtonAnimation);
-                   patientAssistantButton.startAnimation(showButtonAnimation);
+                        (wcButton.getVisibility() == View.VISIBLE)
+                        && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
+                       hideQuickAccessButtons();
+
+                } else {
+                    showQuickAccessButtons();
+
                 }
             }
         });
 
+        wcButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideQuickAccessButtons();
+
+            }
+        });
+        foodButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideQuickAccessButtons();
+            }
+        });
+        patientAssistantButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideQuickAccessButtons();
+            }
+        });
+        changeFloorButton = findViewById(R.id.floors_button);
+        changeFloorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu floorSelect = new PopupMenu(MapActivity.this,changeFloorButton);
+                floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+                floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Toast.makeText(MapActivity.this,item.getTitle().toString(),Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                });
+                floorSelect.show();
+            }
+        });
 
 
-
-
-
-
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView =  findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -105,20 +122,7 @@ public class MapActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.search_item) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -141,8 +145,56 @@ public class MapActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public void rotateRight(View v) {
+        final Animation rotateRightAnimation = AnimationUtils.loadAnimation(
+                MapActivity.this, R.anim.rotate_show);
+        v.startAnimation(rotateRightAnimation);
+
+    }
+
+    public void rotateLeft(View v) {
+        final Animation rotateLeftAnimation = AnimationUtils.loadAnimation(
+                MapActivity.this, R.anim.rotate_hide);
+        v.startAnimation(rotateLeftAnimation);
+
+    }
+
+    public void hide(View v) {
+        final Animation hideAnimation = AnimationUtils.loadAnimation(
+                MapActivity.this, R.anim.hide_anim);
+        v.startAnimation(hideAnimation);
+
+    }
+
+    public void show(View v) {
+        final Animation showAnimation = AnimationUtils.loadAnimation(
+                MapActivity.this, R.anim.show_anim);
+        v.startAnimation(showAnimation);
+
+    }
+    public void hideQuickAccessButtons() {
+        wcButton.setVisibility(GONE);
+        foodButton.setVisibility(GONE);
+        patientAssistantButton.setVisibility(GONE);
+        hide(wcButton);
+        hide(foodButton);
+        hide(patientAssistantButton);
+        rotateLeft(toolsButton);
+
+    }
+    public void showQuickAccessButtons() {
+        wcButton.setVisibility(View.VISIBLE);
+        foodButton.setVisibility(View.VISIBLE);
+        patientAssistantButton.setVisibility(View.VISIBLE);
+        show(wcButton);
+        show(foodButton);
+        show(patientAssistantButton);
+        rotateRight(toolsButton);
+
     }
 }
