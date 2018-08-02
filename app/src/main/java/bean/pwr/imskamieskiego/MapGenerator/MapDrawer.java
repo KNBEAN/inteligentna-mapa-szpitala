@@ -34,14 +34,15 @@ public class MapDrawer extends View {
     private int bitmapHeight;
     private int originalBitmapWidth;
     private int originalBitmapHeight;
+    private int currentlyDisplayedFloor;
     private float originalScale;
     private float deltaX, deltaY;
     private float offsetX, offsetY;
-
     private ScaleGestureDetector ScaleDetector;
     private float scaleFromDetector;
     private float scaleFromDetectorXcenter;
     private float scaleFromDetectorYcenter;
+    private boolean isViewHorizontal;
     private float scaleFromDetectorMAX = 3.f;
     private float scaleFromDetectorMIN = 0.5f;
 
@@ -136,16 +137,17 @@ public class MapDrawer extends View {
             originalMap = model.getFloorMap(floor);
         }
         if (originalMap == null) throw new NullPointerException();
-        Log.i(TAG, "setMap: Bitmap for layer map set");
         bitmapHeight = originalMap.getHeight();
         bitmapWidth = originalMap.getWidth();
         originalBitmapWidth = bitmapWidth;
         originalBitmapHeight = bitmapHeight;
+        currentlyDisplayedFloor = floor;
     }
 
     private Bitmap layerMap(Bitmap originalMap, int xFrom, int yFrom, float scale) {
         Matrix tempMatrix = new Matrix();
         Bitmap result;
+
         tempMatrix.postScale(scale, scale);
         try {
             result = Bitmap.createBitmap(originalMap,
@@ -157,6 +159,8 @@ public class MapDrawer extends View {
             e.printStackTrace();
             return null;
         }
+        bitmapWidth = result.getWidth();
+        bitmapHeight = result.getHeight();
         return result;
     }
 
@@ -166,12 +170,20 @@ public class MapDrawer extends View {
         Canvas canvas = new Canvas(result);
         if (!mapObjects.isEmpty()) {
             for (MapPoint point : mapObjects) {
-                Log.i(TAG, "layerTacks: point.getX()*scale, = " + point.getX() * scale
-                        + " Y = " + point.getY() * scale);
-                canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
-                        point.getX() * scale,
-                        point.getY() * scale,
-                        null);
+                if (point.getFloor() == currentlyDisplayedFloor) {
+                    if (isViewHorizontal == true){
+                                canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
+                                point.getX()*(originalBitmapWidth/measureHeight)*scale  ,
+                                point.getY()*(originalBitmapHeight/measureWidth)*scale ,
+                                null);
+                    }
+                    else {
+                        canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
+                                point.getX() * (originalBitmapWidth / measureWidth) * scale,
+                                point.getY() * (originalBitmapHeight / measureHeight) * scale,
+                                null);
+                    }
+                }
             }
         }
         return result;
@@ -215,6 +227,7 @@ public class MapDrawer extends View {
         layer = layerMap(originalMap, 0, 0, originalScale);
         canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
+        Log.i(TAG, "onDraw: translate width = " +((canvas.getWidth() - layer.getWidth()) / 2)+" Height = " +((canvas.getHeight() - layer.getHeight()) / 2));
         canvas.drawBitmap(layer, 0, 0, null);
         layer = layerTacks(mapPoints, originalScale);
         canvas.drawBitmap(layer, 0, 0, null);
@@ -259,6 +272,8 @@ public class MapDrawer extends View {
         measureHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(measureWidth, measureHeight);
         mode = NONE;
+        if (measureWidth>measureHeight) isViewHorizontal = true;
+        if (measureHeight>measureWidth) isViewHorizontal = false;
     }
 
 
