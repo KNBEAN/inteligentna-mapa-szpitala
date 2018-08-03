@@ -12,8 +12,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
@@ -34,14 +36,15 @@ public class MapDrawer extends View {
     private int bitmapHeight;
     private int originalBitmapWidth;
     private int originalBitmapHeight;
+    private int currentlyDisplayedFloor;
     private float originalScale;
     private float deltaX, deltaY;
     private float offsetX, offsetY;
-
     private ScaleGestureDetector ScaleDetector;
     private float scaleFromDetector;
     private float scaleFromDetectorXcenter;
     private float scaleFromDetectorYcenter;
+    private boolean isViewHorizontal;
     private float scaleFromDetectorMAX = 3.f;
     private float scaleFromDetectorMIN = 0.5f;
 
@@ -99,17 +102,9 @@ public class MapDrawer extends View {
                     case MotionEvent.ACTION_MOVE:
 
                         if (mode == DRAG) {
-
                             deltaX = pointF.x - pointFlast.x;
                             deltaY = pointF.y - pointFlast.y;
                             invalidate();
-
-                            if ((Math.abs(deltaX + offsetX) > originalScale * bitmapWidth * scaleFromDetector / 3)
-                                    || (Math.abs(deltaY + offsetY) > originalScale * bitmapHeight * scaleFromDetector / 3)) {
-                                deltaX = 0;
-                                deltaY = 0;
-                                return true;
-                            }
                         }
                         break;
                 }
@@ -126,26 +121,30 @@ public class MapDrawer extends View {
      * If floor exceeds size of
      * floors list method gets the last one floor
      * map possible
+     *
      * @param floor number of the floor to be drawn
      */
     public void showFloor(int floor) {
         if (floor < 0) throw new IllegalArgumentException("Positive value needed");
         if (floor >= model.getFloorCount()) {
             originalMap = model.getFloorMap(model.getFloorCount() - 1);
+            currentlyDisplayedFloor = model.getFloorCount() - 1;
         } else {
             originalMap = model.getFloorMap(floor);
+            currentlyDisplayedFloor = floor;
         }
         if (originalMap == null) throw new NullPointerException();
-        Log.i(TAG, "setMap: Bitmap for layer map set");
         bitmapHeight = originalMap.getHeight();
         bitmapWidth = originalMap.getWidth();
         originalBitmapWidth = bitmapWidth;
         originalBitmapHeight = bitmapHeight;
+
     }
 
     private Bitmap layerMap(Bitmap originalMap, int xFrom, int yFrom, float scale) {
         Matrix tempMatrix = new Matrix();
         Bitmap result;
+
         tempMatrix.postScale(scale, scale);
         try {
             result = Bitmap.createBitmap(originalMap,
@@ -157,6 +156,8 @@ public class MapDrawer extends View {
             e.printStackTrace();
             return null;
         }
+        bitmapWidth = result.getWidth();
+        bitmapHeight = result.getHeight();
         return result;
     }
 
@@ -166,12 +167,19 @@ public class MapDrawer extends View {
         Canvas canvas = new Canvas(result);
         if (!mapObjects.isEmpty()) {
             for (MapPoint point : mapObjects) {
-                Log.i(TAG, "layerTacks: point.getX()*scale, = " + point.getX() * scale
-                        + " Y = " + point.getY() * scale);
-                canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
-                        point.getX() * scale,
-                        point.getY() * scale,
-                        null);
+                if (point.getFloor() == currentlyDisplayedFloor) {
+                    if (isViewHorizontal == true) {
+                        canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
+                                point.getX() * (originalBitmapWidth / measureHeight) * scale,
+                                point.getY() * (originalBitmapHeight / measureWidth) * scale,
+                                null);
+                    } else {
+                        canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
+                                point.getX() * (originalBitmapWidth / measureWidth) * scale,
+                                point.getY() * (originalBitmapHeight / measureHeight) * scale,
+                                null);
+                    }
+                }
             }
         }
         return result;
@@ -215,6 +223,7 @@ public class MapDrawer extends View {
         layer = layerMap(originalMap, 0, 0, originalScale);
         canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
+        Log.i(TAG, "onDraw: translate width = " + ((canvas.getWidth() - layer.getWidth()) / 2) + " Height = " + ((canvas.getHeight() - layer.getHeight()) / 2));
         canvas.drawBitmap(layer, 0, 0, null);
         layer = layerTacks(mapPoints, originalScale);
         canvas.drawBitmap(layer, 0, 0, null);
@@ -236,6 +245,7 @@ public class MapDrawer extends View {
      * Keep in mind that too big
      * scale can cause problems with rendering
      * on canvas.
+     *
      * @param maxScale scale which will be set a maximal
      */
     public void setMaxScale(float maxScale) {
@@ -244,6 +254,7 @@ public class MapDrawer extends View {
 
     /**
      * Setting minimum scale allowed
+     *
      * @param minScale scale which will be set as minimal
      */
     public void setMinScale(float minScale) {
@@ -259,6 +270,8 @@ public class MapDrawer extends View {
         measureHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(measureWidth, measureHeight);
         mode = NONE;
+        if (measureWidth > measureHeight) isViewHorizontal = true;
+        if (measureHeight > measureWidth) isViewHorizontal = false;
     }
 
 
@@ -287,6 +300,7 @@ public class MapDrawer extends View {
      * Method sets model
      * which will be used to
      * get maps textures
+     *
      * @param model object that implements MapModel interface
      */
     public void setModel(MapModel model) {
@@ -297,8 +311,9 @@ public class MapDrawer extends View {
     /**
      * Add mappoint which will be drawn
      * immediately with previous added tacks.
-     * @param tack  mappoint with x and y coordinates
-     * @param type  determines the texture set to given point
+     *
+     * @param tack mappoint with x and y coordinates
+     * @param type determines the texture set to given point
      */
     public void addMapPoint(MapPoint tack, Integer type) {
         mapPoints.add(tack);
@@ -319,6 +334,7 @@ public class MapDrawer extends View {
 
     /**
      * Remove object from map
+     *
      * @param mapPoint object to remove
      */
     public void removeMapPoint(MapPoint mapPoint) {
@@ -329,6 +345,7 @@ public class MapDrawer extends View {
 
     /**
      * Set trace to be drawn as path to destined place
+     *
      * @param trace array of mappoints to be drawn
      */
     public void setTrace(ArrayList<MapPoint> trace) {
