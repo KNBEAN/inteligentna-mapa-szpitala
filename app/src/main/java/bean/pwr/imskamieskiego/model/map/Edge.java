@@ -1,5 +1,9 @@
 package bean.pwr.imskamieskiego.model.map;
 
+/**
+ * This interface represents directional edge on the graph. Edge is a object that make connection
+ * between nodes.
+ */
 public interface Edge {
 
     /**

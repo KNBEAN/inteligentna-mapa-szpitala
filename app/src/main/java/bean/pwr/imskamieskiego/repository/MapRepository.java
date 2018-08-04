@@ -9,6 +9,10 @@ import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
+
+/**
+ * This interface represents repository of data related to map and navigation graph.
+ */
 public interface MapRepository {
 
     /**

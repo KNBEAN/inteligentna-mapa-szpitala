@@ -2,6 +2,9 @@ package bean.pwr.imskamieskiego.model.map;
 
 import javax.annotation.Nullable;
 
+/**
+ * This class can be use to create Location objects.
+ */
 public class LocationFactory {
 
     /**
