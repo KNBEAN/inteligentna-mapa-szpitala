@@ -29,7 +29,7 @@ public abstract class LocalDB extends RoomDatabase {
     public abstract LocationDao getLocationDao();
     public abstract EdgeDao getEdgeDao();
 
-
+    private static String DB_NAME = "IMS_database";
     private static LocalDB INSTANCE;
 
 
@@ -38,7 +38,7 @@ public abstract class LocalDB extends RoomDatabase {
             synchronized (LocalDB.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            LocalDB.class, "IMS_database")
+                            LocalDB.class, DB_NAME)
                             .build();
                 }
             }
