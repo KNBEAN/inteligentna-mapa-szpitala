@@ -5,13 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -27,7 +30,7 @@ public class MapDrawer extends View {
     private Bitmap originalMap;
     private MapModel model;
     private Context context;
-    private PointF pointFlast = new PointF();
+    private PointF pointFlast;
     private ArrayList<MapPoint> mapPoints;
     private Hashtable<MapPoint, Integer> mapPointsTypes;
     private ArrayList<MapPoint> pathPoints;
@@ -41,16 +44,18 @@ public class MapDrawer extends View {
     private float deltaX, deltaY;
     private float offsetX, offsetY;
     private ScaleGestureDetector ScaleDetector;
-    private float scaleFromDetector;
-    private float scaleFromDetectorXcenter;
-    private float scaleFromDetectorYcenter;
+    private float scaleDetector;
+    private float scaleDetectorXCenter;
+    private float scaleDetectorYCenter;
     private boolean isViewHorizontal;
-    private float scaleFromDetectorMAX = 3.f;
-    private float scaleFromDetectorMIN = 0.5f;
-
+    private float scaleDetectorMAX = 3.f;
+    private float scaleDetectorMIN = 0.5f;
+    private float previousScaleDetectorXCenter = 0;
+    private float previousScaleDetectorYCenter = 0;
     private final int NONE = 0;
     private final int DRAG = 1;
     private final int ZOOM = 2;
+    private final int ZOOM_POINT = 3;
     private int mode;
 
 
@@ -73,7 +78,8 @@ public class MapDrawer extends View {
         originalScale = 1;
         offsetX = 0;
         offsetY = 0;
-        scaleFromDetector = 1.f;
+        pointFlast = new PointF();
+        scaleDetector = 1.f;
         pathPoints = new ArrayList<>();
         mapPoints = new ArrayList<>();
         mapPointsTypes = new Hashtable<>();
@@ -141,6 +147,22 @@ public class MapDrawer extends View {
 
     }
 
+    public void showPoint(MapPoint point) {
+        mode = ZOOM_POINT;
+        showFloor(point.getFloor());
+        WindowManager windowManager =
+                (WindowManager) context.getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = windowManager.getDefaultDisplay();
+        Point outPoint = new Point();
+        display.getRealSize(outPoint);
+        Log.i(TAG, "onDraw: DISPLAY MET x = " + outPoint.x);
+        Log.i(TAG, "onDraw: DISPLAY MET x = " + outPoint.y);
+        scaleDetectorXCenter = point.getX() - outPoint.x;
+        scaleDetectorYCenter = point.getY() - outPoint.y;
+        scaleDetector = scaleDetectorMAX;
+
+    }
+
     private Bitmap layerMap(Bitmap originalMap, int xFrom, int yFrom, float scale) {
         Matrix tempMatrix = new Matrix();
         Bitmap result;
@@ -170,14 +192,17 @@ public class MapDrawer extends View {
                 if (point.getFloor() == currentlyDisplayedFloor) {
                     if (isViewHorizontal == true) {
                         canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
-                                point.getX() * (originalBitmapWidth / measureHeight) * scale,
-                                point.getY() * (originalBitmapHeight / measureWidth) * scale,
+                                point.getX() * (originalBitmapWidth / measureHeight)
+                                        * scale - (getTackTexture(mapPointsTypes.get(point)).getWidth() / 2),
+                                point.getY() * (originalBitmapHeight / measureWidth)
+                                        * scale - (getTackTexture(mapPointsTypes.get(point)).getHeight() / 2),
                                 null);
                     } else {
                         canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
-                                point.getX() * (originalBitmapWidth / measureWidth) * scale,
-                                point.getY() * (originalBitmapHeight / measureHeight) * scale,
+                                calculatePoint(point).x- (getTackTexture(mapPointsTypes.get(point)).getWidth() / 2),
+                                calculatePoint(point).y - (getTackTexture(mapPointsTypes.get(point)).getHeight() / 2),
                                 null);
+
                     }
                 }
             }
@@ -185,24 +210,32 @@ public class MapDrawer extends View {
         return result;
     }
 
+    private PointF calculatePoint(MapPoint mapPoint){
+        PointF point = new PointF();
+        point.x = mapPoint.getX()* (originalBitmapWidth / measureWidth) * originalScale;
+        point.y = mapPoint.getY() * (originalBitmapHeight / measureHeight) * originalScale;
+        return point;
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (originalMap == null) return;
         Bitmap layer;
+        fitBitmapToScreen(originalMap);
+
         switch (mode) {
 
             case NONE:
                 Log.i(TAG, "onDraw: NONE");
-                fitBitmapToScreen(originalMap);
+
                 break;
 
             case DRAG:
                 Log.i(TAG, "onDraw: DRAG");
-                canvas.scale(scaleFromDetector,
-                        scaleFromDetector,
-                        scaleFromDetectorXcenter,
-                        scaleFromDetectorYcenter);
+                canvas.scale(scaleDetector,
+                        scaleDetector,
+                        scaleDetectorXCenter,
+                        scaleDetectorYCenter);
                 canvas.translate(deltaX + offsetX, deltaY + offsetY);
                 Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " +
                         offsetX + " y = " + deltaY + " offset x = " + offsetY);
@@ -210,25 +243,43 @@ public class MapDrawer extends View {
 
             case ZOOM:
                 Log.i(TAG, "onDraw: ZOOM");
-                canvas.scale(scaleFromDetector,
-                        scaleFromDetector,
-                        scaleFromDetectorXcenter,
-                        scaleFromDetectorYcenter);
+                canvas.scale(scaleDetector,
+                        scaleDetector,
+                        scaleDetectorXCenter,
+                        scaleDetectorYCenter);
                 canvas.translate(offsetX, offsetY);
+                previousScaleDetectorXCenter = scaleDetectorXCenter;
+                previousScaleDetectorYCenter = scaleDetectorYCenter;
+                Log.i(TAG, "onDraw: ZOOM : scaleFromDetector = " + scaleDetector
+                        + " scaleFromDetectorCenterX = " + scaleDetectorXCenter
+                        + " scaleFromDetectorCenterY = " + scaleDetectorYCenter);
+                Log.i(TAG, "onDraw: ZOOM OFFSET : X = " + offsetX + " Y = " + offsetY);
                 break;
-
+            case ZOOM_POINT:
+                scaleDetectorXCenter = scaleDetectorXCenter * (originalBitmapWidth / measureWidth)
+                        * originalScale + measureWidth;
+                scaleDetectorYCenter = scaleDetectorYCenter * (originalBitmapHeight / measureHeight)
+                        * originalScale + measureHeight;
+                Log.i(TAG, "onDraw: ZOOM_POINT");
+                canvas.scale(scaleDetector,
+                        scaleDetector,
+                        scaleDetectorXCenter,
+                        scaleDetectorYCenter);
+                previousScaleDetectorXCenter = scaleDetectorXCenter;
+                previousScaleDetectorYCenter = scaleDetectorYCenter;
+                offsetX = 0;
+                offsetY = 0;
+                Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector
+                        + " scaleFromDetectorCenterX = " + scaleDetectorXCenter
+                        + " scaleFromDetectorCenterY = " + scaleDetectorYCenter);
         }
-
 
         layer = layerMap(originalMap, 0, 0, originalScale);
         canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
-        Log.i(TAG, "onDraw: translate width = " + ((canvas.getWidth() - layer.getWidth()) / 2) + " Height = " + ((canvas.getHeight() - layer.getHeight()) / 2));
         canvas.drawBitmap(layer, 0, 0, null);
         layer = layerTacks(mapPoints, originalScale);
         canvas.drawBitmap(layer, 0, 0, null);
-
-
     }
 
     private void fitBitmapToScreen(Bitmap bitmap) {
@@ -249,7 +300,7 @@ public class MapDrawer extends View {
      * @param maxScale scale which will be set a maximal
      */
     public void setMaxScale(float maxScale) {
-        scaleFromDetectorMAX = maxScale;
+        scaleDetectorMAX = maxScale;
     }
 
     /**
@@ -258,7 +309,7 @@ public class MapDrawer extends View {
      * @param minScale scale which will be set as minimal
      */
     public void setMinScale(float minScale) {
-        scaleFromDetectorMIN = minScale;
+        scaleDetectorMIN = minScale;
     }
 
 
@@ -269,7 +320,9 @@ public class MapDrawer extends View {
         measureWidth = MeasureSpec.getSize(widthMeasureSpec);
         measureHeight = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(measureWidth, measureHeight);
-        mode = NONE;
+        if (mode != ZOOM_POINT) {
+            mode = NONE;
+        }
         if (measureWidth > measureHeight) isViewHorizontal = true;
         if (measureHeight > measureWidth) isViewHorizontal = false;
     }
@@ -368,14 +421,19 @@ public class MapDrawer extends View {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
 
-            if ((scaleFromDetectorMAX < scaleFromDetector * detector.getScaleFactor())
-                    || (scaleFromDetectorMIN > scaleFromDetector * detector.getScaleFactor()))
+            if ((scaleDetectorMAX < scaleDetector * detector.getScaleFactor())
+                    || (scaleDetectorMIN > scaleDetector * detector.getScaleFactor()))
                 return true;
 
-            scaleFromDetector = scaleFromDetector * detector.getScaleFactor();
-            scaleFromDetectorXcenter = detector.getFocusX();
-            scaleFromDetectorYcenter = detector.getFocusY();
-            Log.i(TAG, "onScale: scaleFdetector: " + scaleFromDetector);
+            scaleDetector = scaleDetector * detector.getScaleFactor();
+            if (previousScaleDetectorXCenter == 0) {
+                scaleDetectorXCenter = detector.getFocusX();
+                scaleDetectorYCenter = detector.getFocusY();
+            } else {
+                scaleDetectorXCenter = detector.getFocusX() + (previousScaleDetectorXCenter - detector.getFocusX());
+                scaleDetectorYCenter = detector.getFocusY() + (previousScaleDetectorYCenter - detector.getFocusY());
+            }
+            Log.i(TAG, "onScale: scaleFdetector: " + scaleDetector);
             invalidate();
             return true;
 
