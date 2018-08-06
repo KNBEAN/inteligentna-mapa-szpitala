@@ -127,7 +127,6 @@ public class MapDrawer extends View {
      * If floor exceeds size of
      * floors list method gets the last one floor
      * map possible
-     *
      * @param floor number of the floor to be drawn
      */
     public void showFloor(int floor) {
@@ -147,6 +146,11 @@ public class MapDrawer extends View {
 
     }
 
+    /**
+     * Zoom view on given point. Floor will be
+     * changed if needed. Zoom is equal to scaleDetectorMAX
+     * @param point point to zoom
+     */
     public void showPoint(MapPoint point) {
         mode = ZOOM_POINT;
         showFloor(point.getFloor());
@@ -156,11 +160,10 @@ public class MapDrawer extends View {
         Point outPoint = new Point();
         display.getRealSize(outPoint);
         Log.i(TAG, "onDraw: DISPLAY MET x = " + outPoint.x);
-        Log.i(TAG, "onDraw: DISPLAY MET x = " + outPoint.y);
+        Log.i(TAG, "onDraw: DISPLAY MET y = " + outPoint.y);
         scaleDetectorXCenter = point.getX() - outPoint.x;
         scaleDetectorYCenter = point.getY() - outPoint.y;
         scaleDetector = scaleDetectorMAX;
-
     }
 
     private Bitmap layerMap(Bitmap originalMap, int xFrom, int yFrom, float scale) {
@@ -199,8 +202,10 @@ public class MapDrawer extends View {
                                 null);
                     } else {
                         canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
-                                calculatePoint(point).x- (getTackTexture(mapPointsTypes.get(point)).getWidth() / 2),
-                                calculatePoint(point).y - (getTackTexture(mapPointsTypes.get(point)).getHeight() / 2),
+                                point.getX() * (originalBitmapWidth / measureWidth)
+                                        * scale - (getTackTexture(mapPointsTypes.get(point)).getWidth() / 2),
+                                point.getY() * (originalBitmapHeight / measureHeight)
+                                        * scale - (getTackTexture(mapPointsTypes.get(point)).getHeight() / 2),
                                 null);
 
                     }
@@ -210,12 +215,6 @@ public class MapDrawer extends View {
         return result;
     }
 
-    private PointF calculatePoint(MapPoint mapPoint){
-        PointF point = new PointF();
-        point.x = mapPoint.getX()* (originalBitmapWidth / measureWidth) * originalScale;
-        point.y = mapPoint.getY() * (originalBitmapHeight / measureHeight) * originalScale;
-        return point;
-    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -227,7 +226,6 @@ public class MapDrawer extends View {
 
             case NONE:
                 Log.i(TAG, "onDraw: NONE");
-
                 break;
 
             case DRAG:
@@ -250,17 +248,18 @@ public class MapDrawer extends View {
                 canvas.translate(offsetX, offsetY);
                 previousScaleDetectorXCenter = scaleDetectorXCenter;
                 previousScaleDetectorYCenter = scaleDetectorYCenter;
-                Log.i(TAG, "onDraw: ZOOM : scaleFromDetector = " + scaleDetector
-                        + " scaleFromDetectorCenterX = " + scaleDetectorXCenter
-                        + " scaleFromDetectorCenterY = " + scaleDetectorYCenter);
+
+                Log.i(TAG, "onDraw: ZOOM : scaleDetector = " + scaleDetector
+                        + " scaleDetectorCenterX = " + scaleDetectorXCenter
+                        + " scaleDetectorCenterY = " + scaleDetectorYCenter);
                 Log.i(TAG, "onDraw: ZOOM OFFSET : X = " + offsetX + " Y = " + offsetY);
                 break;
             case ZOOM_POINT:
+                Log.i(TAG, "onDraw: ZOOM_POINT");
                 scaleDetectorXCenter = scaleDetectorXCenter * (originalBitmapWidth / measureWidth)
                         * originalScale + measureWidth;
                 scaleDetectorYCenter = scaleDetectorYCenter * (originalBitmapHeight / measureHeight)
                         * originalScale + measureHeight;
-                Log.i(TAG, "onDraw: ZOOM_POINT");
                 canvas.scale(scaleDetector,
                         scaleDetector,
                         scaleDetectorXCenter,
@@ -296,7 +295,6 @@ public class MapDrawer extends View {
      * Keep in mind that too big
      * scale can cause problems with rendering
      * on canvas.
-     *
      * @param maxScale scale which will be set a maximal
      */
     public void setMaxScale(float maxScale) {
@@ -304,8 +302,7 @@ public class MapDrawer extends View {
     }
 
     /**
-     * Setting minimum scale allowed
-     *
+     * Setting minimum scale allowed.
      * @param minScale scale which will be set as minimal
      */
     public void setMinScale(float minScale) {
@@ -352,8 +349,7 @@ public class MapDrawer extends View {
     /**
      * Method sets model
      * which will be used to
-     * get maps textures
-     *
+     * get maps textures.
      * @param model object that implements MapModel interface
      */
     public void setModel(MapModel model) {
@@ -364,7 +360,6 @@ public class MapDrawer extends View {
     /**
      * Add mappoint which will be drawn
      * immediately with previous added tacks.
-     *
      * @param tack mappoint with x and y coordinates
      * @param type determines the texture set to given point
      */
@@ -387,7 +382,6 @@ public class MapDrawer extends View {
 
     /**
      * Remove object from map
-     *
      * @param mapPoint object to remove
      */
     public void removeMapPoint(MapPoint mapPoint) {
@@ -398,7 +392,6 @@ public class MapDrawer extends View {
 
     /**
      * Set trace to be drawn as path to destined place
-     *
      * @param trace array of mappoints to be drawn
      */
     public void setTrace(ArrayList<MapPoint> trace) {
