@@ -32,10 +32,8 @@ public class MapDrawer extends View {
     private Hashtable<MapPoint, Integer> mapPointsTypes;
     private ArrayList<MapPoint> pathPoints;
     private int measureWidth, measureHeight;
-    private int bitmapWidth;
-    private int bitmapHeight;
-    private int originalBitmapWidth;
-    private int originalBitmapHeight;
+    private int deasiredWidth;
+    private int deasiredHeight;
     private int currentlyDisplayedFloor;
     private float originalScale;
     private float deltaX, deltaY;
@@ -46,11 +44,12 @@ public class MapDrawer extends View {
     private float scaleDetectorMAX = 3.f;
     private float scaleDetectorMIN = 0.5f;
     private PointF pointToShow;
-    private PointF scaleFactorPoint;
+    private float scaleFactorPoint =1;
     private final int NONE = 0;
     private final int DRAG = 1;
     private final int ZOOM = 2;
     private final int ZOOM_POINT = 3;
+    private final int DENISITY_CONVERTER = 160;
     private int mode;
 
 
@@ -79,7 +78,6 @@ public class MapDrawer extends View {
         mapPoints = new ArrayList<>();
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
-        scaleFactorPoint = new PointF();
 
         ScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 
@@ -137,11 +135,7 @@ public class MapDrawer extends View {
             currentlyDisplayedFloor = floor;
         }
         if (originalMap == null) throw new NullPointerException();
-        bitmapHeight = originalMap.getHeight();
-        bitmapWidth = originalMap.getWidth();
-        originalBitmapWidth = bitmapWidth;
-        originalBitmapHeight = bitmapHeight;
-
+        invalidate();
     }
 
     /**
@@ -158,22 +152,18 @@ public class MapDrawer extends View {
         invalidate();
     }
 
-    private Bitmap layerMap(Bitmap originalMap, int xFrom, int yFrom, float scale) {
-        Matrix tempMatrix = new Matrix();
+    private Bitmap layerMap(Bitmap originalMap) {
         Bitmap result;
-        tempMatrix.postScale(scale, scale);
+        Matrix matrix = new Matrix();
         try {
-            result = Bitmap.createBitmap(originalMap,
-                    xFrom, yFrom,
-                    originalBitmapWidth,
-                    originalBitmapHeight,
-                    tempMatrix, true);
+                result = Bitmap.createScaledBitmap(originalMap
+                        , deasiredWidth
+                        , deasiredHeight
+                        , false);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        bitmapWidth = result.getWidth();
-        bitmapHeight = result.getHeight();
         return result;
     }
 
@@ -185,9 +175,9 @@ public class MapDrawer extends View {
             for (MapPoint point : mapObjects) {
                 if (point.getFloor() == currentlyDisplayedFloor) {
                         canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
-                                point.getX() * scaleFactorPoint.x
+                                point.getX() / scaleFactorPoint
                                         - (getTackTexture(mapPointsTypes.get(point)).getWidth() / 2),
-                                point.getY() * scaleFactorPoint.y
+                                point.getY() / scaleFactorPoint
                                         - (getTackTexture(mapPointsTypes.get(point)).getHeight() / 2),
                                 null);
                 } } }
@@ -199,8 +189,8 @@ public class MapDrawer extends View {
     protected void onDraw(Canvas canvas) {
         if (originalMap == null) return;
         Bitmap layer;
-        fitBitmapToScreen(originalMap);
-        layer = layerMap(originalMap, 0, 0, originalScale);
+        fitMapToScreen(originalMap);
+        layer = layerMap(originalMap);
 
         switch (mode) {
 
@@ -228,8 +218,8 @@ public class MapDrawer extends View {
                 break;
             case ZOOM_POINT:
                 Log.i(TAG, "onDraw: ZOOM_POINT");
-                    pointToShow.x =( measureWidth/2 - pointToShow.x ) * scaleFactorPoint.x;
-                    pointToShow.y = ( measureHeight/2 - pointToShow.y ) * scaleFactorPoint.y;
+                    pointToShow.x =( measureWidth/2 - pointToShow.x/scaleFactorPoint );
+                    pointToShow.y = ( measureHeight/2 - pointToShow.y/scaleFactorPoint );
                 Log.i(TAG, "onDraw: ZOOM_POINT point to show = " +pointToShow);
 
                 canvas.scale(scaleDetector,
@@ -244,26 +234,30 @@ public class MapDrawer extends View {
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
         }
 
-       canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
-                (canvas.getHeight() - layer.getHeight()) / 2);
+    //  canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
+    //           (canvas.getHeight() - layer.getHeight()) / 2);
         canvas.drawBitmap(layer, 0, 0, null);
         layer = layerTacks(mapPoints);
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
-    private void fitBitmapToScreen(Bitmap bitmap) {
+    private void fitMapToScreen(Bitmap bitmap) {
         if ((measureWidth == 0) || (measureHeight == 0)) return;
-        float origScaleX = (float) measureHeight / bitmap.getHeight();
-        float origScaleY = (float) measureWidth / bitmap.getWidth();
-        originalScale = Math.min(origScaleX, origScaleY);
-        if (!isViewHorizontal){
-            scaleFactorPoint.x = originalScale*(originalBitmapWidth /(float) measureWidth);
-            scaleFactorPoint.y = originalScale*(originalBitmapHeight /(float) measureHeight);
-        }
-        else {
-            scaleFactorPoint.x = originalScale*(originalBitmapHeight / measureWidth);
-            scaleFactorPoint.y = originalScale*(originalBitmapWidth / measureHeight);
-        }
+
+           float originalBitmapWidth = bitmap.getWidth();
+           float originalBitmapHeight = bitmap.getHeight();
+           float pixelDensity = bitmap.getDensity()/DENISITY_CONVERTER;
+            originalScale = Math.max(
+                 originalBitmapHeight / (float) measureHeight
+                ,originalBitmapWidth / (float) measureWidth);
+
+        float pointScale;
+
+        deasiredWidth = (int)( originalBitmapWidth / originalScale);
+        deasiredHeight = (int)( originalBitmapHeight / originalScale);
+
+        scaleFactorPoint = originalScale/pixelDensity;
+
 
 
     }
