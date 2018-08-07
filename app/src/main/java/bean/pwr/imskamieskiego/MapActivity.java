@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -27,6 +28,9 @@ public class MapActivity extends AppCompatActivity
     private FloatingActionButton patientAssistantButton;
     private FloatingActionButton foodButton;
     private FloatingActionButton quickAccessButton;
+    private Button patientAssistantButtonDescription;
+    private Button foodButtonDescription;
+    private Button wcButtonDescription;
     private ImageButton changeFloorButton;
     private static final String TAG = "MapActivity";
 
@@ -154,6 +158,9 @@ public class MapActivity extends AppCompatActivity
         wcButton.setVisibility(View.GONE);
         foodButton.setVisibility(View.GONE);
         patientAssistantButton.setVisibility(View.GONE);
+        patientAssistantButtonDescription.setVisibility(View.GONE);
+        foodButtonDescription.setVisibility(View.GONE);
+        wcButtonDescription.setVisibility(View.GONE);
 
         wcButton.setClickable(false);
         foodButton.setClickable(false);
@@ -164,14 +171,17 @@ public class MapActivity extends AppCompatActivity
 
     public void showQuickAccessButtons() {
 
-        // animate_show(wcButton);
-        // animate_show(foodButton);
+         //animate_show(wcButton);
+         //animate_show(foodButton);
         // animate_show(patientAssistantButton);
         rotateRight(quickAccessButton);
 
         wcButton.setVisibility(View.VISIBLE);
         foodButton.setVisibility(View.VISIBLE);
         patientAssistantButton.setVisibility(View.VISIBLE);
+        patientAssistantButtonDescription.setVisibility(View.VISIBLE);
+        foodButtonDescription.setVisibility(View.VISIBLE);
+        wcButtonDescription.setVisibility(View.VISIBLE);
 
         wcButton.setClickable(true);
         foodButton.setClickable(true);
@@ -185,6 +195,10 @@ public class MapActivity extends AppCompatActivity
         patientAssistantButton = findViewById(R.id.patient_assistant_button);
         foodButton = findViewById(R.id.food_button);
         quickAccessButton = findViewById(R.id.tools_button);
+
+        patientAssistantButtonDescription = findViewById(R.id.ap_button_description);
+        foodButtonDescription = findViewById(R.id.food_button_description);
+        wcButtonDescription =findViewById(R.id.wc_button_description);
 
         quickAccessButton.setOnClickListener(new View.OnClickListener() {
             @Override
