@@ -3,6 +3,7 @@ package bean.pwr.imskamieskiego.NavigationWindow;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +21,8 @@ import bean.pwr.imskamieskiego.R;
 public class NavWindowFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final Boolean hintText = null;
+
     private TextView textViewStart, textViewCel;
     private CheckBox checkStairs;
     private int index;
@@ -32,16 +34,6 @@ public class NavWindowFragment extends Fragment {
 
 
 
-
-    // TODO: Rename and change types and number of parameters
-    public static NavWindowFragment newInstance(String param1, String param2) {
-        NavWindowFragment fragment = new NavWindowFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +58,8 @@ public class NavWindowFragment extends Fragment {
         stringReciver = new StringReciver();
 
         typeNav();
+        checkStairsFunction();
+        startNavigation();
 
         return view;
     }
@@ -100,8 +94,9 @@ public class NavWindowFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(getContext(),"Cel",Toast.LENGTH_LONG).show();
 
+
                 searchFragment = new SearchFragment();
-                replaceFragment(searchFragment);
+                replaceFragment(searchFragment,true);
             }
         });
 
@@ -110,22 +105,63 @@ public class NavWindowFragment extends Fragment {
             public void onClick(View view) {
                 Toast.makeText(getContext(),"Start",Toast.LENGTH_LONG).show();
 
+
                 searchFragment = new SearchFragment();
-                replaceFragment(searchFragment);
+                replaceFragment(searchFragment,false);
             }
         });
     }
 
-    public void replaceFragment(Fragment nextFragment){
+    public void checkStairsFunction(){
+        checkStairs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
+                if(isChecked) {
+                    setGoDownTheStairs(true);
+                    Log.i("Stairs: ",getGoDownTheStairs().toString());
+                }
+                else {
+                    setGoDownTheStairs(false);
+                    Log.i("Stairs: ",getGoDownTheStairs().toString());
+                }
+            }
+        });
+    }
+
+    public void startNavigation(){
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Things doing after click START
+            }
+        });
+    }
+
+    public void replaceFragment(Fragment nextFragment,Boolean logic){
+
+        FragmentManager mFragmentManager;
+
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("Bool",logic);
+
+        nextFragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction
+
                 .replace(R.id.fragment_container,nextFragment)
                 .addToBackStack(null)
                 .commit();
 
     }
 
+    public Boolean getGoDownTheStairs() {
+        return goDownTheStairs;
+    }
+
+    public void setGoDownTheStairs(Boolean goDownTheStairs) {
+        this.goDownTheStairs = goDownTheStairs;
+    }
 
 
 

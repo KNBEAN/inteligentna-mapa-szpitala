@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     navWindowFragment = new NavWindowFragment();
 
                     fragmentTransaction
+                            .setCustomAnimations(android.R.anim.slide_in_left,android.R.anim.slide_out_right)
                             .add(R.id.fragment_container, navWindowFragment)
                             .addToBackStack(null)
                             .commit();

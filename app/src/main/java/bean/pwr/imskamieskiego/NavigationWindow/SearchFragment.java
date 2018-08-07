@@ -34,6 +34,7 @@ public class SearchFragment extends Fragment {
     private String listViewPlace;
     private StringReciver stringReciver;
     private Toolbar toolbar;
+    private Boolean logicSD;
 
 
 
@@ -53,6 +54,11 @@ public class SearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        stringReciver = new StringReciver();
+        logicSD = getArguments().getBoolean("Bool",true);
+        stringReciver.StartOrDest(logicSD);
+
+
     }
 
     @Override
@@ -64,7 +70,7 @@ public class SearchFragment extends Fragment {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
         ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
         ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-        //toolbar.inflateMenu(R.menu.menu_search);
+
         setHasOptionsMenu(true);
 
         setPlacesArray(view);
@@ -97,7 +103,7 @@ public class SearchFragment extends Fragment {
         SearchView searchView = (SearchView) item.getActionView();
 
         searchView.setIconified(false);                             //You can type to searchView, no click required
-        //searchView.setQueryHint(stringReciver.getHintText());
+        searchView.setQueryHint(stringReciver.getHintText());
 
 
         searchView.setOnQueryTextListener(
