@@ -152,6 +152,7 @@ public class MapDrawer extends View {
     public void showPoint(MapPoint point) {
         mode = ZOOM_POINT;
         showFloor(point.getFloor());
+        scaleDetector = scaleDetectorMAX;
         pointToShow.x = point.getX();
         pointToShow.y = point.getY();
         invalidate();
@@ -229,12 +230,15 @@ public class MapDrawer extends View {
                 Log.i(TAG, "onDraw: ZOOM_POINT");
                     pointToShow.x =( measureWidth/2 - pointToShow.x ) * scaleFactorPoint.x;
                     pointToShow.y = ( measureHeight/2 - pointToShow.y ) * scaleFactorPoint.y;
+                Log.i(TAG, "onDraw: ZOOM_POINT point to show = " +pointToShow);
 
                 canvas.scale(scaleDetector,
                         scaleDetector,
                         measureWidth/2,measureHeight/2);
                 canvas.translate(pointToShow.x ,
                         pointToShow.y);
+
+            //    canvas.translate(p);
                 offsetX = pointToShow.x;
                 offsetY = pointToShow.y;
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
@@ -253,8 +257,8 @@ public class MapDrawer extends View {
         float origScaleY = (float) measureWidth / bitmap.getWidth();
         originalScale = Math.min(origScaleX, origScaleY);
         if (!isViewHorizontal){
-            scaleFactorPoint.x = originalScale*(originalBitmapWidth / measureWidth);
-            scaleFactorPoint.y = originalScale*(originalBitmapHeight / measureHeight);
+            scaleFactorPoint.x = originalScale*(originalBitmapWidth /(float) measureWidth);
+            scaleFactorPoint.y = originalScale*(originalBitmapHeight /(float) measureHeight);
         }
         else {
             scaleFactorPoint.x = originalScale*(originalBitmapHeight / measureWidth);
