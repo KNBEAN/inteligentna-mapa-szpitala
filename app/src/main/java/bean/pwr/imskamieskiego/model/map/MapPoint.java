@@ -2,7 +2,7 @@ package bean.pwr.imskamieskiego.model.map;
 
 /**
  * This interface represents a point on the map (so-called nodes). The nodes are part of the graph.
- * If more nodes on the toolbar_menu, navigation on the toolbar_menu will be smoother.
+ * If more nodes on the map, navigation on the map will be smoother.
  */
 public interface MapPoint {
     /**
