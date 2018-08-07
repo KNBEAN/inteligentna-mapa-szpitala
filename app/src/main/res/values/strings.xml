@@ -14,9 +14,8 @@
     <string name="navigation_drawer_info">O szpitalu</string>
     <string name="navigation_drawer_help">Pomoc</string>
     <string name="search_view_hint">Czego szukasz?</string>
-    <string name="floor0">Piętro 0</string>
-    <string name="floor1">Piętro 1</string>
-    <string name="floor2">Piętro 2</string>
+    <string name="floor_number">Piętro</string>
+    <string name="floor_change_button_description">Przycisk zmiany piętra</string>
     <string name="todo">TODO</string>
 
 </resources>

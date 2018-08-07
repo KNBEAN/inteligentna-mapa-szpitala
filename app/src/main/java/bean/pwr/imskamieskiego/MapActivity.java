@@ -2,6 +2,7 @@ package bean.pwr.imskamieskiego;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,8 +26,9 @@ public class MapActivity extends AppCompatActivity
     private FloatingActionButton wcButton;
     private FloatingActionButton patientAssistantButton;
     private FloatingActionButton foodButton;
-    private FloatingActionButton toolsButton;
+    private FloatingActionButton quickAccessButton;
     private ImageButton changeFloorButton;
+    private static final String TAG = "MapActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,57 +37,19 @@ public class MapActivity extends AppCompatActivity
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
-        wcButton = findViewById(R.id.wc_button);
-        patientAssistantButton = findViewById(R.id.patient_assistant_button);
-        foodButton = findViewById(R.id.food_button);
-        toolsButton = findViewById(R.id.tools_button);
-
-
-        toolsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (foodButton.getVisibility() == View.VISIBLE &&
-                        (wcButton.getVisibility() == View.VISIBLE)
-                        && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
-                       hideQuickAccessButtons();
-
-                } else {
-                    showQuickAccessButtons();
-
-                }
-            }
-        });
-
-        wcButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideQuickAccessButtons();
-
-            }
-        });
-        foodButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideQuickAccessButtons();
-            }
-        });
-        patientAssistantButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideQuickAccessButtons();
-            }
-        });
         changeFloorButton = findViewById(R.id.floors_button);
+        quickAccessButtonInit();
+
         changeFloorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu floorSelect = new PopupMenu(MapActivity.this,changeFloorButton);
+
+                PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
                 floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
                 floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MapActivity.this,item.getTitle().toString(),Toast.LENGTH_LONG).show();
+                        Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
                         return false;
                     }
                 });
@@ -95,19 +59,19 @@ public class MapActivity extends AppCompatActivity
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        drawer.addDrawerListener(hamburgerButton);
+        hamburgerButton.syncState();
 
-        NavigationView navigationView =  findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -118,10 +82,9 @@ public class MapActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.map, menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return true;
     }
-
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -155,6 +118,7 @@ public class MapActivity extends AppCompatActivity
                 MapActivity.this, R.anim.rotate_show);
         v.startAnimation(rotateRightAnimation);
 
+
     }
 
     public void rotateLeft(View v) {
@@ -164,37 +128,97 @@ public class MapActivity extends AppCompatActivity
 
     }
 
-    public void hide(View v) {
+    public void animate_hide(View v) {
         final Animation hideAnimation = AnimationUtils.loadAnimation(
                 MapActivity.this, R.anim.hide_anim);
         v.startAnimation(hideAnimation);
 
+
     }
 
-    public void show(View v) {
+    public void animate_show(View v) {
         final Animation showAnimation = AnimationUtils.loadAnimation(
                 MapActivity.this, R.anim.show_anim);
         v.startAnimation(showAnimation);
 
-    }
-    public void hideQuickAccessButtons() {
-        wcButton.setVisibility(GONE);
-        foodButton.setVisibility(GONE);
-        patientAssistantButton.setVisibility(GONE);
-        hide(wcButton);
-        hide(foodButton);
-        hide(patientAssistantButton);
-        rotateLeft(toolsButton);
 
     }
+
+    public void hideQuickAccessButtons() {
+
+        // animate_hide(wcButton);
+        // animate_hide(foodButton);
+        // animate_hide(patientAssistantButton);
+        rotateLeft(quickAccessButton);
+
+        wcButton.setVisibility(View.GONE);
+        foodButton.setVisibility(View.GONE);
+        patientAssistantButton.setVisibility(View.GONE);
+
+        wcButton.setClickable(false);
+        foodButton.setClickable(false);
+        patientAssistantButton.setClickable(false);
+
+
+    }
+
     public void showQuickAccessButtons() {
+
+        // animate_show(wcButton);
+        // animate_show(foodButton);
+        // animate_show(patientAssistantButton);
+        rotateRight(quickAccessButton);
+
         wcButton.setVisibility(View.VISIBLE);
         foodButton.setVisibility(View.VISIBLE);
         patientAssistantButton.setVisibility(View.VISIBLE);
-        show(wcButton);
-        show(foodButton);
-        show(patientAssistantButton);
-        rotateRight(toolsButton);
+
+        wcButton.setClickable(true);
+        foodButton.setClickable(true);
+        patientAssistantButton.setClickable(true);
+
+
+    }
+
+    public void quickAccessButtonInit() {
+        wcButton = findViewById(R.id.wc_button);
+        patientAssistantButton = findViewById(R.id.patient_assistant_button);
+        foodButton = findViewById(R.id.food_button);
+        quickAccessButton = findViewById(R.id.tools_button);
+
+        quickAccessButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (foodButton.getVisibility() == View.VISIBLE
+                        && (wcButton.getVisibility() == View.VISIBLE)
+                        && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
+                    hideQuickAccessButtons();
+
+                } else {
+                    showQuickAccessButtons();
+
+                }
+            }
+        });
+        wcButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideQuickAccessButtons();
+
+            }
+        });
+        foodButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideQuickAccessButtons();
+            }
+        });
+        patientAssistantButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                hideQuickAccessButtons();
+            }
+        });
 
     }
 }
