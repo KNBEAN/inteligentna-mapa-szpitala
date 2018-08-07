@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/IMSKamieskiego.iml" filepath="$PROJECT_DIR$/IMSKamieskiego.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/inteligentna-mapa-szpitala.iml" filepath="$PROJECT_DIR$/inteligentna-mapa-szpitala.iml" />
     </modules>
   </component>
 </project>

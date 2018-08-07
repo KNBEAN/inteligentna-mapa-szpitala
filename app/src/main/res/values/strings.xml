@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">IMS Kamieńskiego</string>
+    <string name="start">Wpisz miejsce startowe</string>
+    <string name="cel">Wpisz miejsce docelowe</string>
+
+
+    <string-array name="dest">
+        <item>Sor</item>
+        <item>Toalety</item>
+        <item>Oddział Pediatrii</item>
+        <item>Apteka</item>
+        <item>Pokoj 4a</item>
+        <item>he</item>
+        <item>Sor</item>
+        <item>Toalety</item>
+        <item>Oddział Pediatrii</item>
+        <item>Apteka</item>
+        <item>Pokoj 4a</item>
+        <item>he</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
