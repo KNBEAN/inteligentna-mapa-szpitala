@@ -3,7 +3,6 @@ package bean.pwr.imskamieskiego.path_search;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class DijkstraSearchTest {
     private MapRepository mapRepository;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         mapRepository = new StaubGraphMapRepository();
     }
 
@@ -67,8 +66,11 @@ public class DijkstraSearchTest {
         assertTrue(trace.isEmpty());
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void startAndEndPointAreTheSame() {
-        fail();
+        MapPoint startPoint = mapRepository.getPointByID(2);
+        MapPoint endPoint = mapRepository.getPointByID(2);
+
+        dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoint);
     }
 }

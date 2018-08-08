@@ -35,11 +35,10 @@ public class StaubGraphMapRepository implements MapRepository {
                 MapPointFactory.create(4, 4, 0, 0, -1),
                 MapPointFactory.create(5, 4, 0, 1, -1),
                 MapPointFactory.create(6, 4, 1, 1, -1),
-                MapPointFactory.create(7, 2, 4, 1, -1)
+                MapPointFactory.create(7, 2, 4, 1, -1),
+                //add orphaned node
+                MapPointFactory.create(8, 0, 0, 2, -1)
         );
-
-        //add orphaned node
-        nodes.add(MapPointFactory.create(8, 0, 0, 2, -1));
 
         return nodes;
     }
