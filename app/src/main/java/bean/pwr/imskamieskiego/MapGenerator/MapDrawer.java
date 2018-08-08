@@ -15,8 +15,6 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-
-import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 import static android.content.ContentValues.TAG;
@@ -39,7 +37,7 @@ public class MapDrawer extends View {
     private float deltaX, deltaY;
     private float offsetX, offsetY;
     private ScaleGestureDetector ScaleDetector;
-    private float scaleDetector;
+    private float scaleDetector = 1;
     private boolean isViewHorizontal;
     private float scaleDetectorMAX = 3.f;
     private float scaleDetectorMIN = 0.5f;
@@ -50,8 +48,15 @@ public class MapDrawer extends View {
     private final int ZOOM = 2;
     private final int ZOOM_POINT = 3;
     private final int DENISITY_CONVERTER = 160;
-    private int mode;
 
+    private int mode;
+    private final String [] TACK_TEXTURE_TYPES =
+                    {       "default_tack"
+                            ,"start_tack"
+                            ,"end_tack"
+                    };
+    private int tackwidth = 100;
+    private int tackheight = 100;
 
     public MapDrawer(Context context) {
         super(context);
@@ -69,6 +74,7 @@ public class MapDrawer extends View {
     private void SharedConstructing() {
 
         setClickable(true);
+        loadTackTextures(tackwidth,tackheight);
         originalScale = 1;
         offsetX = 0;
         offsetY = 0;
@@ -251,8 +257,6 @@ public class MapDrawer extends View {
                  originalBitmapHeight / (float) measureHeight
                 ,originalBitmapWidth / (float) measureWidth);
 
-        float pointScale;
-
         deasiredWidth = (int)( originalBitmapWidth / originalScale);
         deasiredHeight = (int)( originalBitmapHeight / originalScale);
 
@@ -297,26 +301,28 @@ public class MapDrawer extends View {
         if (measureHeight > measureWidth) isViewHorizontal = false;
     }
 
+    private void loadTackTextures(int requiredWidth,int requiredHeight)
+    {
 
+
+    }
     private Bitmap getTackTexture(int type) {
         Bitmap texture;
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        switch (type) {
-            case 1:
-                texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.start_tack,opt);
-                texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
-                break;
+        int resourceId;
+        String resourceName=  TACK_TEXTURE_TYPES[type];
+            try {
+                resourceId = context.getResources().getIdentifier(resourceName, "drawable",
+                        context.getPackageName());
+            } catch (Exception e){
+                System.out.println("Some of tack types aren't defined in your drawable folder");
+                throw new NullPointerException();
 
-            case 2:
-                texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.end_tack);
-                texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
-                break;
-
-            default:
-                texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_tack);
-                texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
-                break;
-        }
+            }
+            texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
+                    , resourceId
+                    , tackwidth
+                    , tackheight);
+            texture = Bitmap.createScaledBitmap(texture, (tackwidth), (tackheight), false);
         return texture;
     }
 
