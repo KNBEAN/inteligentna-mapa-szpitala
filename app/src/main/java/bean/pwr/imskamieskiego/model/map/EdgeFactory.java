@@ -1,5 +1,8 @@
 package bean.pwr.imskamieskiego.model.map;
 
+/**
+ * This class can be use to create Edge objects.
+ */
 public class EdgeFactory {
 
     /**

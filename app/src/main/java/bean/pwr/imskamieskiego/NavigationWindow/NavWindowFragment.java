@@ -29,7 +29,6 @@ public class NavWindowFragment extends Fragment {
     private StringReciver stringReciver;
     private Boolean goDownTheStairs;
     private Button startButton;
-    private Button button;
     private Fragment searchFragment;
 
 
@@ -46,8 +45,6 @@ public class NavWindowFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.nav_window, container, false);
-
-        button = getActivity().findViewById(R.id.button);
 
 
         textViewStart = (TextView) view.findViewById(R.id.textViewStart);
@@ -68,24 +65,12 @@ public class NavWindowFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.i("onPauseFragment","Fragment have paused");
-        buttonsVisibility(true);
     }
 
     @Override
     public void onResume() {
         super.onResume();
         Log.i("onResumeFragment","Fragment have been resumed");
-        buttonsVisibility(false);
-    }
-
-    public void buttonsVisibility(boolean visible){
-        //Add next buttons
-        if(visible){
-            button.setVisibility(View.VISIBLE);
-        }
-        else{
-            button.setVisibility(View.GONE);
-        }
     }
 
     public void typeNav(){
@@ -149,7 +134,7 @@ public class NavWindowFragment extends Fragment {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction
 
-                .replace(R.id.fragment_container,nextFragment)
+                .replace(R.id.drawer_layout,nextFragment)
                 .addToBackStack(null)
                 .commit();
 

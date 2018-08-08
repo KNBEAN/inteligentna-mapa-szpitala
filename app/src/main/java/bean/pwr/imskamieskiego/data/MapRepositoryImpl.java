@@ -15,6 +15,11 @@ import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 
+/**
+ * This class is implementation of MapRepository. It should be used to get access to data related
+ * to map and navigation graph. Methods of this class must be call from thread other
+ * than main thread.
+ */
 public class MapRepositoryImpl implements MapRepository {
 
     private MapPointDao mapPointDao;

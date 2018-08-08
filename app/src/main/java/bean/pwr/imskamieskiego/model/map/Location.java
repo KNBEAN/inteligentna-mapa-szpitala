@@ -2,6 +2,10 @@ package bean.pwr.imskamieskiego.model.map;
 
 import javax.annotation.Nullable;
 
+/**
+ * This interface represents object of location. Location on the map represents real existing place,
+ * for ex. room, lobby or coffee shop ect.
+ */
 public interface Location {
 
     /**
