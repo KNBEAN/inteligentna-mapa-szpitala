@@ -1,6 +1,7 @@
 package bean.pwr.imskamieskiego.MapGenerator;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -15,6 +16,8 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+
+import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 import static android.content.ContentValues.TAG;
@@ -39,6 +42,7 @@ public class MapDrawer extends View {
     private ScaleGestureDetector ScaleDetector;
     private float scaleDetector = 1;
     private boolean isViewHorizontal;
+    private ArrayList<Bitmap> tackTextures;
     private float scaleDetectorMAX = 3.f;
     private float scaleDetectorMIN = 0.5f;
     private PointF pointToShow;
@@ -48,15 +52,10 @@ public class MapDrawer extends View {
     private final int ZOOM = 2;
     private final int ZOOM_POINT = 3;
     private final int DENISITY_CONVERTER = 160;
-
     private int mode;
-    private final String [] TACK_TEXTURE_TYPES =
-                    {       "default_tack"
-                            ,"start_tack"
-                            ,"end_tack"
-                    };
-    private int tackwidth = 100;
-    private int tackheight = 100;
+    private int resourceTacksId[];
+    private int tackWidth = 100;
+    private int tackHeight = 100;
 
     public MapDrawer(Context context) {
         super(context);
@@ -64,8 +63,18 @@ public class MapDrawer extends View {
         SharedConstructing();
     }
 
-    public MapDrawer(Context context, @Nullable AttributeSet attrs) {
+    public MapDrawer(Context context,  AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.MapDrawer,
+                0, 0);
+        resourceTacksId= new int[a.length()];
+        for (int i=0;i<a.length();i++) {
+            resourceTacksId[i] = a.getResourceId(i, 0);
+        }
+        a.recycle();
+
         this.context = context;
         SharedConstructing();
     }
@@ -74,7 +83,7 @@ public class MapDrawer extends View {
     private void SharedConstructing() {
 
         setClickable(true);
-        loadTackTextures(tackwidth,tackheight);
+        loadTackTextures(tackWidth,tackHeight);
         originalScale = 1;
         offsetX = 0;
         offsetY = 0;
@@ -260,7 +269,7 @@ public class MapDrawer extends View {
         deasiredWidth = (int)( originalBitmapWidth / originalScale);
         deasiredHeight = (int)( originalBitmapHeight / originalScale);
 
-        scaleFactorPoint = originalScale/pixelDensity;
+       scaleFactorPoint = measureWidth/deasiredWidth;
 
 
 
@@ -301,29 +310,22 @@ public class MapDrawer extends View {
         if (measureHeight > measureWidth) isViewHorizontal = false;
     }
 
-    private void loadTackTextures(int requiredWidth,int requiredHeight)
-    {
-
-
-    }
-    private Bitmap getTackTexture(int type) {
+    private void loadTackTextures(int requiredWidth,int requiredHeight) {
         Bitmap texture;
+        tackTextures = new ArrayList<>();
         int resourceId;
-        String resourceName=  TACK_TEXTURE_TYPES[type];
-            try {
-                resourceId = context.getResources().getIdentifier(resourceName, "drawable",
-                        context.getPackageName());
-            } catch (Exception e){
-                System.out.println("Some of tack types aren't defined in your drawable folder");
-                throw new NullPointerException();
+        for (int resourceName : resourceTacksId) {
 
-            }
             texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
-                    , resourceId
-                    , tackwidth
-                    , tackheight);
-            texture = Bitmap.createScaledBitmap(texture, (tackwidth), (tackheight), false);
-        return texture;
+                    , resourceName
+                    , tackWidth
+                    , tackHeight);
+            tackTextures.add(Bitmap.createScaledBitmap(texture, (tackWidth), (tackHeight), false));
+        }
+    }
+
+    private Bitmap getTackTexture(int type) {
+        return  tackTextures.get(type);
     }
 
     /**
