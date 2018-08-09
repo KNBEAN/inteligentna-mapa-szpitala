@@ -5,10 +5,9 @@ public class StringReciver {
     public StringReciver() {
     }
 
-    private boolean infoButton;
-    private boolean servicesButton;
-    private String infoPlaceName;
+   
     private String hintText;
+
 
 
     public String getServicePlaceName (boolean servicesButton){

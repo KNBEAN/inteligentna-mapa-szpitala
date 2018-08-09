@@ -1,12 +1,19 @@
 package bean.pwr.imskamieskiego;
 
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+
+import bean.pwr.imskamieskiego.NavigationWindow.InteractionListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
+
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,7 +30,8 @@ import android.widget.Toast;
 
 
 public class MapActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, InteractionListener {
+
 
     private FloatingActionButton wcButton;
     private FloatingActionButton patientAssistantButton;
@@ -32,14 +40,15 @@ public class MapActivity extends AppCompatActivity
     private ImageButton changeFloorButton;
 
     private Fragment navWindowFragment;
-
+    private Toolbar toolbar;
     private static final String TAG = "MapActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         changeFloorButton = findViewById(R.id.floors_button);
@@ -71,6 +80,11 @@ public class MapActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
+
+
     }
 
 
@@ -208,39 +222,87 @@ public class MapActivity extends AppCompatActivity
         wcButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                navWindowFragment = fragmentManager.findFragmentById(R.id.drawer_layout);
-
-
-
-
-                if (navWindowFragment == null){
-                    navWindowFragment = new NavWindowFragment();
-
-                    fragmentTransaction
-                            .setCustomAnimations(android.R.anim.slide_in_left,android.R.anim.slide_out_right)
-                            .add(R.id.drawer_layout, navWindowFragment)
-                            .addToBackStack(null)
-                            .commit();
-                }
-
+                activityAnimation(toolbar,changeFloorButton);
+                setNewNavWindowFragment();
                 hideQuickAccessButtons();
+
 
             }
         });
         foodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                activityAnimation(toolbar,changeFloorButton);
+                setNewNavWindowFragment();
                 hideQuickAccessButtons();
+
             }
         });
         patientAssistantButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 hideQuickAccessButtons();
             }
         });
 
     }
+
+    public void setNewNavWindowFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        navWindowFragment = fragmentManager.findFragmentById(R.id.drawer_layout);
+
+
+        if (navWindowFragment == null){
+            navWindowFragment = new NavWindowFragment();
+
+            fragmentTransaction
+                    .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
+                            R.anim.slide_in_from_left, android.R.anim.slide_out_right)
+                    .add(R.id.drawer_layout, navWindowFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    public void activityAnimation(final Toolbar toolbar,final ImageButton changeFloorButton){
+        Animation hideAnimation = AnimationUtils.loadAnimation(this,R.anim.hide_anim);
+        toolbar.startAnimation(hideAnimation);
+        changeFloorButton.startAnimation(hideAnimation);
+        hideAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                toolbar.setVisibility(View.GONE);
+                changeFloorButton.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+
+    @Override
+    public void onFragmentPause(Boolean logical) {
+
+        if(logical){
+            Animation showAnimation = AnimationUtils.loadAnimation(this,R.anim.show_anim);
+            changeFloorButton.startAnimation(showAnimation);
+            toolbar.startAnimation(showAnimation);
+            changeFloorButton.setVisibility(View.VISIBLE);
+            toolbar.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+
+
 }
