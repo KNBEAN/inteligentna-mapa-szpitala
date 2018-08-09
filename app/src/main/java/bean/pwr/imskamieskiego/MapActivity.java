@@ -41,7 +41,7 @@ public class MapActivity extends AppCompatActivity
     private Button guideToButton;
     private TextView placeName;
     private BottomSheetBehavior sheetBehavior;
-    private FloatingActionButton infoButton;
+    private ImageButton expandSheetButton;
     private ImageView pinButton;
     private static final String TAG = "MapActivity";
 
@@ -54,9 +54,8 @@ public class MapActivity extends AppCompatActivity
 
 
         quickAccessButtonInit();
-        changeFloorButtonInit ();
+        changeFloorButtonInit();
         bottomSheetInit();
-
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -76,7 +75,6 @@ public class MapActivity extends AppCompatActivity
             }
         });
     }
-
 
 
     @Override
@@ -154,6 +152,13 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    public void rotate_180_deg(View v) {
+        final Animation rotate180Deg = AnimationUtils.loadAnimation(
+                MapActivity.this, R.anim.rotate_180deg);
+        v.startAnimation(rotate180Deg);
+
+    }
+
     public void hideQuickAccessButtons() {
 
         // animate_hide(wcButton);
@@ -177,8 +182,8 @@ public class MapActivity extends AppCompatActivity
 
     public void showQuickAccessButtons() {
 
-         //animate_show(wcButton);
-         //animate_show(foodButton);
+        //animate_show(wcButton);
+        //animate_show(foodButton);
         // animate_show(patientAssistantButton);
         rotateRight(quickAccessButton);
 
@@ -204,7 +209,7 @@ public class MapActivity extends AppCompatActivity
 
         patientAssistantButtonDescription = findViewById(R.id.ap_button_description);
         foodButtonDescription = findViewById(R.id.food_button_description);
-        wcButtonDescription =findViewById(R.id.wc_button_description);
+        wcButtonDescription = findViewById(R.id.wc_button_description);
 
         quickAccessButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -241,6 +246,7 @@ public class MapActivity extends AppCompatActivity
         });
 
     }
+
     private void changeFloorButtonInit() {
         changeFloorButton = findViewById(R.id.floors_button);
         changeFloorButton.setOnClickListener(new View.OnClickListener() {
@@ -260,13 +266,14 @@ public class MapActivity extends AppCompatActivity
             }
         });
     }
+
     private void bottomSheetInit() {
         layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
         guideToButton = findViewById(R.id.guide_to_button);
-        infoButton = findViewById(R.id.info_button);
+        expandSheetButton = findViewById(R.id.info_button);
         placeName = findViewById(R.id.place_name);
 
-        infoButton.setOnClickListener(new View.OnClickListener() {
+        expandSheetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toggleBottomSheet();
@@ -276,34 +283,40 @@ public class MapActivity extends AppCompatActivity
         sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+
+
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_HIDDEN:
                         quickAccessButton.setVisibility(View.VISIBLE);
                         quickAccessButton.setClickable(true);
-                        Log.i("Bottom sheet","hidden");
+                        layoutBottomSheet.setVisibility(View.GONE);
+                        Log.i("Bottom sheet", "hidden");
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
-                        Log.i("Bottom sheet","expanded");
-
+                        Log.i("Bottom sheet", "expanded");
+                        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
                         hideQuickAccessButtons();
                         quickAccessButton.setVisibility(View.GONE);
-                        infoButton.setImageResource(android.R.drawable.ic_delete);
+
+
                     }
                     break;
                     case BottomSheetBehavior.STATE_COLLAPSED: {
                         hideQuickAccessButtons();
+                        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
                         quickAccessButton.setVisibility(View.GONE);
                         quickAccessButton.setClickable(false);
+                        layoutBottomSheet.setVisibility(View.VISIBLE);
 
-                        infoButton.setImageResource(android.R.drawable.ic_dialog_info);
+
                     }
                     break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-                         break;
+                        break;
                     case BottomSheetBehavior.STATE_SETTLING:
-                         break;
+                        break;
                 }
             }
 
@@ -320,14 +333,14 @@ public class MapActivity extends AppCompatActivity
     public void toggleBottomSheet() {
         if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            infoButton.setImageResource(android.R.drawable.ic_delete);
+
 
         } else {
             sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            infoButton.setImageResource(android.R.drawable.ic_dialog_info);
+            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+
         }
     }
-
 
 
 }
