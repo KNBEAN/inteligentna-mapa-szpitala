@@ -1,6 +1,9 @@
 package bean.pwr.imskamieskiego;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
@@ -16,7 +19,9 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import static android.view.View.GONE;
@@ -32,6 +37,12 @@ public class MapActivity extends AppCompatActivity
     private Button foodButtonDescription;
     private Button wcButtonDescription;
     private ImageButton changeFloorButton;
+    private ConstraintLayout layoutBottomSheet;
+    private Button guideToButton;
+    private TextView placeName;
+    private BottomSheetBehavior sheetBehavior;
+    private FloatingActionButton infoButton;
+    private ImageView pinButton;
     private static final String TAG = "MapActivity";
 
     @Override
@@ -41,25 +52,11 @@ public class MapActivity extends AppCompatActivity
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        changeFloorButton = findViewById(R.id.floors_button);
+
         quickAccessButtonInit();
+        changeFloorButtonInit ();
+        bottomSheetInit();
 
-        changeFloorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-                floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
-                floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                });
-                floorSelect.show();
-            }
-        });
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -70,7 +67,16 @@ public class MapActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        pinButton = findViewById(R.id.pin_button);
+        pinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
     }
+
 
 
     @Override
@@ -235,4 +241,93 @@ public class MapActivity extends AppCompatActivity
         });
 
     }
+    private void changeFloorButtonInit() {
+        changeFloorButton = findViewById(R.id.floors_button);
+        changeFloorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+                floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+                floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
+                        return false;
+                    }
+                });
+                floorSelect.show();
+            }
+        });
+    }
+    private void bottomSheetInit() {
+        layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
+        guideToButton = findViewById(R.id.guide_to_button);
+        infoButton = findViewById(R.id.info_button);
+        placeName = findViewById(R.id.place_name);
+
+        infoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleBottomSheet();
+            }
+        });
+
+        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        quickAccessButton.setVisibility(View.VISIBLE);
+                        quickAccessButton.setClickable(true);
+                        Log.i("Bottom sheet","hidden");
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED: {
+                        Log.i("Bottom sheet","expanded");
+
+                        hideQuickAccessButtons();
+                        quickAccessButton.setVisibility(View.GONE);
+                        infoButton.setImageResource(android.R.drawable.ic_delete);
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_COLLAPSED: {
+                        hideQuickAccessButtons();
+                        quickAccessButton.setVisibility(View.GONE);
+                        quickAccessButton.setClickable(false);
+
+                        infoButton.setImageResource(android.R.drawable.ic_dialog_info);
+                    }
+                    break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                         break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                         break;
+                }
+            }
+
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+            }
+        });
+
+
+    }
+
+    public void toggleBottomSheet() {
+        if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            infoButton.setImageResource(android.R.drawable.ic_delete);
+
+        } else {
+            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            infoButton.setImageResource(android.R.drawable.ic_dialog_info);
+        }
+    }
+
+
+
 }
