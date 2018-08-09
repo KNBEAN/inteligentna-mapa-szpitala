@@ -42,12 +42,15 @@ public class PathSearcher {
 
         this.algorithm = algorithm;
 
-        handler.post(algorithm::startSearch);
+        handler.post(this::startAlgorithm);
 
     }
 
 
-    private void sendComplete(){
+    private void startAlgorithm(){
+
+        this.algorithm.startSearch();
+
         responseHandle.post(this::taskComplete);
     }
 
@@ -77,5 +80,10 @@ public class PathSearcher {
 
     public void removeListener(){
         listener = null;
+    }
+
+
+    public boolean isInProgress() {
+        return inProgress;
     }
 }
