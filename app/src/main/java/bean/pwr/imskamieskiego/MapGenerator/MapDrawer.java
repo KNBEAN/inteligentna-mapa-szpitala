@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -50,6 +53,7 @@ public class MapDrawer extends View {
     private int resourceTacksId[];
     private int tackWidth = 100;
     private int tackHeight = 100;
+    private Paint paintPath;
 
     public MapDrawer(Context context) {
         super(context);
@@ -81,6 +85,7 @@ public class MapDrawer extends View {
         originalScale = 1;
         offsetX = 0;
         offsetY = 0;
+        paintPath = new Paint();
         pointFlast = new PointF();
         scaleDetector = 1.f;
         pathPoints = new ArrayList<>();
@@ -175,6 +180,29 @@ public class MapDrawer extends View {
         return result;
     }
 
+    private Bitmap layerPath(ArrayList<MapPoint> pathPoints){
+        Bitmap result = Bitmap.createBitmap(measureWidth, measureHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Path path = new Path();
+
+        paintPath.setColor(Color.BLACK);
+        paintPath.setStyle(Paint.Style.STROKE);
+        paintPath.setStrokeWidth(5f);
+        if (!pathPoints.isEmpty()){
+            for (MapPoint point : pathPoints){
+                if (point.getFloor() == currentlyDisplayedFloor){
+                    if (path.isEmpty()){
+                        path.moveTo(point.getX()/originalScale,point.getY()/originalScale);
+                    } else {
+                        path.lineTo(point.getX()/originalScale,point.getY()/originalScale);
+                    }
+                }
+            }
+        }
+        canvas.drawPath(path,paintPath);
+        return result;
+    }
+
 
     private Bitmap layerTacks(ArrayList<MapPoint> mapObjects, Bitmap floorToDrawOn) {
         Canvas canvas = new Canvas(floorToDrawOn);
@@ -242,7 +270,9 @@ public class MapDrawer extends View {
 
         canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
-        layer = layerTacks(mapPoints,layer);
+        layer = layerTacks(mapPoints, layer);
+        canvas.drawBitmap(layer, 0, 0, null);
+        layer = layerPath(pathPoints);
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
