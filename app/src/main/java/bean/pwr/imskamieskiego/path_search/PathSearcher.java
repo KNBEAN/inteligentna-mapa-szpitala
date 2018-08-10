@@ -21,7 +21,7 @@ public class PathSearcher {
     private static String TAG = "PathSearcher";
 
     private Looper looper;
-    private Handler responseHandle;
+    private Handler responseHandler;
 
     private boolean inProgress = false;
 
@@ -34,7 +34,7 @@ public class PathSearcher {
      * @param context
      */
     public PathSearcher(Context context){
-        responseHandle = new Handler(context.getMainLooper());
+        responseHandler = new Handler(context.getMainLooper());
         liveDataTrace = new MutableLiveData<>();
     }
 
@@ -70,8 +70,8 @@ public class PathSearcher {
         long endTime = System.nanoTime();
         Log.d(TAG, "Algorithm ended in " + ((endTime-startTime)/1000000)+ "ms");
 
-        liveDataTrace.postValue(algorithm.getPatch());
-        responseHandle.post(this::searchComplete);
+        liveDataTrace.postValue(algorithm.getPath());
+        responseHandler.post(this::searchComplete);
     }
 
     private void searchComplete() {

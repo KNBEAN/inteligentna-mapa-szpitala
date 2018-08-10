@@ -10,6 +10,6 @@ public interface PathSearchAlgorithm {
 
     void startSearch();
 
-    @NonNull List<MapPoint> getPatch();
+    @NonNull List<MapPoint> getPath();
 
 }

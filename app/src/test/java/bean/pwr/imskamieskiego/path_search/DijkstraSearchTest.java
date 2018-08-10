@@ -37,7 +37,7 @@ public class DijkstraSearchTest {
         
         dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoint);
         dijkstraSearch.startSearch();
-        List<MapPoint> trace = dijkstraSearch.getPatch();
+        List<MapPoint> trace = dijkstraSearch.getPath();
         
         assertEquals(expectedTrace, trace);
     }
@@ -49,7 +49,7 @@ public class DijkstraSearchTest {
 
         dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoint);
         dijkstraSearch.startSearch();
-        List<MapPoint> trace = dijkstraSearch.getPatch();
+        List<MapPoint> trace = dijkstraSearch.getPath();
 
         assertTrue(trace.isEmpty());
     }
@@ -61,7 +61,7 @@ public class DijkstraSearchTest {
 
         dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoint);
         dijkstraSearch.startSearch();
-        List<MapPoint> trace = dijkstraSearch.getPatch();
+        List<MapPoint> trace = dijkstraSearch.getPath();
 
         assertTrue(trace.isEmpty());
     }

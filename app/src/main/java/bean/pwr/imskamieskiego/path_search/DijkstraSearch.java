@@ -57,14 +57,13 @@ public class DijkstraSearch implements PathSearchAlgorithm {
 
 
         trace.clear();
-        Map<Integer, List<Edge>> outgoingEdges = new HashMap<>();
 
         Map<Integer, Integer> nodeVisitHistory = new HashMap<>();
         Map<Integer, Integer> distancesFromStart = new HashMap<>();
         PriorityQueue<NodePriorityWrapper> pathToTravel = new PriorityQueue<>(100,
                 (dist1, dist2) -> dist1.distance-dist2.distance);
 
-        outgoingEdges.putAll(fetchEdges(startID, initDepthFetch));
+        Map<Integer, List<Edge>> outgoingEdges = new HashMap<>(fetchEdges(startID, initDepthFetch));
 
         //We start from a point without outgoing edges. There is nowhere to go.
         if (outgoingEdges.isEmpty()){
@@ -113,7 +112,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
      */
     @Override
     @NonNull
-    public List<MapPoint> getPatch() {
+    public List<MapPoint> getPath() {
         return trace;
     }
 
