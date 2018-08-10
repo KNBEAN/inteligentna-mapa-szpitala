@@ -10,7 +10,7 @@
   >
 
     <ImageView
-        android:id="@+id/pin_button"
+        android:id="@+id/imageView2"
         android:layout_width="384dp"
         android:layout_height="567dp"
         android:contentDescription="@string/map_view_description"
@@ -150,7 +150,7 @@
         android:textAllCaps="false" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/pin_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

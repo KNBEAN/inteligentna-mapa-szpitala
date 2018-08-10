@@ -17,7 +17,7 @@
         tools:context=".MapActivity">
 
         <include layout="@layout/content_map" />
-        <include layout="@layout/bottom_sheet"/>
+        <include layout="@layout/info_sheet"/>
 
         <FrameLayout
             android:layout_width="match_parent"

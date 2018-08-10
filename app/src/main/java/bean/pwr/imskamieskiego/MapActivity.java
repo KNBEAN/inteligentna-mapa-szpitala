@@ -24,8 +24,6 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static android.view.View.GONE;
-
 public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -37,7 +35,7 @@ public class MapActivity extends AppCompatActivity
     private Button foodButtonDescription;
     private Button wcButtonDescription;
     private ImageButton changeFloorButton;
-    private ConstraintLayout layoutBottomSheet;
+    private ConstraintLayout layoutInfoSheet;
     private Button guideToButton;
     private TextView placeName;
     private BottomSheetBehavior sheetBehavior;
@@ -55,7 +53,7 @@ public class MapActivity extends AppCompatActivity
 
         quickAccessButtonInit();
         changeFloorButtonInit();
-        bottomSheetInit();
+        infoSheetInit();
 
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -267,8 +265,9 @@ public class MapActivity extends AppCompatActivity
         });
     }
 
-    private void bottomSheetInit() {
-        layoutBottomSheet = findViewById(R.id.bottom_sheet_layout);
+
+    private void infoSheetInit() {
+        layoutInfoSheet = findViewById(R.id.info_sheet_layout);
         guideToButton = findViewById(R.id.guide_to_button);
         expandSheetButton = findViewById(R.id.info_button);
         placeName = findViewById(R.id.place_name);
@@ -280,18 +279,18 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-        sheetBehavior = BottomSheetBehavior.from(layoutBottomSheet);
+        sheetBehavior = BottomSheetBehavior.from(layoutInfoSheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
 
 
             @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+            public void onStateChanged(@NonNull View infoSheet, int newState) {
                 switch (newState) {
                     case BottomSheetBehavior.STATE_HIDDEN:
                         quickAccessButton.setVisibility(View.VISIBLE);
                         quickAccessButton.setClickable(true);
-                        layoutBottomSheet.setVisibility(View.GONE);
+                        layoutInfoSheet.setVisibility(View.GONE);
                         Log.i("Bottom sheet", "hidden");
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
@@ -308,7 +307,7 @@ public class MapActivity extends AppCompatActivity
                         expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
                         quickAccessButton.setVisibility(View.GONE);
                         quickAccessButton.setClickable(false);
-                        layoutBottomSheet.setVisibility(View.VISIBLE);
+                        layoutInfoSheet.setVisibility(View.VISIBLE);
 
 
                     }

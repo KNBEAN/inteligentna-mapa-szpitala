@@ -56,7 +56,8 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tools_button"
         app:srcCompat="@drawable/ic_accessibility_black_24dp"
-        tools:ignore="VectorDrawableCompat" />
+        tools:ignore="VectorDrawableCompat"
+        tools:visibility="invisible" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/food_button"
@@ -75,7 +76,8 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tools_button"
         app:srcCompat="@drawable/ic_restaurant_black_24dp"
-        tools:ignore="VectorDrawableCompat" />
+        tools:ignore="VectorDrawableCompat"
+        tools:visibility="invisible" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/wc_button"
@@ -93,7 +95,8 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/tools_button"
         app:srcCompat="@drawable/ic_wc_black_24dp"
-        tools:ignore="VectorDrawableCompat" />
+        tools:ignore="VectorDrawableCompat"
+        tools:visibility="invisible" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/tools_button"
