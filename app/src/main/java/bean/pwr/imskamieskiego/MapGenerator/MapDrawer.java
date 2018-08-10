@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -40,6 +41,7 @@ public class MapDrawer extends View {
     private float deltaX, deltaY;
     private float offsetX, offsetY;
     private ScaleGestureDetector scaleGestureDetector;
+    private GestureDetector gestureDetector;
     private float scaleDetector = 1;
     private ArrayList<Bitmap> tackTextures;
     private float scaleDetectorMAX = 3.f;
@@ -51,7 +53,11 @@ public class MapDrawer extends View {
     private final int ZOOM_POINT = 3;
     private int mode;
     private int resourceTacksId[];
+
     private Paint paintPath;
+
+    MapDrawerGestureListener mMapDrawerGestureListener;
+
 
     public MapDrawer(Context context) {
         super(context);
@@ -78,7 +84,7 @@ public class MapDrawer extends View {
 
 
     private void SharedConstructing() {
-
+        setLongClickable(true);
         setClickable(true);
         loadTackTextures();
         originalScale = 1;
@@ -92,13 +98,18 @@ public class MapDrawer extends View {
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
 
+
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+        gestureDetector  = new GestureDetector(context,new GestureListener());
+
 
         setOnTouchListener(new OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 scaleGestureDetector.onTouchEvent(event);
+                gestureDetector.onTouchEvent(event);
+
 
                 if (scaleGestureDetector.isInProgress()) return true;
 
@@ -421,9 +432,17 @@ public class MapDrawer extends View {
         invalidate();
     }
 
+    /**
+     * Set observer for MapDrawer to get ongoing
+     * gestures in widget
+     * @param mapDrawerGestureListener
+     */
+    public void setOnLongPressListener(MapDrawerGestureListener mapDrawerGestureListener){
+        this.mMapDrawerGestureListener = mapDrawerGestureListener;
+    }
+
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
@@ -434,7 +453,6 @@ public class MapDrawer extends View {
             scaleDetector = scaleDetector * detector.getScaleFactor();
             invalidate();
             return true;
-
         }
 
         @Override
@@ -447,6 +465,19 @@ public class MapDrawer extends View {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
             Log.i(TAG, "onScaleEnds");
+        }
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener implements GestureDetector.OnGestureListener{
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            mMapDrawerGestureListener.onLongPress((int)e.getX(),(int)e.getY());
         }
 
     }
