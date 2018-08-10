@@ -1,14 +1,19 @@
 package bean.pwr.imskamieskiego.path_search;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.support.test.InstrumentationRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.List;
+
+import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 public class PathSearcherTest {
 
@@ -16,7 +21,7 @@ public class PathSearcherTest {
     @Mock
     private PathSearchAlgorithm searchAlgorithm;
     @Mock
-    private SearchCompleteListener listener;
+    Observer observer;
 
     @Before
     public void setUp() {
@@ -24,15 +29,16 @@ public class PathSearcherTest {
     }
 
     @Test
-    public void callEndOfSearchListener() {
+    public void callObserverWhenSearchEnded() {
 
         pathSearcher = new PathSearcher(InstrumentationRegistry.getContext());
-        pathSearcher.setListener(listener);
+        LiveData<List<MapPoint>> trace = pathSearcher.getPath();
+        trace.observeForever(observer);
         pathSearcher.startSearch(searchAlgorithm);
 
         //It looks a bit like an ugly hack.
         while (pathSearcher.isInProgress()){};
 
-        verify(listener, times(1)).searchComplete(anyList());
+        verify(observer, times(1)).onChanged(anyList());
     }
 }

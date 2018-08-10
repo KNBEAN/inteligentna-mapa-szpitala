@@ -1,5 +1,7 @@
 package bean.pwr.imskamieskiego.path_search;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +12,10 @@ import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 
+/**
+ * Implementation of Dijkstra algorithm.
+ * @see PathSearcher
+ */
 public class DijkstraSearch implements PathSearchAlgorithm {
 
     private MapPoint startPoint;
@@ -17,11 +23,16 @@ public class DijkstraSearch implements PathSearchAlgorithm {
     private MapRepository mapRepository;
     private List<MapPoint> trace;
 
-
-
-
-
-    public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, MapPoint endPoint) {
+    /**
+     * Create instance of Dijkstra algorithm to search path between given points. Points can't have
+     * the same ID (be the same node on graph)
+     * @see PathSearcher
+     * @param mapRepository repository with graph data
+     * @param startPoint point from which the algorithm should start searching for the path
+     * @param endPoint target point
+     * @throws IllegalArgumentException throw when start and end point are the same node
+     */
+    public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, MapPoint endPoint) throws IllegalArgumentException {
         if (startPoint.getId()==endPoint.getId()){
             throw new IllegalArgumentException("End point and start point are the same points!");
         }
@@ -34,11 +45,13 @@ public class DijkstraSearch implements PathSearchAlgorithm {
     /**
      * Start patch search between points given in constructor. Searching is a blocking operation
      * that can take a long time. Therefore, do not call it directly in the main thread.
+     * @see PathSearcher
      */
     @Override
     public void startSearch() {
-        int initFetchDept = 10;
-        int fetchDept = 10;
+        //TODO depth fetch parameters should be chosen experimentally
+        int initDepthFetch = 10;
+        int depthFetch = 10;
         int startID = startPoint.getId();
         int endID = endPoint.getId();
 
@@ -51,7 +64,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         PriorityQueue<NodePriorityWrapper> pathToTravel = new PriorityQueue<>(100,
                 (dist1, dist2) -> dist1.distance-dist2.distance);
 
-        outgoingEdges.putAll(fetchEdges(startID, initFetchDept));
+        outgoingEdges.putAll(fetchEdges(startID, initDepthFetch));
 
         //We start from a point without outgoing edges. There is nowhere to go.
         if (outgoingEdges.isEmpty()){
@@ -73,7 +86,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
             }
 
             if (!outgoingEdges.containsKey(from_id)){
-                outgoingEdges.putAll(fetchEdges(from_id, fetchDept));
+                outgoingEdges.putAll(fetchEdges(from_id, depthFetch));
             }
 
             for (Edge edge:outgoingEdges.get(from_id)) {
@@ -94,11 +107,12 @@ public class DijkstraSearch implements PathSearchAlgorithm {
     }
 
     /**
-     * Return the shortest path between points given in constructor. If searching didn't end,
-     * it returns null;
-     * @return
+     * Return the shortest path between points given in constructor. If searching didn't end or
+     * can not find path, it returns empty;
+     * @return found path
      */
     @Override
+    @NonNull
     public List<MapPoint> getPatch() {
         return trace;
     }

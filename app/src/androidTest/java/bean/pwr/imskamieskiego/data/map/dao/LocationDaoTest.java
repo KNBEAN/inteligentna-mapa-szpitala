@@ -40,7 +40,6 @@ public class LocationDaoTest {
         database.close();
     }
 
-
     @Test
     public void getLocationByID() {
         List<LocationEntity> locations = Arrays.asList(
@@ -54,27 +53,6 @@ public class LocationDaoTest {
         LocationEntity result = locationDao.getByID(locations.get(0).getId());
 
         assertEquals(locations.get(0), result);
-    }
-
-
-    @Ignore("Ignore this test, because this feature will not by implement in current sprint (25.07.18)")
-    @Test
-    public void getLocationByName() {
-        //List of locations, because searching by name doesn't have to use explicit name.
-        List<LocationEntity> similarLocations = Arrays.asList(
-                new LocationEntity(1, "Koński ogon",null),
-                new LocationEntity(2, "kończyna",null),
-                new LocationEntity(3, "OkoŃ",null));
-
-        List<LocationEntity> nonSimilarLocations = Arrays.asList(
-                new LocationEntity(4, "pietruszka",null),
-                new LocationEntity(5, "kiełbasa",null));
-
-        locationDao.insertAllPoints(similarLocations);
-        locationDao.insertAllPoints(nonSimilarLocations);
-
-//        List<LocationEntity> results = locationDao.getByName("%kOń%", 5);
-//        assertEquals(similarLocations, results);
     }
 
     @Test
@@ -105,13 +83,5 @@ public class LocationDaoTest {
         LocationEntity result = locationDao.getByID(2);
 
         assertNull(result);
-    }
-
-
-    @Ignore
-    @Test
-    public void getLocationByNotMatchingName() {
-
-        fail();
     }
 }
