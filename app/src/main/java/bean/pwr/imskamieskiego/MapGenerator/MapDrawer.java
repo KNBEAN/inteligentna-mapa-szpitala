@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -85,7 +86,7 @@ public class MapDrawer extends View {
         originalScale = 1;
         offsetX = 0;
         offsetY = 0;
-        paintPath = new Paint();
+        paintPath = new DottedPaint();
         pointFlast = new PointF();
         scaleDetector = 1.f;
         pathPoints = new ArrayList<>();
@@ -180,14 +181,13 @@ public class MapDrawer extends View {
         return result;
     }
 
+
     private Bitmap layerPath(ArrayList<MapPoint> pathPoints){
         Bitmap result = Bitmap.createBitmap(measureWidth, measureHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
         Path path = new Path();
 
-        paintPath.setColor(Color.BLACK);
-        paintPath.setStyle(Paint.Style.STROKE);
-        paintPath.setStrokeWidth(5f);
+
         if (!pathPoints.isEmpty()){
             for (MapPoint point : pathPoints){
                 if (point.getFloor() == currentlyDisplayedFloor){
@@ -199,7 +199,17 @@ public class MapDrawer extends View {
                 }
             }
         }
+
+        //blue on white dots
+        paintPath.setStrokeWidth(17f);
+        paintPath.setShadowLayer(5f,0,0,Color.BLACK);
+        paintPath.setColor(Color.WHITE);
         canvas.drawPath(path,paintPath);
+        paintPath.clearShadowLayer();
+        paintPath.setColor(Color.rgb(59, 196, 226));
+        paintPath.setStrokeWidth(12f);
+        canvas.drawPath(path,paintPath);
+
         return result;
     }
 
