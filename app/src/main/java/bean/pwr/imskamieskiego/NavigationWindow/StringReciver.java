@@ -2,28 +2,10 @@ package bean.pwr.imskamieskiego.NavigationWindow;
 
 public class StringReciver {
 
-    public StringReciver() {
-    }
-
-   
     private String hintText;
 
-
-
-    public String getServicePlaceName (boolean servicesButton){
-        //true - toalety
-        //false - restauracje
-        String ServicePlaceName = null;
-
-        if(servicesButton)     //servicesButton == true
-            ServicePlaceName = "Toaleta (najbliżej)";
-        else
-            ServicePlaceName = "Restauracja (najbliżej)";
-
-
-        return ServicePlaceName;
+    public StringReciver() {
     }
-
 
     public void StartOrDest(boolean logical){
 

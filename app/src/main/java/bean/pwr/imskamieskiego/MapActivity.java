@@ -83,8 +83,6 @@ public class MapActivity extends AppCompatActivity
 
 
 
-
-
     }
 
 
@@ -288,7 +286,6 @@ public class MapActivity extends AppCompatActivity
             }
         });
     }
-
 
     @Override
     public void onFragmentPause(Boolean logical) {

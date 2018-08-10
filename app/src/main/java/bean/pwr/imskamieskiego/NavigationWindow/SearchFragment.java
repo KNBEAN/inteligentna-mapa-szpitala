@@ -1,7 +1,5 @@
 package bean.pwr.imskamieskiego.NavigationWindow;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +16,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
-import java.util.Arrays;
 import bean.pwr.imskamieskiego.R;
 
 
@@ -61,14 +58,7 @@ public class SearchFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 setListViewPlace(listView.getItemAtPosition(i).toString());
-
-                Intent intent = new Intent();
-                intent.putExtra("Key",getListViewPlace());
-                intent.putExtra("Key2",logicSD);
-                getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK,intent);
-
                 Toast.makeText(getContext(),getListViewPlace(),Toast.LENGTH_LONG).show();
-
                 getFragmentManager().popBackStack();
 
             }
@@ -84,7 +74,7 @@ public class SearchFragment extends Fragment {
 
         SearchView searchView = (SearchView) item.getActionView();
 
-        searchView.setIconified(false);                             //You can type to searchView, no click required
+        searchView.setIconified(false);
         searchView.setQueryHint(stringReciver.getHintText());
 
 
@@ -108,13 +98,11 @@ public class SearchFragment extends Fragment {
 
     public void setPlacesArray(View view){
         listView = (ListView) view.findViewById(R.id.destinations_list);
-        ArrayList<String> DestArray = new ArrayList<>();
-        DestArray.addAll(Arrays.asList(getResources().getStringArray(R.array.dest)));
-
+        ArrayList<String> DestArray = new ArrayList<>(); //DestArray is empty add code to fill it
         adapter = new ArrayAdapter<>(
                 getContext(),android.R.layout.simple_list_item_1,DestArray
         );
-        listView.setAdapter(adapter);
+        listView.setAdapter(adapter);   //ListView set empty
     }
 
     public String getListViewPlace() {
