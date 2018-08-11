@@ -4,15 +4,11 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-<<<<<<< HEAD
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-=======
 import android.graphics.Matrix;
->>>>>>> Proper position on map sent to listener
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -58,15 +54,8 @@ public class MapDrawer extends View {
     private final int ZOOM_POINT = 3;
     private int mode;
     private int resourceTacksId[];
-<<<<<<< HEAD
-
     private Paint paintPath;
-
-=======
-    private int tackWidth = 100;
-    private int tackHeight = 100;
     Matrix canvasMatrix, invertedCanvasMatrix;
->>>>>>> Proper position on map sent to listener
     MapDrawerGestureListener mMapDrawerGestureListener;
 
 
@@ -108,13 +97,9 @@ public class MapDrawer extends View {
         mapPoints = new ArrayList<>();
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
-<<<<<<< HEAD
 
-
-        scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
-=======
         canvasMatrix = new Matrix();
->>>>>>> Proper position on map sent to listener
+        scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
         gestureDetector  = new GestureDetector(context,new GestureListener());
 
 
@@ -296,16 +281,10 @@ public class MapDrawer extends View {
                 offsetY = pointToShow.y;
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
         }
-<<<<<<< HEAD
-
-        canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
-                (canvas.getHeight() - layer.getHeight()) / 2);
+        
         layer = layerPathAndTacks(mapPoints, pathPoints, layer);
-=======
         canvasMatrix.postTranslate((canvas.getWidth() - layer.getWidth()) / 2,(canvas.getHeight() - layer.getHeight()) / 2);
         canvas.concat(canvasMatrix);
-        layer = layerTacks(mapPoints,layer);
->>>>>>> Proper position on map sent to listener
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
