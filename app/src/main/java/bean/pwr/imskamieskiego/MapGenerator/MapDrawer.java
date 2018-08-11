@@ -1,12 +1,10 @@
 package bean.pwr.imskamieskiego.MapGenerator;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.PointF;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -32,27 +30,26 @@ public class MapDrawer extends View {
     private Hashtable<MapPoint, Integer> mapPointsTypes;
     private ArrayList<MapPoint> pathPoints;
     private int measureWidth, measureHeight;
-    private int bitmapWidth;
-    private int bitmapHeight;
-    private int originalBitmapWidth;
-    private int originalBitmapHeight;
+    private int desiredWidth;
+    private int desiredHeight;
     private int currentlyDisplayedFloor;
     private float originalScale;
     private float deltaX, deltaY;
     private float offsetX, offsetY;
     private ScaleGestureDetector ScaleDetector;
-    private float scaleDetector;
-    private boolean isViewHorizontal;
+    private float scaleDetector = 1;
+    private ArrayList<Bitmap> tackTextures;
     private float scaleDetectorMAX = 3.f;
     private float scaleDetectorMIN = 0.5f;
     private PointF pointToShow;
-    private PointF scaleFactorPoint;
     private final int NONE = 0;
     private final int DRAG = 1;
     private final int ZOOM = 2;
     private final int ZOOM_POINT = 3;
     private int mode;
-
+    private int resourceTacksId[];
+    private int tackWidth = 100;
+    private int tackHeight = 100;
 
     public MapDrawer(Context context) {
         super(context);
@@ -60,8 +57,18 @@ public class MapDrawer extends View {
         SharedConstructing();
     }
 
-    public MapDrawer(Context context, @Nullable AttributeSet attrs) {
+    public MapDrawer(Context context, AttributeSet attrs) {
         super(context, attrs);
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.MapDrawer,
+                0, 0);
+        resourceTacksId = new int[a.length()];
+        for (int i = 0; i < a.length(); i++) {
+            resourceTacksId[i] = a.getResourceId(i, 0);
+        }
+        a.recycle();
+
         this.context = context;
         SharedConstructing();
     }
@@ -70,6 +77,7 @@ public class MapDrawer extends View {
     private void SharedConstructing() {
 
         setClickable(true);
+        loadTackTextures();
         originalScale = 1;
         offsetX = 0;
         offsetY = 0;
@@ -79,7 +87,6 @@ public class MapDrawer extends View {
         mapPoints = new ArrayList<>();
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
-        scaleFactorPoint = new PointF();
 
         ScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
 
@@ -137,60 +144,53 @@ public class MapDrawer extends View {
             currentlyDisplayedFloor = floor;
         }
         if (originalMap == null) throw new NullPointerException();
-        bitmapHeight = originalMap.getHeight();
-        bitmapWidth = originalMap.getWidth();
-        originalBitmapWidth = bitmapWidth;
-        originalBitmapHeight = bitmapHeight;
-
+        invalidate();
     }
 
     /**
      * Zoom view on given point. Floor will be
      * changed if needed. Zoom is equal to scaleDetectorMAX
-     * @param point point to zoom
+     * @param point point to center on and zoom
      */
     public void showPoint(MapPoint point) {
         mode = ZOOM_POINT;
         showFloor(point.getFloor());
+        scaleDetector = scaleDetectorMAX;
         pointToShow.x = point.getX();
         pointToShow.y = point.getY();
         invalidate();
     }
 
-    private Bitmap layerMap(Bitmap originalMap, int xFrom, int yFrom, float scale) {
-        Matrix tempMatrix = new Matrix();
+    private Bitmap layerMap(Bitmap originalMap) {
         Bitmap result;
-        tempMatrix.postScale(scale, scale);
         try {
-            result = Bitmap.createBitmap(originalMap,
-                    xFrom, yFrom,
-                    originalBitmapWidth,
-                    originalBitmapHeight,
-                    tempMatrix, true);
+            result = Bitmap.createScaledBitmap(originalMap,
+                     desiredWidth,
+                     desiredHeight,
+                     false);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        bitmapWidth = result.getWidth();
-        bitmapHeight = result.getHeight();
         return result;
     }
 
 
-    private Bitmap layerTacks(ArrayList<MapPoint> mapObjects) {
-        Bitmap result = Bitmap.createBitmap(measureWidth, measureHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
+    private Bitmap layerTacks(ArrayList<MapPoint> mapObjects, Bitmap floorToDrawOn) {
+        Canvas canvas = new Canvas(floorToDrawOn);
         if (!mapObjects.isEmpty()) {
             for (MapPoint point : mapObjects) {
                 if (point.getFloor() == currentlyDisplayedFloor) {
-                        canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
-                                point.getX() * scaleFactorPoint.x
-                                        - (getTackTexture(mapPointsTypes.get(point)).getWidth() / 2),
-                                point.getY() * scaleFactorPoint.y
-                                        - (getTackTexture(mapPointsTypes.get(point)).getHeight() / 2),
-                                null);
-                } } }
-        return result;
+                    canvas.drawBitmap(getTackTexture(mapPointsTypes.get(point)),
+                            point.getX() / originalScale
+                                    - (getTackTexture(mapPointsTypes.get(point)).getWidth() / 2),
+                            point.getY() / originalScale
+                                    - (getTackTexture(mapPointsTypes.get(point)).getHeight() / 2),
+                            null);
+                }
+            }
+        }
+        return floorToDrawOn;
     }
 
 
@@ -198,8 +198,8 @@ public class MapDrawer extends View {
     protected void onDraw(Canvas canvas) {
         if (originalMap == null) return;
         Bitmap layer;
-        fitBitmapToScreen(originalMap);
-        layer = layerMap(originalMap, 0, 0, originalScale);
+        fitMapToScreen(originalMap);
+        layer = layerMap(originalMap);
 
         switch (mode) {
 
@@ -210,7 +210,7 @@ public class MapDrawer extends View {
             case DRAG:
                 Log.i(TAG, "onDraw: DRAG");
                 canvas.scale(scaleDetector,
-                        scaleDetector, measureWidth/2,measureHeight/2);
+                        scaleDetector, measureWidth / 2, measureHeight / 2);
                 canvas.translate(deltaX + offsetX, deltaY + offsetY);
                 Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " +
                         offsetX + " y = " + deltaY + " offset x = " + offsetY);
@@ -219,7 +219,7 @@ public class MapDrawer extends View {
             case ZOOM:
                 Log.i(TAG, "onDraw: ZOOM");
                 canvas.scale(scaleDetector,
-                        scaleDetector,measureWidth/2,measureHeight/2);
+                        scaleDetector, measureWidth / 2, measureHeight / 2);
                 canvas.translate(offsetX, offsetY);
 
                 Log.i(TAG, "onDraw: ZOOM : scaleDetector = " + scaleDetector);
@@ -227,42 +227,55 @@ public class MapDrawer extends View {
                 break;
             case ZOOM_POINT:
                 Log.i(TAG, "onDraw: ZOOM_POINT");
-                    pointToShow.x =( measureWidth/2 - pointToShow.x ) * scaleFactorPoint.x;
-                    pointToShow.y = ( measureHeight/2 - pointToShow.y ) * scaleFactorPoint.y;
-
-                canvas.scale(scaleDetector,
-                        scaleDetector,
-                        measureWidth/2,measureHeight/2);
-                canvas.translate(pointToShow.x ,
-                        pointToShow.y);
+                pointToShow.x = (measureWidth / 2 - pointToShow.x / originalScale);
+                pointToShow.y = (measureHeight / 2 - pointToShow.y / originalScale);
+                pointToShow.x += (-measureWidth + desiredWidth) / 2;
+                pointToShow.y += (-measureHeight + desiredHeight) / 2;
+                Log.i(TAG, "onDraw: ZOOM_POINT point to show = " + pointToShow);
+                canvas.scale(scaleDetector, scaleDetector,
+                        measureWidth / 2, measureHeight / 2);
+                canvas.translate(pointToShow.x, pointToShow.y);
                 offsetX = pointToShow.x;
                 offsetY = pointToShow.y;
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
         }
 
-       canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
+        canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
-        canvas.drawBitmap(layer, 0, 0, null);
-        layer = layerTacks(mapPoints);
+        layer = layerTacks(mapPoints,layer);
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
-    private void fitBitmapToScreen(Bitmap bitmap) {
+    private void fitMapToScreen(Bitmap bitmap) {
         if ((measureWidth == 0) || (measureHeight == 0)) return;
-        float origScaleX = (float) measureHeight / bitmap.getHeight();
-        float origScaleY = (float) measureWidth / bitmap.getWidth();
-        originalScale = Math.min(origScaleX, origScaleY);
-        if (!isViewHorizontal){
-            scaleFactorPoint.x = originalScale*(originalBitmapWidth / measureWidth);
-            scaleFactorPoint.y = originalScale*(originalBitmapHeight / measureHeight);
-        }
-        else {
-            scaleFactorPoint.x = originalScale*(originalBitmapHeight / measureWidth);
-            scaleFactorPoint.y = originalScale*(originalBitmapWidth / measureHeight);
-        }
 
-
+        float originalBitmapWidth = bitmap.getWidth();
+        float originalBitmapHeight = bitmap.getHeight();
+        originalScale = Math.max(
+                originalBitmapHeight / (float) measureHeight
+                , originalBitmapWidth / (float) measureWidth);
+        desiredWidth = (int) (originalBitmapWidth / originalScale);
+        desiredHeight = (int) (originalBitmapHeight / originalScale);
     }
+
+    /**
+     * If resources for tack hadn't been
+     * initialized in .xml file or
+     * constructor was only with Context argument
+     * this method allows to set up Tack textures after
+     * creating instance of MapDrawer.
+     * @param startTackId id of drawable which will be set to starting points
+     * @param endTackId id of drawable which will be set to ending points
+     * @param defaultTackId id of drawable which will be set for default points
+     */
+    public void addTackResources(int defaultTackId, int startTackId, int endTackId){
+        resourceTacksId = new int[3];
+        resourceTacksId[0] = defaultTackId;
+        resourceTacksId[1] = startTackId;
+        resourceTacksId[2] = endTackId;
+        loadTackTextures();
+    }
+
 
 
     /**
@@ -295,31 +308,27 @@ public class MapDrawer extends View {
         if (mode != ZOOM_POINT) {
             mode = NONE;
         }
-        if (measureWidth > measureHeight) isViewHorizontal = true;
-        if (measureHeight > measureWidth) isViewHorizontal = false;
     }
 
+    private void loadTackTextures() {
+        Bitmap texture;
+        tackTextures = new ArrayList<>();
+        try{
+        for (int resourceName : resourceTacksId) {
+            texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
+                    , resourceName
+                    , tackWidth
+                    , tackHeight);
+            tackTextures.add(Bitmap.createScaledBitmap(texture, (tackWidth), (tackHeight), false));
+        }
+        } catch (Exception o) {
+            Log.i(TAG, "loadTackTextures: No info about resources in .xml file. Use addTackResources() to" +
+                    " avoid problems with rendering map");
+        }
+    }
 
     private Bitmap getTackTexture(int type) {
-        Bitmap texture;
-        BitmapFactory.Options opt = new BitmapFactory.Options();
-        switch (type) {
-            case 1:
-                texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.start_tack,opt);
-                texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
-                break;
-
-            case 2:
-                texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.end_tack);
-                texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
-                break;
-
-            default:
-                texture = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_tack);
-                texture = Bitmap.createBitmap(texture, 0, 0, 100, 100);
-                break;
-        }
-        return texture;
+        return tackTextures.get(type);
     }
 
     /**
