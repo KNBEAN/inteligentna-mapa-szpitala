@@ -30,15 +30,14 @@ public class MapDrawer extends View {
     private Hashtable<MapPoint, Integer> mapPointsTypes;
     private ArrayList<MapPoint> pathPoints;
     private int measureWidth, measureHeight;
-    private int deasiredWidth;
-    private int deasiredHeight;
+    private int desiredWidth;
+    private int desiredHeight;
     private int currentlyDisplayedFloor;
     private float originalScale;
     private float deltaX, deltaY;
     private float offsetX, offsetY;
     private ScaleGestureDetector ScaleDetector;
     private float scaleDetector = 1;
-    private boolean isViewHorizontal;
     private ArrayList<Bitmap> tackTextures;
     private float scaleDetectorMAX = 3.f;
     private float scaleDetectorMIN = 0.5f;
@@ -165,10 +164,10 @@ public class MapDrawer extends View {
     private Bitmap layerMap(Bitmap originalMap) {
         Bitmap result;
         try {
-            result = Bitmap.createScaledBitmap(originalMap
-                    , deasiredWidth
-                    , deasiredHeight
-                    , false);
+            result = Bitmap.createScaledBitmap(originalMap,
+                     desiredWidth,
+                     desiredHeight,
+                     false);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -177,9 +176,8 @@ public class MapDrawer extends View {
     }
 
 
-    private Bitmap layerTacks(ArrayList<MapPoint> mapObjects) {
-        Bitmap result = Bitmap.createBitmap(measureWidth, measureHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
+    private Bitmap layerTacks(ArrayList<MapPoint> mapObjects, Bitmap floorToDrawOn) {
+        Canvas canvas = new Canvas(floorToDrawOn);
         if (!mapObjects.isEmpty()) {
             for (MapPoint point : mapObjects) {
                 if (point.getFloor() == currentlyDisplayedFloor) {
@@ -192,7 +190,7 @@ public class MapDrawer extends View {
                 }
             }
         }
-        return result;
+        return floorToDrawOn;
     }
 
 
@@ -231,8 +229,8 @@ public class MapDrawer extends View {
                 Log.i(TAG, "onDraw: ZOOM_POINT");
                 pointToShow.x = (measureWidth / 2 - pointToShow.x / originalScale);
                 pointToShow.y = (measureHeight / 2 - pointToShow.y / originalScale);
-                pointToShow.x += (-measureWidth + deasiredWidth) / 2;
-                pointToShow.y += (-measureHeight + deasiredHeight) / 2;
+                pointToShow.x += (-measureWidth + desiredWidth) / 2;
+                pointToShow.y += (-measureHeight + desiredHeight) / 2;
                 Log.i(TAG, "onDraw: ZOOM_POINT point to show = " + pointToShow);
                 canvas.scale(scaleDetector, scaleDetector,
                         measureWidth / 2, measureHeight / 2);
@@ -244,8 +242,7 @@ public class MapDrawer extends View {
 
         canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
-        canvas.drawBitmap(layer, 0, 0, null);
-        layer = layerTacks(mapPoints);
+        layer = layerTacks(mapPoints,layer);
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
@@ -257,9 +254,28 @@ public class MapDrawer extends View {
         originalScale = Math.max(
                 originalBitmapHeight / (float) measureHeight
                 , originalBitmapWidth / (float) measureWidth);
-        deasiredWidth = (int) (originalBitmapWidth / originalScale);
-        deasiredHeight = (int) (originalBitmapHeight / originalScale);
+        desiredWidth = (int) (originalBitmapWidth / originalScale);
+        desiredHeight = (int) (originalBitmapHeight / originalScale);
     }
+
+    /**
+     * If resources for tack hadn't been
+     * initialized in .xml file or
+     * constructor was only with Context argument
+     * this method allows to set up Tack textures after
+     * creating instance of MapDrawer.
+     * @param startTackId id of drawable which will be set to starting points
+     * @param endTackId id of drawable which will be set to ending points
+     * @param defaultTackId id of drawable which will be set for default points
+     */
+    public void addTackResources(int defaultTackId, int startTackId, int endTackId){
+        resourceTacksId = new int[3];
+        resourceTacksId[0] = defaultTackId;
+        resourceTacksId[1] = startTackId;
+        resourceTacksId[2] = endTackId;
+        loadTackTextures();
+    }
+
 
 
     /**
@@ -292,20 +308,22 @@ public class MapDrawer extends View {
         if (mode != ZOOM_POINT) {
             mode = NONE;
         }
-        if (measureWidth > measureHeight) isViewHorizontal = true;
-        if (measureHeight > measureWidth) isViewHorizontal = false;
     }
 
     private void loadTackTextures() {
         Bitmap texture;
         tackTextures = new ArrayList<>();
+        try{
         for (int resourceName : resourceTacksId) {
-
             texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
                     , resourceName
                     , tackWidth
                     , tackHeight);
             tackTextures.add(Bitmap.createScaledBitmap(texture, (tackWidth), (tackHeight), false));
+        }
+        } catch (Exception o) {
+            Log.i(TAG, "loadTackTextures: No info about resources in .xml file. Use addTackResources() to" +
+                    " avoid problems with rendering map");
         }
     }
 
