@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
@@ -40,7 +39,7 @@ public class MapDrawer extends View {
     private float originalScale;
     private float deltaX, deltaY;
     private float offsetX, offsetY;
-    private ScaleGestureDetector ScaleDetector;
+    private ScaleGestureDetector scaleGestureDetector;
     private float scaleDetector = 1;
     private ArrayList<Bitmap> tackTextures;
     private float scaleDetectorMAX = 3.f;
@@ -52,8 +51,6 @@ public class MapDrawer extends View {
     private final int ZOOM_POINT = 3;
     private int mode;
     private int resourceTacksId[];
-    private int tackWidth = 100;
-    private int tackHeight = 100;
     private Paint paintPath;
 
     public MapDrawer(Context context) {
@@ -64,6 +61,7 @@ public class MapDrawer extends View {
 
     public MapDrawer(Context context, AttributeSet attrs) {
         super(context, attrs);
+
         TypedArray a = context.getTheme().obtainStyledAttributes(
                 attrs,
                 R.styleable.MapDrawer,
@@ -94,15 +92,15 @@ public class MapDrawer extends View {
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
 
-        ScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+        scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
 
         setOnTouchListener(new OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                ScaleDetector.onTouchEvent(event);
+                scaleGestureDetector.onTouchEvent(event);
 
-                if (ScaleDetector.isInProgress()) return true;
+                if (scaleGestureDetector.isInProgress()) return true;
 
                 PointF pointF = new PointF(event.getX(), event.getY());
                 Log.i(TAG, "onTouch: event.getX() = " + event.getX() + " event.getY() = " + event.getY());
@@ -171,9 +169,9 @@ public class MapDrawer extends View {
         Bitmap result;
         try {
             result = Bitmap.createScaledBitmap(originalMap,
-                     desiredWidth,
-                     desiredHeight,
-                     false);
+                    desiredWidth,
+                    desiredHeight,
+                    false);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -182,40 +180,31 @@ public class MapDrawer extends View {
     }
 
 
-    private Bitmap layerPath(ArrayList<MapPoint> pathPoints){
-        Bitmap result = Bitmap.createBitmap(measureWidth, measureHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Path path = new Path();
+    private Bitmap layerPathAndTacks(ArrayList<MapPoint> mapObjects, ArrayList<MapPoint> pathPoints, Bitmap floorToDrawOn) {
+        Canvas canvas = new Canvas(floorToDrawOn);
 
-
-        if (!pathPoints.isEmpty()){
-            for (MapPoint point : pathPoints){
-                if (point.getFloor() == currentlyDisplayedFloor){
-                    if (path.isEmpty()){
-                        path.moveTo(point.getX()/originalScale,point.getY()/originalScale);
+        if (!pathPoints.isEmpty()) {
+            Path path = new Path();
+            for (MapPoint point : pathPoints) {
+                if (point.getFloor() == currentlyDisplayedFloor) {
+                    if (path.isEmpty()) {
+                        path.moveTo(point.getX() / originalScale, point.getY() / originalScale);
                     } else {
-                        path.lineTo(point.getX()/originalScale,point.getY()/originalScale);
+                        path.lineTo(point.getX() / originalScale, point.getY() / originalScale);
                     }
                 }
             }
+            paintPath.setStrokeWidth(17f);
+            paintPath.setShadowLayer(5f, 0, 0, Color.BLACK);
+            paintPath.setColor(Color.WHITE);
+            canvas.drawPath(path, paintPath);
+            paintPath.clearShadowLayer();
+            paintPath.setColor(Color.rgb(59,196,226));
+            paintPath.setStrokeWidth(12f);
+            canvas.drawPath(path, paintPath);
         }
 
-        //blue on white dots
-        paintPath.setStrokeWidth(17f);
-        paintPath.setShadowLayer(5f,0,0,Color.BLACK);
-        paintPath.setColor(Color.WHITE);
-        canvas.drawPath(path,paintPath);
-        paintPath.clearShadowLayer();
-        paintPath.setColor(Color.rgb(59, 196, 226));
-        paintPath.setStrokeWidth(12f);
-        canvas.drawPath(path,paintPath);
 
-        return result;
-    }
-
-
-    private Bitmap layerTacks(ArrayList<MapPoint> mapObjects, Bitmap floorToDrawOn) {
-        Canvas canvas = new Canvas(floorToDrawOn);
         if (!mapObjects.isEmpty()) {
             for (MapPoint point : mapObjects) {
                 if (point.getFloor() == currentlyDisplayedFloor) {
@@ -280,9 +269,7 @@ public class MapDrawer extends View {
 
         canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
-        layer = layerTacks(mapPoints, layer);
-        canvas.drawBitmap(layer, 0, 0, null);
-        layer = layerPath(pathPoints);
+        layer = layerPathAndTacks(mapPoints, pathPoints, layer);
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
@@ -304,18 +291,17 @@ public class MapDrawer extends View {
      * constructor was only with Context argument
      * this method allows to set up Tack textures after
      * creating instance of MapDrawer.
-     * @param startTackId id of drawable which will be set to starting points
-     * @param endTackId id of drawable which will be set to ending points
+     * @param startTackId   id of drawable which will be set to starting points
+     * @param endTackId     id of drawable which will be set to ending points
      * @param defaultTackId id of drawable which will be set for default points
      */
-    public void addTackResources(int defaultTackId, int startTackId, int endTackId){
+    public void addTackResources(int defaultTackId, int startTackId, int endTackId) {
         resourceTacksId = new int[3];
         resourceTacksId[0] = defaultTackId;
         resourceTacksId[1] = startTackId;
         resourceTacksId[2] = endTackId;
         loadTackTextures();
     }
-
 
 
     /**
@@ -352,15 +338,17 @@ public class MapDrawer extends View {
 
     private void loadTackTextures() {
         Bitmap texture;
+        int tackWidth = 100;
+        int tackHeight = 100;
         tackTextures = new ArrayList<>();
-        try{
-        for (int resourceName : resourceTacksId) {
-            texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
-                    , resourceName
-                    , tackWidth
-                    , tackHeight);
-            tackTextures.add(Bitmap.createScaledBitmap(texture, (tackWidth), (tackHeight), false));
-        }
+        try {
+            for (int resourceName : resourceTacksId) {
+                texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
+                        , resourceName
+                        , tackWidth
+                        , tackHeight);
+                tackTextures.add(Bitmap.createScaledBitmap(texture, (tackWidth), (tackHeight), false));
+            }
         } catch (Exception o) {
             Log.i(TAG, "loadTackTextures: No info about resources in .xml file. Use addTackResources() to" +
                     " avoid problems with rendering map");
@@ -386,7 +374,8 @@ public class MapDrawer extends View {
      * Add mappoint which will be drawn
      * immediately with previous added tacks.
      * @param tack mappoint with x and y coordinates
-     * @param type determines the texture set to given point
+     * @param type determines the texture set to given point basing on previously sent attributes
+     *  in xml file or resources in method addTackResources
      */
     public void addMapPoint(MapPoint tack, Integer type) {
         mapPoints.add(tack);
