@@ -33,7 +33,7 @@ public abstract class LocalDB extends RoomDatabase {
     private static LocalDB INSTANCE;
 
 
-    static LocalDB getDatabase(final Context context) {
+    public static LocalDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (LocalDB.class) {
                 if (INSTANCE == null) {
