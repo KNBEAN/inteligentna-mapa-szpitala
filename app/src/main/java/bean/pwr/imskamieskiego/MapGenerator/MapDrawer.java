@@ -4,10 +4,15 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+<<<<<<< HEAD
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+=======
+import android.graphics.Matrix;
+>>>>>>> Proper position on map sent to listener
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -53,9 +58,15 @@ public class MapDrawer extends View {
     private final int ZOOM_POINT = 3;
     private int mode;
     private int resourceTacksId[];
+<<<<<<< HEAD
 
     private Paint paintPath;
 
+=======
+    private int tackWidth = 100;
+    private int tackHeight = 100;
+    Matrix canvasMatrix, invertedCanvasMatrix;
+>>>>>>> Proper position on map sent to listener
     MapDrawerGestureListener mMapDrawerGestureListener;
 
 
@@ -97,9 +108,13 @@ public class MapDrawer extends View {
         mapPoints = new ArrayList<>();
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
+<<<<<<< HEAD
 
 
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+=======
+        canvasMatrix = new Matrix();
+>>>>>>> Proper position on map sent to listener
         gestureDetector  = new GestureDetector(context,new GestureListener());
 
 
@@ -114,14 +129,13 @@ public class MapDrawer extends View {
                 if (scaleGestureDetector.isInProgress()) return true;
 
                 PointF pointF = new PointF(event.getX(), event.getY());
-                Log.i(TAG, "onTouch: event.getX() = " + event.getX() + " event.getY() = " + event.getY());
+             //   Log.i(TAG, "onTouch: event.getX() = " + event.getX() + " event.getY() = " + event.getY());
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
                         pointFlast = pointF;
-                        offsetX += deltaX;
-                        offsetY += deltaY;
+
                         mode = DRAG;
                         break;
 
@@ -132,6 +146,13 @@ public class MapDrawer extends View {
                             deltaY = pointF.y - pointFlast.y;
                             invalidate();
                         }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        Log.i(TAG, "onTouch: ACTION_UP");
+                        offsetX += deltaX;
+                        offsetY += deltaY;
+                        deltaX = 0;
+                        deltaY = 0;
                         break;
                 }
                 return true;
@@ -238,6 +259,8 @@ public class MapDrawer extends View {
         Bitmap layer;
         fitMapToScreen(originalMap);
         layer = layerMap(originalMap);
+        canvasMatrix.reset();
+        canvas.concat(canvasMatrix);
 
         switch (mode) {
 
@@ -247,19 +270,16 @@ public class MapDrawer extends View {
 
             case DRAG:
                 Log.i(TAG, "onDraw: DRAG");
-                canvas.scale(scaleDetector,
-                        scaleDetector, measureWidth / 2, measureHeight / 2);
-                canvas.translate(deltaX + offsetX, deltaY + offsetY);
+                canvasMatrix.postScale(scaleDetector,scaleDetector,measureWidth/2,measureHeight/2);
+                canvasMatrix.postTranslate(deltaX+offsetX,deltaY+offsetY);
                 Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " +
                         offsetX + " y = " + deltaY + " offset x = " + offsetY);
                 break;
 
             case ZOOM:
                 Log.i(TAG, "onDraw: ZOOM");
-                canvas.scale(scaleDetector,
-                        scaleDetector, measureWidth / 2, measureHeight / 2);
-                canvas.translate(offsetX, offsetY);
-
+                canvasMatrix.postScale(scaleDetector,scaleDetector,measureWidth / 2, measureHeight / 2);
+                canvasMatrix.postTranslate(offsetX,offsetY);
                 Log.i(TAG, "onDraw: ZOOM : scaleDetector = " + scaleDetector);
                 Log.i(TAG, "onDraw: ZOOM OFFSET : X = " + offsetX + " Y = " + offsetY);
                 break;
@@ -270,17 +290,22 @@ public class MapDrawer extends View {
                 pointToShow.x += (-measureWidth + desiredWidth) / 2;
                 pointToShow.y += (-measureHeight + desiredHeight) / 2;
                 Log.i(TAG, "onDraw: ZOOM_POINT point to show = " + pointToShow);
-                canvas.scale(scaleDetector, scaleDetector,
-                        measureWidth / 2, measureHeight / 2);
-                canvas.translate(pointToShow.x, pointToShow.y);
+               canvasMatrix.postScale(scaleDetector,scaleDetector,measureWidth/2,measureHeight/2);
+               canvasMatrix.postTranslate(pointToShow.x,pointToShow.y);
                 offsetX = pointToShow.x;
                 offsetY = pointToShow.y;
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
         }
+<<<<<<< HEAD
 
         canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
                 (canvas.getHeight() - layer.getHeight()) / 2);
         layer = layerPathAndTacks(mapPoints, pathPoints, layer);
+=======
+        canvasMatrix.postTranslate((canvas.getWidth() - layer.getWidth()) / 2,(canvas.getHeight() - layer.getHeight()) / 2);
+        canvas.concat(canvasMatrix);
+        layer = layerTacks(mapPoints,layer);
+>>>>>>> Proper position on map sent to listener
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
@@ -290,8 +315,8 @@ public class MapDrawer extends View {
         float originalBitmapWidth = bitmap.getWidth();
         float originalBitmapHeight = bitmap.getHeight();
         originalScale = Math.max(
-                originalBitmapHeight / (float) measureHeight
-                , originalBitmapWidth / (float) measureWidth);
+                originalBitmapHeight / (float) measureHeight,
+                originalBitmapWidth / (float) measureWidth);
         desiredWidth = (int) (originalBitmapWidth / originalScale);
         desiredHeight = (int) (originalBitmapHeight / originalScale);
     }
@@ -477,7 +502,12 @@ public class MapDrawer extends View {
 
         @Override
         public void onLongPress(MotionEvent e) {
-            mMapDrawerGestureListener.onLongPress((int)e.getX(),(int)e.getY());
+            invertedCanvasMatrix = new Matrix(canvasMatrix);
+            invertedCanvasMatrix.invert(invertedCanvasMatrix);
+            e.transform(invertedCanvasMatrix);
+            int x = (int) e.getX();
+            int y = (int) e.getY();
+            mMapDrawerGestureListener.onLongPress(x,y);
         }
 
     }
