@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import bean.pwr.imskamieskiego.R;
 
 public class InfoSheet {
@@ -21,6 +22,7 @@ public class InfoSheet {
     private ImageView pinButton;
     private Activity parent;
     private InfoSheetListener listener;
+
 
     public void setListener(InfoSheetListener listener) {
         this.listener = listener;
@@ -36,7 +38,13 @@ public class InfoSheet {
         expandSheetButton = parent.findViewById(R.id.info_button);
         placeName = parent.findViewById(R.id.place_name);
 
+        guideToButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onGuideToButtonClicked();
 
+            }
+        });
         pinButton = parent.findViewById(R.id.pin_button);
         pinButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +109,7 @@ public class InfoSheet {
 
     }
 
+
     private void toggleBottomSheet() {
         if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -113,8 +122,9 @@ public class InfoSheet {
         }
     }
 
+
     public interface InfoSheetListener {
-        void showFull(String title, String description);
+        void onGuideToButtonClicked();
 
         void onSheetCollapsed();
 
@@ -123,6 +133,14 @@ public class InfoSheet {
         void onSheetHidden();
 
 
+    }
+
+    public int getBottomSheetState() {
+        return sheetBehavior.getState();
+    }
+
+    public void setBottomSheetState(int bottomSheetState) {
+        sheetBehavior.setState(bottomSheetState);
     }
 
 

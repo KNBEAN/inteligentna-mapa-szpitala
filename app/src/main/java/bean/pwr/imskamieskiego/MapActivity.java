@@ -48,14 +48,12 @@ public class MapActivity extends AppCompatActivity
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         InfoSheet infoSheet = new InfoSheet(this);
-
-
         quickAccessButtonInit();
         changeFloorButtonInit();
 
         infoSheet.setListener(new InfoSheet.InfoSheetListener() {
             @Override
-            public void showFull(String title, String description) {
+            public void onGuideToButtonClicked() {
 
             }
 
