@@ -24,6 +24,8 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import bean.pwr.imskamieskiego.GUI.InfoSheet;
+
 public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -35,12 +37,8 @@ public class MapActivity extends AppCompatActivity
     private Button foodButtonDescription;
     private Button wcButtonDescription;
     private ImageButton changeFloorButton;
-    private ConstraintLayout layoutInfoSheet;
-    private Button guideToButton;
-    private TextView placeName;
-    private BottomSheetBehavior sheetBehavior;
-    private ImageButton expandSheetButton;
-    private ImageView pinButton;
+
+
     private static final String TAG = "MapActivity";
 
     @Override
@@ -49,12 +47,38 @@ public class MapActivity extends AppCompatActivity
         setContentView(R.layout.activity_map);
         final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        InfoSheet infoSheet = new InfoSheet(this);
 
 
         quickAccessButtonInit();
         changeFloorButtonInit();
-        infoSheetInit();
 
+        infoSheet.setListener(new InfoSheet.InfoSheetListener() {
+            @Override
+            public void showFull(String title, String description) {
+
+            }
+
+            @Override
+            public void onSheetCollapsed() {
+                hideQuickAccessButtons();
+                quickAccessButton.setVisibility(View.GONE);
+                quickAccessButton.setClickable(false);
+            }
+
+            @Override
+            public void onSheetExpanded() {
+                hideQuickAccessButtons();
+                quickAccessButton.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onSheetHidden() {
+                quickAccessButton.setVisibility(View.VISIBLE);
+                quickAccessButton.setClickable(true);
+            }
+        });
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
@@ -65,13 +89,6 @@ public class MapActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        pinButton = findViewById(R.id.pin_button);
-        pinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            }
-        });
     }
 
 
@@ -171,6 +188,8 @@ public class MapActivity extends AppCompatActivity
         foodButtonDescription.setVisibility(View.GONE);
         wcButtonDescription.setVisibility(View.GONE);
 
+
+
         wcButton.setClickable(false);
         foodButton.setClickable(false);
         patientAssistantButton.setClickable(false);
@@ -191,6 +210,7 @@ public class MapActivity extends AppCompatActivity
         patientAssistantButtonDescription.setVisibility(View.VISIBLE);
         foodButtonDescription.setVisibility(View.VISIBLE);
         wcButtonDescription.setVisibility(View.VISIBLE);
+
 
         wcButton.setClickable(true);
         foodButton.setClickable(true);
@@ -263,82 +283,6 @@ public class MapActivity extends AppCompatActivity
                 floorSelect.show();
             }
         });
-    }
-
-
-    private void infoSheetInit() {
-        layoutInfoSheet = findViewById(R.id.info_sheet_layout);
-        guideToButton = findViewById(R.id.guide_to_button);
-        expandSheetButton = findViewById(R.id.info_button);
-        placeName = findViewById(R.id.place_name);
-
-        expandSheetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleBottomSheet();
-            }
-        });
-
-        sheetBehavior = BottomSheetBehavior.from(layoutInfoSheet);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-
-
-            @Override
-            public void onStateChanged(@NonNull View infoSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        quickAccessButton.setVisibility(View.VISIBLE);
-                        quickAccessButton.setClickable(true);
-                        layoutInfoSheet.setVisibility(View.GONE);
-                        Log.i("Bottom sheet", "hidden");
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        Log.i("Bottom sheet", "expanded");
-                        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
-                        hideQuickAccessButtons();
-                        quickAccessButton.setVisibility(View.GONE);
-
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-                        hideQuickAccessButtons();
-                        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
-                        quickAccessButton.setVisibility(View.GONE);
-                        quickAccessButton.setClickable(false);
-                        layoutInfoSheet.setVisibility(View.VISIBLE);
-
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-
-    }
-
-    public void toggleBottomSheet() {
-        if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-
-        } else {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
-
-        }
     }
 
 
