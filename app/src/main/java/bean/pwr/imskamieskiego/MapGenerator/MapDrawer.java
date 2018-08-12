@@ -31,12 +31,14 @@ public class MapDrawer extends View {
     private MapModel model;
     private Context context;
     private PointF pointFlast;
+    private PointF pointToShow;
     private ArrayList<MapPoint> mapPoints;
     private Hashtable<MapPoint, Integer> mapPointsTypes;
     private ArrayList<MapPoint> pathPoints;
+    private ArrayList<Bitmap> tackTextures;
+    private int resourceTacksId[];
     private int measureWidth, measureHeight;
-    private int desiredWidth;
-    private int desiredHeight;
+    private int desiredWidth, desiredHeight;
     private int currentlyDisplayedFloor;
     private float originalScale;
     private float deltaX, deltaY;
@@ -44,19 +46,18 @@ public class MapDrawer extends View {
     private ScaleGestureDetector scaleGestureDetector;
     private GestureDetector gestureDetector;
     private float scaleDetector = 1;
-    private ArrayList<Bitmap> tackTextures;
     private float scaleDetectorMAX = 3.f;
     private float scaleDetectorMIN = 0.5f;
-    private PointF pointToShow;
+
     private final int NONE = 0;
     private final int DRAG = 1;
     private final int ZOOM = 2;
     private final int ZOOM_POINT = 3;
     private int mode;
-    private int resourceTacksId[];
+
     private Paint paintPath;
-    Matrix canvasMatrix, invertedCanvasMatrix;
-    MapDrawerGestureListener mMapDrawerGestureListener;
+    private Matrix canvasMatrix, invertedCanvasMatrix;
+    private MapDrawerGestureListener mMapDrawerGestureListener;
 
 
     public MapDrawer(Context context) {
@@ -114,7 +115,6 @@ public class MapDrawer extends View {
                 if (scaleGestureDetector.isInProgress()) return true;
 
                 PointF pointF = new PointF(event.getX(), event.getY());
-             //   Log.i(TAG, "onTouch: event.getX() = " + event.getX() + " event.getY() = " + event.getY());
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
@@ -221,7 +221,6 @@ public class MapDrawer extends View {
             canvas.drawPath(path, paintPath);
         }
 
-
         if (!mapObjects.isEmpty()) {
             for (MapPoint point : mapObjects) {
                 if (point.getFloor() == currentlyDisplayedFloor) {
@@ -245,7 +244,6 @@ public class MapDrawer extends View {
         fitMapToScreen(originalMap);
         layer = layerMap(originalMap);
         canvasMatrix.reset();
-        canvas.concat(canvasMatrix);
 
         switch (mode) {
 
@@ -255,7 +253,9 @@ public class MapDrawer extends View {
 
             case DRAG:
                 Log.i(TAG, "onDraw: DRAG");
-                canvasMatrix.postScale(scaleDetector,scaleDetector,measureWidth/2,measureHeight/2);
+                canvasMatrix.postScale(scaleDetector,scaleDetector,
+                        measureWidth/2,
+                        measureHeight/2);
                 canvasMatrix.postTranslate(deltaX+offsetX,deltaY+offsetY);
                 Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " +
                         offsetX + " y = " + deltaY + " offset x = " + offsetY);
@@ -263,7 +263,9 @@ public class MapDrawer extends View {
 
             case ZOOM:
                 Log.i(TAG, "onDraw: ZOOM");
-                canvasMatrix.postScale(scaleDetector,scaleDetector,measureWidth / 2, measureHeight / 2);
+                canvasMatrix.postScale(scaleDetector,scaleDetector,
+                        measureWidth / 2,
+                        measureHeight / 2);
                 canvasMatrix.postTranslate(offsetX,offsetY);
                 Log.i(TAG, "onDraw: ZOOM : scaleDetector = " + scaleDetector);
                 Log.i(TAG, "onDraw: ZOOM OFFSET : X = " + offsetX + " Y = " + offsetY);
@@ -275,15 +277,19 @@ public class MapDrawer extends View {
                 pointToShow.x += (-measureWidth + desiredWidth) / 2;
                 pointToShow.y += (-measureHeight + desiredHeight) / 2;
                 Log.i(TAG, "onDraw: ZOOM_POINT point to show = " + pointToShow);
-               canvasMatrix.postScale(scaleDetector,scaleDetector,measureWidth/2,measureHeight/2);
+               canvasMatrix.postScale(scaleDetector,scaleDetector,
+                       measureWidth/2,
+                       measureHeight/2);
                canvasMatrix.postTranslate(pointToShow.x,pointToShow.y);
                 offsetX = pointToShow.x;
                 offsetY = pointToShow.y;
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
         }
-        
+
         layer = layerPathAndTacks(mapPoints, pathPoints, layer);
-        canvasMatrix.postTranslate((canvas.getWidth() - layer.getWidth()) / 2,(canvas.getHeight() - layer.getHeight()) / 2);
+        canvasMatrix.postTranslate(
+                (canvas.getWidth() - layer.getWidth()) / 2,
+                (canvas.getHeight() - layer.getHeight()) / 2);
         canvas.concat(canvasMatrix);
         canvas.drawBitmap(layer, 0, 0, null);
     }
@@ -362,7 +368,10 @@ public class MapDrawer extends View {
                         , resourceName
                         , tackWidth
                         , tackHeight);
-                tackTextures.add(Bitmap.createScaledBitmap(texture, (tackWidth), (tackHeight), false));
+                tackTextures.add(Bitmap.createScaledBitmap(texture,
+                        (tackWidth),
+                        (tackHeight),
+                        false));
             }
         } catch (Exception o) {
             Log.i(TAG, "loadTackTextures: No info about resources in .xml file. Use addTackResources() to" +
@@ -484,8 +493,8 @@ public class MapDrawer extends View {
             invertedCanvasMatrix = new Matrix(canvasMatrix);
             invertedCanvasMatrix.invert(invertedCanvasMatrix);
             e.transform(invertedCanvasMatrix);
-            int x = (int) e.getX();
-            int y = (int) e.getY();
+            int x = (int) (e.getX()*originalScale);
+            int y = (int) (e.getY()*originalScale);
             mMapDrawerGestureListener.onLongPress(x,y);
         }
 
