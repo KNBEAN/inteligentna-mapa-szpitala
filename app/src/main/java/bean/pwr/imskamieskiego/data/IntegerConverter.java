@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.data.converters;
+package bean.pwr.imskamieskiego.data;
 
 import android.arch.persistence.room.TypeConverter;
 
@@ -9,7 +9,7 @@ import java.util.List;
  * Converter used with Room database library. It use to convert list of integer objects into
  * int table and vice versa. It is necessary, because SQLite work with simple data types.
  */
-public class IntegerConverter {
+class IntegerConverter {
 
     @TypeConverter
     public int[] listToTable(List<Integer> list){

@@ -1,5 +1,6 @@
 package bean.pwr.imskamieskiego.path_search;
 
+import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;

@@ -17,6 +17,7 @@ import java.util.Map;
 import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 import bean.pwr.imskamieskiego.model.map.Edge;
+import bean.pwr.imskamieskiego.repository.MapRepositoryImpl;
 
 
 public class MapRepositoryImplTest {

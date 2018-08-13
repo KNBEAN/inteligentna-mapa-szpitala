@@ -6,7 +6,6 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.Room;
 
-import bean.pwr.imskamieskiego.data.converters.IntegerConverter;
 import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
 import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;

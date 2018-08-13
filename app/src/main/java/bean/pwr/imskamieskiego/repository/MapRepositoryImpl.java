@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.data;
+package bean.pwr.imskamieskiego.repository;
 
 import android.support.annotation.NonNull;
 
@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
 import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
