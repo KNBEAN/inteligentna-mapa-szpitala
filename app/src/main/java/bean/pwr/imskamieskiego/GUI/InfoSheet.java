@@ -43,38 +43,8 @@ public class InfoSheet {
         this.listener = null;
         this.parent = parent;
 
+        infoSheetComponentsInit();
 
-
-        layoutInfoSheet = parent.findViewById(R.id.info_sheet_layout);
-        guideToButton = parent.findViewById(R.id.guide_to_button);
-        expandSheetButton = parent.findViewById(R.id.info_button);
-        placeName = parent.findViewById(R.id.place_name);
-        placeInfo = parent.findViewById(R.id.place_info);
-
-
-        guideToButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onGuideToButtonClicked();
-
-            }
-        });
-        pinButton = parent.findViewById(R.id.pin_button);
-        pinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Location location = LocationFactory.create("Banana", "Żyrafafafa wysoka jest jak szafa");
-                showInfoSheet(location);
-            }
-        });
-
-
-        expandSheetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleBottomSheet();
-            }
-        });
 
         sheetBehavior = BottomSheetBehavior.from(layoutInfoSheet);
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -87,13 +57,19 @@ public class InfoSheet {
                     case BottomSheetBehavior.STATE_HIDDEN:
                         layoutInfoSheet.setVisibility(View.GONE);
                         Log.i("Bottom sheet", "hidden");
-                        listener.onSheetHidden();
+                        if (listener!=null){
+                            listener.onSheetHidden();
+                        }
+
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED: {
                         Log.i("Bottom sheet", "expanded");
                         expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+                        if (listener!=null){
+                            listener.onSheetExpanded();
+                        }
 
-                        listener.onSheetExpanded();
+
 
 
                     }
@@ -102,7 +78,11 @@ public class InfoSheet {
 
                         expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
                         layoutInfoSheet.setVisibility(View.VISIBLE);
-                        listener.onSheetCollapsed();
+                        if (listener!=null){
+                            listener.onSheetCollapsed();
+                        }
+
+
 
 
                     }
@@ -139,7 +119,7 @@ public class InfoSheet {
 
 
     public interface InfoSheetListener {
-        void onGuideToButtonClicked();
+        void guideTo();
 
         void onSheetCollapsed();
 
@@ -173,6 +153,41 @@ public class InfoSheet {
         placeInfo.setText(description);
         sheetBehavior.setState(COLLAPSED);
 
+
+    }
+    private void infoSheetComponentsInit () {
+        layoutInfoSheet = parent.findViewById(R.id.info_sheet_layout);
+        guideToButton = parent.findViewById(R.id.guide_to_button);
+        expandSheetButton = parent.findViewById(R.id.info_button);
+        placeName = parent.findViewById(R.id.place_name);
+        placeInfo = parent.findViewById(R.id.place_info);
+
+
+        guideToButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener!=null){
+                listener.guideTo();
+                }
+
+            }
+        });
+        pinButton = parent.findViewById(R.id.pin_button);
+        pinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Location location = LocationFactory.create("SOR", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ");
+                showInfoSheet(location);
+            }
+        });
+
+
+        expandSheetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleBottomSheet();
+            }
+        });
 
     }
 

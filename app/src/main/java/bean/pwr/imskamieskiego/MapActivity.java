@@ -55,7 +55,7 @@ public class MapActivity extends AppCompatActivity
 
         infoSheet.setListener(new InfoSheet.InfoSheetListener() {
             @Override
-            public void onGuideToButtonClicked() {
+            public void guideTo() {
 
 
             }
