@@ -24,8 +24,8 @@ public class SearchFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private String listViewPlace;
-    private StringReciver stringReciver;
-    private Boolean logicSD;
+    private Boolean isDestination;
+    private String hintText;
 
 
     @Override
@@ -33,9 +33,8 @@ public class SearchFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        stringReciver = new StringReciver();
-        logicSD = getArguments().getBoolean("Bool",true);
-        stringReciver.StartOrDest(logicSD);
+        isDestination = getArguments().getBoolean("isDestination",true);
+        StartOrDest(isDestination);
 
     }
 
@@ -75,7 +74,7 @@ public class SearchFragment extends Fragment {
         SearchView searchView = (SearchView) item.getActionView();
 
         searchView.setIconified(false);
-        searchView.setQueryHint(stringReciver.getHintText());
+        searchView.setQueryHint(getHintText());
 
 
         searchView.setOnQueryTextListener(
@@ -112,6 +111,20 @@ public class SearchFragment extends Fragment {
     public void setListViewPlace(String listViewPlace) {
         this.listViewPlace = listViewPlace;
     }
+
+    public String getHintText() {
+        return hintText;
+    }
+
+    public void StartOrDest(boolean isDest){
+
+        if(isDest)
+            hintText = "Wpisz miejsce docelowe";
+        else
+            hintText = "Wpisz miejsce startowe";
+
+    }
+
 
 
 }

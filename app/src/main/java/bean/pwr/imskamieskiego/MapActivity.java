@@ -141,19 +141,18 @@ public class MapActivity extends AppCompatActivity
 
     }
 
-    public void animate_hide(View v) {
+    public Animation animate_hide(View v) {
         final Animation hideAnimation = AnimationUtils.loadAnimation(
                 MapActivity.this, R.anim.hide_anim);
         v.startAnimation(hideAnimation);
 
-
+        return hideAnimation;
     }
 
     public void animate_show(View v) {
         final Animation showAnimation = AnimationUtils.loadAnimation(
                 MapActivity.this, R.anim.show_anim);
         v.startAnimation(showAnimation);
-
 
     }
 
@@ -216,27 +215,33 @@ public class MapActivity extends AppCompatActivity
         wcButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activityAnimation(toolbar,changeFloorButton);
+                hideAnimation(toolbar);
+                hideAnimation(changeFloorButton);
                 setNewNavWindowFragment();
                 hideQuickAccessButtons();
-
+                hideAnimation(quickAccessButton);
 
             }
         });
         foodButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activityAnimation(toolbar,changeFloorButton);
+                hideAnimation(toolbar);
+                hideAnimation(changeFloorButton);
                 setNewNavWindowFragment();
                 hideQuickAccessButtons();
+                hideAnimation(quickAccessButton);
 
             }
         });
         patientAssistantButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                hideAnimation(toolbar);
+                hideAnimation(changeFloorButton);
+                setNewNavWindowFragment();
                 hideQuickAccessButtons();
+                hideAnimation(quickAccessButton);
             }
         });
 
@@ -254,17 +259,17 @@ public class MapActivity extends AppCompatActivity
             fragmentTransaction
                     .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
                             R.anim.slide_in_from_left, android.R.anim.slide_out_right)
-                    .add(R.id.drawer_layout, navWindowFragment)
+                    .add(R.id.drawer_layout,navWindowFragment,"NavWindowFragment")
                     .addToBackStack(null)
                     .commit();
         }
     }
 
-    public void activityAnimation(final Toolbar toolbar,final ImageButton changeFloorButton){
-        Animation hideAnimation = AnimationUtils.loadAnimation(this,R.anim.hide_anim);
-        toolbar.startAnimation(hideAnimation);
-        changeFloorButton.startAnimation(hideAnimation);
-        hideAnimation.setAnimationListener(new Animation.AnimationListener() {
+    public void hideAnimation(final View view){
+        Animation hideAnim = animate_hide(view);
+
+        hideAnim.setAnimationListener(new Animation.AnimationListener() {
+
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -272,8 +277,7 @@ public class MapActivity extends AppCompatActivity
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                toolbar.setVisibility(View.GONE);
-                changeFloorButton.setVisibility(View.GONE);
+                view.setVisibility(View.GONE);
             }
 
             @Override
@@ -283,18 +287,23 @@ public class MapActivity extends AppCompatActivity
         });
     }
 
+
     @Override
     public void onBack() {
 
-        Animation showAnimation = AnimationUtils.loadAnimation(this,R.anim.show_anim);
-        changeFloorButton.startAnimation(showAnimation);
-        toolbar.startAnimation(showAnimation);
+        animate_show(changeFloorButton);
+        animate_show(toolbar);
+        animate_show(quickAccessButton);
         changeFloorButton.setVisibility(View.VISIBLE);
         toolbar.setVisibility(View.VISIBLE);
+        quickAccessButton.setVisibility(View.VISIBLE);
 
     }
 
+    @Override
+    public void startNavigation() {
 
+    }
 
 
 }

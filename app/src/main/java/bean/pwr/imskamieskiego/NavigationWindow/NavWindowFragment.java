@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 
@@ -20,9 +19,8 @@ import bean.pwr.imskamieskiego.R;
 
 public class NavWindowFragment extends Fragment{
 
-    private TextView textViewStart, textViewCel;
+    private TextView textViewStart, textViewDestination;
     private CheckBox checkStairs;
-    private Boolean goDownTheStairs;
     private Button startButton;
     private Fragment searchFragment;
     private NavWindowListener navWindowListener;
@@ -42,12 +40,12 @@ public class NavWindowFragment extends Fragment{
         View view = inflater.inflate(R.layout.nav_window, container, false);
 
         textViewStart = (TextView) view.findViewById(R.id.textViewStart);
-        textViewCel = (TextView) view.findViewById(R.id.textViewCel);
+        textViewDestination = (TextView) view.findViewById(R.id.textViewCel);
         checkStairs = (CheckBox) view.findViewById(R.id.checkStairs);
         startButton = (Button) view.findViewById(R.id.startButton);
 
-        typeNav();
-        startNavigation();
+        selectPlace();
+        startButtonListener();
 
         return view;
     }
@@ -71,8 +69,8 @@ public class NavWindowFragment extends Fragment{
         }
     }
 
-    public void typeNav(){
-        textViewCel.setOnClickListener(new View.OnClickListener() {
+    public void selectPlace(){
+        textViewDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 searchFragment = new SearchFragment();
@@ -89,22 +87,21 @@ public class NavWindowFragment extends Fragment{
         });
     }
 
-    public void startNavigation(){
+    public void startButtonListener(){
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO Pass it to parent activity via listener
-                //Things doing after click START
+                navWindowListener.startNavigation();
             }
         });
     }
 
-    public void replaceFragment(Fragment nextFragment,Boolean logic){
+    public void replaceFragment(Fragment nextFragment,Boolean isDestination){
 
         FragmentManager fragmentManager = getFragmentManager();
 
         Bundle bundle = new Bundle();
-        bundle.putBoolean("Bool",logic);
+        bundle.putBoolean("isDestination",isDestination);
         nextFragment.setArguments(bundle);
 
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -119,10 +116,5 @@ public class NavWindowFragment extends Fragment{
     public Boolean getGoDownTheStairs() {
         return checkStairs.isChecked();
     }
-
-    public void setGoDownTheStairs(Boolean goDownTheStairs) {
-        checkStairs.setChecked(goDownTheStairs);
-    }
-
 
 }
