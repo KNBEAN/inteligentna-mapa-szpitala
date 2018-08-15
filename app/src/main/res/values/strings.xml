@@ -16,6 +16,12 @@
     <string name="search_view_hint">Czego szukasz?</string>
     <string name="floor_number">Piętro</string>
     <string name="floor_change_button_description">Przycisk zmiany piętra</string>
-    <string name="todo">TODO</string>
+    <string name="map_view_description">Obraz mapy szpitala</string>
+    <string name="ap_quick_access_button">Asystent Pacjenta</string>
+    <string name="food_quick_access_button">Jedzenie</string>
+    <string name="wc_quick_access_button">Toaleta</string>
+    <string name="guide_to">Prowadź do</string>
+    <string name="place_name">Place name</string>
+
 
 </resources>
