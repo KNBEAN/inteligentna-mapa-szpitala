@@ -1,17 +1,13 @@
 package bean.pwr.imskamieskiego;
 
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
-import bean.pwr.imskamieskiego.NavigationWindow.InteractionListener;
+import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
 
 import android.support.design.widget.FloatingActionButton;
@@ -30,7 +26,7 @@ import android.widget.Toast;
 
 
 public class MapActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, InteractionListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NavWindowListener {
 
 
     private FloatingActionButton wcButton;
@@ -288,15 +284,14 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
-    public void onFragmentPause(Boolean logical) {
+    public void onBack() {
 
-        if(logical){
-            Animation showAnimation = AnimationUtils.loadAnimation(this,R.anim.show_anim);
-            changeFloorButton.startAnimation(showAnimation);
-            toolbar.startAnimation(showAnimation);
-            changeFloorButton.setVisibility(View.VISIBLE);
-            toolbar.setVisibility(View.VISIBLE);
-        }
+        Animation showAnimation = AnimationUtils.loadAnimation(this,R.anim.show_anim);
+        changeFloorButton.startAnimation(showAnimation);
+        toolbar.startAnimation(showAnimation);
+        changeFloorButton.setVisibility(View.VISIBLE);
+        toolbar.setVisibility(View.VISIBLE);
+
     }
 
 

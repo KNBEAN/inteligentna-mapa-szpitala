@@ -25,7 +25,7 @@ public class NavWindowFragment extends Fragment{
     private Boolean goDownTheStairs;
     private Button startButton;
     private Fragment searchFragment;
-    private InteractionListener interactionListener;
+    private NavWindowListener navWindowListener;
 
 
 
@@ -47,7 +47,6 @@ public class NavWindowFragment extends Fragment{
         startButton = (Button) view.findViewById(R.id.startButton);
 
         typeNav();
-        checkStairsFunction();
         startNavigation();
 
         return view;
@@ -57,18 +56,18 @@ public class NavWindowFragment extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
-        interactionListener.onFragmentPause(true);
+        navWindowListener.onBack();
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof InteractionListener) {
-            interactionListener = (InteractionListener) context;
+        if (context instanceof NavWindowListener) {
+            navWindowListener = (NavWindowListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement InteractionListener");
+                    + " must implement NavWindowListener");
         }
     }
 
@@ -90,24 +89,11 @@ public class NavWindowFragment extends Fragment{
         });
     }
 
-    public void checkStairsFunction(){
-        checkStairs.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                if(isChecked) {
-                    setGoDownTheStairs(true);
-                }
-                else {
-                    setGoDownTheStairs(false);
-                }
-            }
-        });
-    }
-
     public void startNavigation(){
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //TODO Pass it to parent activity via listener
                 //Things doing after click START
             }
         });
@@ -131,10 +117,12 @@ public class NavWindowFragment extends Fragment{
     }
 
     public Boolean getGoDownTheStairs() {
-        return goDownTheStairs;
+        return checkStairs.isChecked();
     }
 
     public void setGoDownTheStairs(Boolean goDownTheStairs) {
-        this.goDownTheStairs = goDownTheStairs;
+        checkStairs.setChecked(goDownTheStairs);
     }
+
+
 }
