@@ -22,12 +22,12 @@ import bean.pwr.imskamieskiego.model.map.Edge;
 public class MapRepositoryImplTest {
 
 
-    @Mock MapRepositoryImpl mapRepository;
-    @Mock LocalDB localDB;
-    @Mock EdgeDao edgeDao;
+    @Mock private MapRepositoryImpl mapRepository;
+    @Mock private LocalDB localDB;
+    @Mock private EdgeDao edgeDao;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
     }
 
@@ -46,26 +46,26 @@ public class MapRepositoryImplTest {
         edges.addAll(edgesFrom2);
 
         Map<Integer, List<Edge>> expected = new Hashtable<>();
-        expected.put(1, new ArrayList<Edge>(edgesFrom1));
-        expected.put(2, new ArrayList<Edge>(edgesFrom2));
+        expected.put(1, new ArrayList<>(edgesFrom1));
+        expected.put(2, new ArrayList<>(edgesFrom2));
 
-        when(edgeDao.getOutgoingEdges(anyListOf(Integer.class))).thenReturn(edges);
+        when(edgeDao.getOutgoingEdges(anyList())).thenReturn(edges);
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
 
         mapRepository = new MapRepositoryImpl(localDB);
-        Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyListOf(Integer.class));
+        Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyList());
 
         assertEquals(expected, result);
     }
 
     @Test
     public void getEmptyMapWhenAllPointsDoNotExist() {
-        when(edgeDao.getOutgoingEdges(anyListOf(Integer.class))).thenReturn(new ArrayList<EdgeEntity>());
+        when(edgeDao.getOutgoingEdges(anyList())).thenReturn(new ArrayList<>());
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
         mapRepository = new MapRepositoryImpl(localDB);
-        Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyListOf(Integer.class));
+        Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyList());
         assertTrue(result.isEmpty());
     }
 

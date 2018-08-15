@@ -3,6 +3,7 @@ package bean.pwr.imskamieskiego.path_search;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -73,4 +74,46 @@ public class DijkstraSearchTest {
 
         dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoint);
     }
+
+
+    @Test
+    public void searchPathToTargetList() {
+        MapPoint startPoint = mapRepository.getPointByID(2);
+        List<MapPoint> endPoints = Arrays.asList(
+                mapRepository.getPointByID(7),
+                mapRepository.getPointByID(5));
+        
+        List<MapPoint> expectedTrace = Arrays.asList(
+                startPoint,
+                mapRepository.getPointByID(3),
+                mapRepository.getPointByID(4),
+                mapRepository.getPointByID(5)
+        );
+
+
+        dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoints);
+        dijkstraSearch.startSearch();
+        List<MapPoint> trace = dijkstraSearch.getPath();
+
+        assertEquals(expectedTrace, trace);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void startPointOnTargetList() {
+        MapPoint startPoint = mapRepository.getPointByID(2);
+        List<MapPoint> endPoints = Arrays.asList(
+                mapRepository.getPointByID(7),
+                mapRepository.getPointByID(2));
+
+        dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoints);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void emptyListAsTargetList() {
+        MapPoint startPoint = mapRepository.getPointByID(2);
+        List<MapPoint> endPoints = new ArrayList<>();
+
+        dijkstraSearch = new DijkstraSearch(mapRepository, startPoint, endPoints);
+    }
+
 }
