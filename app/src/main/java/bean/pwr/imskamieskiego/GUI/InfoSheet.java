@@ -11,17 +11,28 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.time.chrono.HijrahChronology;
+
 import bean.pwr.imskamieskiego.R;
+import bean.pwr.imskamieskiego.model.map.Location;
+import bean.pwr.imskamieskiego.model.map.LocationFactory;
 
 public class InfoSheet {
     private ConstraintLayout layoutInfoSheet;
     private Button guideToButton;
     private TextView placeName;
+    private TextView placeInfo;
     private BottomSheetBehavior sheetBehavior;
     private ImageButton expandSheetButton;
     private ImageView pinButton;
     private Activity parent;
     private InfoSheetListener listener;
+    public static int COLLAPSED = BottomSheetBehavior.STATE_COLLAPSED;
+    public static int EXPANDED = BottomSheetBehavior.STATE_EXPANDED;
+    public static int HIDDEN = BottomSheetBehavior.STATE_HIDDEN;
+
+
+
 
 
     public void setListener(InfoSheetListener listener) {
@@ -33,10 +44,13 @@ public class InfoSheet {
         this.parent = parent;
 
 
+
         layoutInfoSheet = parent.findViewById(R.id.info_sheet_layout);
         guideToButton = parent.findViewById(R.id.guide_to_button);
         expandSheetButton = parent.findViewById(R.id.info_button);
         placeName = parent.findViewById(R.id.place_name);
+        placeInfo = parent.findViewById(R.id.place_info);
+
 
         guideToButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +63,8 @@ public class InfoSheet {
         pinButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                Location location = LocationFactory.create("Banana", "Żyrafafafa wysoka jest jak szafa");
+                showInfoSheet(location);
             }
         });
 
@@ -142,6 +157,25 @@ public class InfoSheet {
     public void setBottomSheetState(int bottomSheetState) {
         sheetBehavior.setState(bottomSheetState);
     }
+    public void showInfoSheet(Location location, int state){
+        String name = location.getName();
+        String description = location.getDescription();
+        placeName.setText(name);
+        placeInfo.setText(description);
+        sheetBehavior.setState(state);
+
+
+    }
+    public void showInfoSheet(Location location){
+        String name = location.getName();
+        String description = location.getDescription();
+        placeName.setText(name);
+        placeInfo.setText(description);
+        sheetBehavior.setState(COLLAPSED);
+
+
+    }
+
 
 
 }

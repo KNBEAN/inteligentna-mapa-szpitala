@@ -26,6 +26,8 @@ import android.widget.Toast;
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 
+import static bean.pwr.imskamieskiego.GUI.InfoSheet.COLLAPSED;
+
 public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -54,6 +56,7 @@ public class MapActivity extends AppCompatActivity
         infoSheet.setListener(new InfoSheet.InfoSheetListener() {
             @Override
             public void onGuideToButtonClicked() {
+
 
             }
 
