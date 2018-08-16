@@ -30,7 +30,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
      * @param mapRepository repository with graph data
      * @param startPoint point from which the algorithm should start searching for the path
      * @param endPoint target point
-     * @throws IllegalArgumentException throw when start and end point are the same node
+     * @throws IllegalArgumentException throws when start and end point are the same node
      */
     public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, MapPoint endPoint) throws IllegalArgumentException {
         if (startPoint.getId()==endPoint.getId()){
@@ -50,8 +50,8 @@ public class DijkstraSearch implements PathSearchAlgorithm {
      * @param mapRepository repository with graph data
      * @param startPoint point from which the algorithm should start searching for the path
      * @param endPoints list of target points
-     * @throws IllegalArgumentException throw when start point and any of end points are the same
-     * node. Throw this exception also, when targets list is empty.
+     * @throws IllegalArgumentException throws when start point and any of end points are the same
+     * node. Throws this exception also, when targets list is empty.
      */
     public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, List<MapPoint> endPoints) throws IllegalArgumentException {
         for (MapPoint point:endPoints) {
