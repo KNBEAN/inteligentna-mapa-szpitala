@@ -18,8 +18,8 @@ import bean.pwr.imskamieskiego.repository.MapRepository;
  */
 public class DijkstraSearch implements PathSearchAlgorithm {
 
-    private MapPoint startPoint;
-    private MapPoint endPoint;
+    private int startPointID;
+    private int[] endPointIDs;
     private MapRepository mapRepository;
     private List<MapPoint> trace;
 
@@ -30,20 +30,51 @@ public class DijkstraSearch implements PathSearchAlgorithm {
      * @param mapRepository repository with graph data
      * @param startPoint point from which the algorithm should start searching for the path
      * @param endPoint target point
-     * @throws IllegalArgumentException throw when start and end point are the same node
+     * @throws IllegalArgumentException throws when start and end point are the same node
      */
     public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, MapPoint endPoint) throws IllegalArgumentException {
         if (startPoint.getId()==endPoint.getId()){
             throw new IllegalArgumentException("End point and start point are the same points!");
         }
-        this.startPoint = startPoint;
-        this.endPoint = endPoint;
+        this.startPointID = startPoint.getId();
+        this.endPointIDs = new int[1];
+        this.endPointIDs[0] = endPoint.getId();
         this.mapRepository = mapRepository;
         this.trace = new ArrayList<>();
     }
 
     /**
-     * Start patch search between points given in constructor. Searching is a blocking operation
+     * Create instance of Dijkstra algorithm to search path between given points. Any point on
+     * targets list can't have the same ID (be the same node on graph) as startPoint.
+     * @see PathSearcher
+     * @param mapRepository repository with graph data
+     * @param startPoint point from which the algorithm should start searching for the path
+     * @param endPoints list of target points
+     * @throws IllegalArgumentException throws when start point and any of end points are the same
+     * node. Throws this exception also, when targets list is empty.
+     */
+    public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, List<MapPoint> endPoints) throws IllegalArgumentException {
+        for (MapPoint point:endPoints) {
+            if (startPoint.getId()==point.getId()){
+                throw new IllegalArgumentException("End point and start point are the same points!");
+            }
+        }
+        if (endPoints.isEmpty()) throw new IllegalArgumentException("End points list is empty!");
+
+
+        this.startPointID = startPoint.getId();
+
+        this.endPointIDs = new int[endPoints.size()];
+        for (int i = 0; i < endPointIDs.length; i++) {
+            endPointIDs[i] = endPoints.get(i).getId();
+        }
+
+        this.mapRepository = mapRepository;
+        this.trace = new ArrayList<>();
+    }
+
+    /**
+     * Start path search between points given in constructor. Searching is a blocking operation
      * that can take a long time. Therefore, do not call it directly in the main thread.
      * @see PathSearcher
      */
@@ -52,8 +83,6 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         //TODO depth fetch parameters should be chosen experimentally
         int initDepthFetch = 10;
         int depthFetch = 10;
-        int startID = startPoint.getId();
-        int endID = endPoint.getId();
 
 
         trace.clear();
@@ -63,24 +92,24 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         PriorityQueue<NodePriorityWrapper> pathToTravel = new PriorityQueue<>(100,
                 (dist1, dist2) -> dist1.distance-dist2.distance);
 
-        Map<Integer, List<Edge>> outgoingEdges = new HashMap<>(fetchEdges(startID, initDepthFetch));
+        Map<Integer, List<Edge>> outgoingEdges = new HashMap<>(fetchEdges(startPointID, initDepthFetch));
 
         //We start from a point without outgoing edges. There is nowhere to go.
         if (outgoingEdges.isEmpty()){
             return;
         }
 
-        nodeVisitHistory.put(startID, -1);
-        distancesFromStart.put(startID, 0);
-        pathToTravel.add(new NodePriorityWrapper(startID, distancesFromStart.get(startID)));
+        nodeVisitHistory.put(startPointID, -1);
+        distancesFromStart.put(startPointID, 0);
+        pathToTravel.add(new NodePriorityWrapper(startPointID, distancesFromStart.get(startPointID)));
 
         while (!pathToTravel.isEmpty()){
 
             int from_id = pathToTravel.remove().id;
 
-            if (from_id == endID){
+            if (isEndPoint(from_id)){
                 //The target has been achieved.
-                generateTrace(nodeVisitHistory);
+                generateTrace(nodeVisitHistory, from_id);
                 return;
             }
 
@@ -127,6 +156,15 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         }
     }
 
+    private boolean isEndPoint(int pointID){
+        for (int id:endPointIDs) {
+            if (pointID == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Map<Integer, List<Edge>> fetchEdges(int nodeID, int depth) {
         if (depth < 0) depth = 0;
         List<Integer> toFetchList = new ArrayList<>();
@@ -156,14 +194,14 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         return fetchedEdges;
     }
 
-    private void generateTrace(Map<Integer, Integer> nodeVisitHistory){
+    private void generateTrace(Map<Integer, Integer> nodeVisitHistory, int endPointID){
         int traceSize = nodeVisitHistory.size();
         if (traceSize == 0) return;
-        if (!nodeVisitHistory.containsKey(endPoint.getId())) return;
+        if (!nodeVisitHistory.containsKey(endPointID)) return;
 
 
         List<Integer> listOfVisits = new ArrayList<>();
-        int previousID = endPoint.getId();
+        int previousID = endPointID;
 
         while (previousID >= 0){
             listOfVisits.add(previousID);
