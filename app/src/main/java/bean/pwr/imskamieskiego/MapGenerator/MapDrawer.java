@@ -7,9 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -19,6 +21,7 @@ import java.util.Hashtable;
 
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.model.map.MapPointFactory;
 
 import static android.content.ContentValues.TAG;
 
@@ -29,29 +32,35 @@ public class MapDrawer extends View {
     private MapModel model;
     private Context context;
     private PointF pointFlast;
+    private PointF pointToShow;
     private ArrayList<MapPoint> mapPoints;
     private Hashtable<MapPoint, Integer> mapPointsTypes;
     private ArrayList<MapPoint> pathPoints;
+    private ArrayList<Bitmap> tackTextures;
+    private int resourceTacksId[];
     private int measureWidth, measureHeight;
-    private int desiredWidth;
-    private int desiredHeight;
+    private int desiredWidth, desiredHeight;
     private int currentlyDisplayedFloor;
     private float originalScale;
     private float deltaX, deltaY;
     private float offsetX, offsetY;
     private ScaleGestureDetector scaleGestureDetector;
+    private GestureDetector gestureDetector;
     private float scaleDetector = 1;
-    private ArrayList<Bitmap> tackTextures;
     private float scaleDetectorMAX = 3.f;
     private float scaleDetectorMIN = 0.5f;
-    private PointF pointToShow;
+
     private final int NONE = 0;
     private final int DRAG = 1;
     private final int ZOOM = 2;
     private final int ZOOM_POINT = 3;
     private int mode;
-    private int resourceTacksId[];
+
     private Paint paintPath;
+    private Matrix canvasMatrix;
+    private Matrix invertedCanvasMatrix;
+    private MapDrawerGestureListener mMapDrawerGestureListener;
+
 
     public MapDrawer(Context context) {
         super(context);
@@ -78,7 +87,7 @@ public class MapDrawer extends View {
 
 
     private void SharedConstructing() {
-
+        setLongClickable(true);
         setClickable(true);
         loadTackTextures();
         originalScale = 1;
@@ -92,25 +101,28 @@ public class MapDrawer extends View {
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
 
+        canvasMatrix = new Matrix();
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
+        gestureDetector  = new GestureDetector(context,new GestureListener());
+
 
         setOnTouchListener(new OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 scaleGestureDetector.onTouchEvent(event);
+                gestureDetector.onTouchEvent(event);
+
 
                 if (scaleGestureDetector.isInProgress()) return true;
 
                 PointF pointF = new PointF(event.getX(), event.getY());
-                Log.i(TAG, "onTouch: event.getX() = " + event.getX() + " event.getY() = " + event.getY());
 
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
                         pointFlast = pointF;
-                        offsetX += deltaX;
-                        offsetY += deltaY;
+
                         mode = DRAG;
                         break;
 
@@ -121,6 +133,13 @@ public class MapDrawer extends View {
                             deltaY = pointF.y - pointFlast.y;
                             invalidate();
                         }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        Log.i(TAG, "onTouch: ACTION_UP");
+                        offsetX += deltaX;
+                        offsetY += deltaY;
+                        deltaX = 0;
+                        deltaY = 0;
                         break;
                 }
                 return true;
@@ -204,7 +223,6 @@ public class MapDrawer extends View {
             canvas.drawPath(path, paintPath);
         }
 
-
         if (!mapObjects.isEmpty()) {
             for (MapPoint point : mapObjects) {
                 if (point.getFloor() == currentlyDisplayedFloor) {
@@ -227,6 +245,7 @@ public class MapDrawer extends View {
         Bitmap layer;
         fitMapToScreen(originalMap);
         layer = layerMap(originalMap);
+        canvasMatrix.reset();
 
         switch (mode) {
 
@@ -236,19 +255,20 @@ public class MapDrawer extends View {
 
             case DRAG:
                 Log.i(TAG, "onDraw: DRAG");
-                canvas.scale(scaleDetector,
-                        scaleDetector, measureWidth / 2, measureHeight / 2);
-                canvas.translate(deltaX + offsetX, deltaY + offsetY);
+                canvasMatrix.postScale(scaleDetector,scaleDetector,
+                        measureWidth/2,
+                        measureHeight/2);
+                canvasMatrix.postTranslate(deltaX+offsetX,deltaY+offsetY);
                 Log.i(TAG, "onDraw: DRAG x = " + deltaX + " offset x = " +
                         offsetX + " y = " + deltaY + " offset x = " + offsetY);
                 break;
 
             case ZOOM:
                 Log.i(TAG, "onDraw: ZOOM");
-                canvas.scale(scaleDetector,
-                        scaleDetector, measureWidth / 2, measureHeight / 2);
-                canvas.translate(offsetX, offsetY);
-
+                canvasMatrix.postScale(scaleDetector,scaleDetector,
+                        measureWidth / 2,
+                        measureHeight / 2);
+                canvasMatrix.postTranslate(offsetX,offsetY);
                 Log.i(TAG, "onDraw: ZOOM : scaleDetector = " + scaleDetector);
                 Log.i(TAG, "onDraw: ZOOM OFFSET : X = " + offsetX + " Y = " + offsetY);
                 break;
@@ -259,17 +279,20 @@ public class MapDrawer extends View {
                 pointToShow.x += (-measureWidth + desiredWidth) / 2;
                 pointToShow.y += (-measureHeight + desiredHeight) / 2;
                 Log.i(TAG, "onDraw: ZOOM_POINT point to show = " + pointToShow);
-                canvas.scale(scaleDetector, scaleDetector,
-                        measureWidth / 2, measureHeight / 2);
-                canvas.translate(pointToShow.x, pointToShow.y);
+               canvasMatrix.postScale(scaleDetector,scaleDetector,
+                       measureWidth/2,
+                       measureHeight/2);
+               canvasMatrix.postTranslate(pointToShow.x,pointToShow.y);
                 offsetX = pointToShow.x;
                 offsetY = pointToShow.y;
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
         }
 
-        canvas.translate((canvas.getWidth() - layer.getWidth()) / 2,
-                (canvas.getHeight() - layer.getHeight()) / 2);
         layer = layerPathAndTacks(mapPoints, pathPoints, layer);
+        canvasMatrix.postTranslate(
+                (canvas.getWidth() - layer.getWidth()) / 2,
+                (canvas.getHeight() - layer.getHeight()) / 2);
+        canvas.concat(canvasMatrix);
         canvas.drawBitmap(layer, 0, 0, null);
     }
 
@@ -279,8 +302,8 @@ public class MapDrawer extends View {
         float originalBitmapWidth = bitmap.getWidth();
         float originalBitmapHeight = bitmap.getHeight();
         originalScale = Math.max(
-                originalBitmapHeight / (float) measureHeight
-                , originalBitmapWidth / (float) measureWidth);
+                originalBitmapHeight / (float) measureHeight,
+                originalBitmapWidth / (float) measureWidth);
         desiredWidth = (int) (originalBitmapWidth / originalScale);
         desiredHeight = (int) (originalBitmapHeight / originalScale);
     }
@@ -347,7 +370,10 @@ public class MapDrawer extends View {
                         , resourceName
                         , tackWidth
                         , tackHeight);
-                tackTextures.add(Bitmap.createScaledBitmap(texture, (tackWidth), (tackHeight), false));
+                tackTextures.add(Bitmap.createScaledBitmap(texture,
+                        (tackWidth),
+                        (tackHeight),
+                        false));
             }
         } catch (Exception o) {
             Log.i(TAG, "loadTackTextures: No info about resources in .xml file. Use addTackResources() to" +
@@ -421,9 +447,17 @@ public class MapDrawer extends View {
         invalidate();
     }
 
+    /**
+     * Set observer for MapDrawer to get ongoing
+     * gestures in widget
+     * @param mapDrawerGestureListener
+     */
+    public void setOnLongPressListener(MapDrawerGestureListener mapDrawerGestureListener){
+        this.mMapDrawerGestureListener = mapDrawerGestureListener;
+    }
+
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
@@ -434,7 +468,6 @@ public class MapDrawer extends View {
             scaleDetector = scaleDetector * detector.getScaleFactor();
             invalidate();
             return true;
-
         }
 
         @Override
@@ -447,6 +480,25 @@ public class MapDrawer extends View {
         @Override
         public void onScaleEnd(ScaleGestureDetector detector) {
             Log.i(TAG, "onScaleEnds");
+        }
+    }
+
+    private class GestureListener extends GestureDetector.SimpleOnGestureListener implements GestureDetector.OnGestureListener{
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            invertedCanvasMatrix = new Matrix(canvasMatrix);
+            invertedCanvasMatrix.invert(invertedCanvasMatrix);
+            e.transform(invertedCanvasMatrix);
+            int x = (int) (e.getX()*originalScale);
+            int y = (int) (e.getY()*originalScale);
+            mMapDrawerGestureListener.onLongPress(
+                    MapPointFactory.create(x,y,currentlyDisplayedFloor));
         }
 
     }
