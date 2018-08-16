@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.MapGenerator;
+package bean.pwr.imskamieskiego.MapDrawer;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -29,7 +29,6 @@ import static android.content.ContentValues.TAG;
 public class MapDrawer extends View {
 
     private Bitmap originalMap;
-    private MapModel model;
     private Context context;
     private PointF pointFlast;
     private PointF pointToShow;
@@ -149,24 +148,16 @@ public class MapDrawer extends View {
 
 
     /**
-     * Setting map to be drawn on canvas
-     * and getting dimensions from bitmap
-     * to set up scale parameters
-     * If floor exceeds size of
-     * floors list method gets the last one floor
-     * map possible
-     * @param floor number of the floor to be drawn
+     * Setting bitmap to be draw instantly
+     * on canvas.
+     * @param floor info about displayed map for MapDrawer
+     * @param floorMap bitmap which represents floor
      */
-    public void showFloor(int floor) {
+    public void showFloor(int floor,Bitmap floorMap) {
         if (floor < 0) throw new IllegalArgumentException("Positive value needed");
-        if (floor >= model.getFloorCount()) {
-            originalMap = model.getFloorMap(model.getFloorCount() - 1);
-            currentlyDisplayedFloor = model.getFloorCount() - 1;
-        } else {
-            originalMap = model.getFloorMap(floor);
-            currentlyDisplayedFloor = floor;
-        }
+        originalMap = floorMap;
         if (originalMap == null) throw new NullPointerException();
+        currentlyDisplayedFloor = floor;
         invalidate();
     }
 
@@ -385,15 +376,6 @@ public class MapDrawer extends View {
         return tackTextures.get(type);
     }
 
-    /**
-     * Method sets model
-     * which will be used to
-     * get maps textures.
-     * @param model object that implements MapModel interface
-     */
-    public void setModel(MapModel model) {
-        this.model = model;
-    }
 
 
     /**
