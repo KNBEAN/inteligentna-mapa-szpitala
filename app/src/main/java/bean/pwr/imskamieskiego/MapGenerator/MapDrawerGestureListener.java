@@ -1,5 +1,7 @@
 package bean.pwr.imskamieskiego.MapGenerator;
 
+import bean.pwr.imskamieskiego.model.map.MapPoint;
+
 public interface MapDrawerGestureListener {
-    void onLongPress(int x, int y);
+    void onLongPress(MapPoint mapPoint);
 }

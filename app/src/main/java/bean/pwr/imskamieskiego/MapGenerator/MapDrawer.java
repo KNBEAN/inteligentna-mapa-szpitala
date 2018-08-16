@@ -21,6 +21,7 @@ import java.util.Hashtable;
 
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.model.map.MapPointFactory;
 
 import static android.content.ContentValues.TAG;
 
@@ -56,7 +57,8 @@ public class MapDrawer extends View {
     private int mode;
 
     private Paint paintPath;
-    private Matrix canvasMatrix, invertedCanvasMatrix;
+    private Matrix canvasMatrix;
+    private Matrix invertedCanvasMatrix;
     private MapDrawerGestureListener mMapDrawerGestureListener;
 
 
@@ -495,7 +497,8 @@ public class MapDrawer extends View {
             e.transform(invertedCanvasMatrix);
             int x = (int) (e.getX()*originalScale);
             int y = (int) (e.getY()*originalScale);
-            mMapDrawerGestureListener.onLongPress(x,y);
+            mMapDrawerGestureListener.onLongPress(
+                    MapPointFactory.create(x,y,currentlyDisplayedFloor));
         }
 
     }
