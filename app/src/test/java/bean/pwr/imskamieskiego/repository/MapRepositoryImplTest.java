@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.data;
+package bean.pwr.imskamieskiego.repository;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -14,10 +14,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 import bean.pwr.imskamieskiego.model.map.Edge;
-import bean.pwr.imskamieskiego.repository.MapRepositoryImpl;
 
 
 public class MapRepositoryImplTest {
@@ -35,12 +35,12 @@ public class MapRepositoryImplTest {
     @Test
     public void getMapOfListsOfEdgesForIDsList() {
         List<EdgeEntity> edgesFrom1 = Arrays.asList(
-        new EdgeEntity(1, 1, 2, 1),
-        new EdgeEntity(2, 1, 3, 1));
+                new EdgeEntity(1, 1, 2, 1),
+                new EdgeEntity(2, 1, 3, 1));
 
         List<EdgeEntity> edgesFrom2 = Arrays.asList(
-        new EdgeEntity(3, 2, 1, 1),
-        new EdgeEntity(4, 2, 3, 1));
+                new EdgeEntity(3, 2, 1, 1),
+                new EdgeEntity(4, 2, 3, 1));
 
         List<EdgeEntity> edges = new ArrayList<>();
         edges.addAll(edgesFrom1);
