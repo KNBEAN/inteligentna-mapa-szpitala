@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.MapGenerator;
+package bean.pwr.imskamieskiego.MapDrawer;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;

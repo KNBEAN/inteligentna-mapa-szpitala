@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.MapGenerator;
+package bean.pwr.imskamieskiego.MapDraw;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -29,7 +29,6 @@ import static android.content.ContentValues.TAG;
 public class MapDrawer extends View {
 
     private Bitmap originalMap;
-    private MapModel model;
     private Context context;
     private PointF pointFlast;
     private PointF pointToShow;
@@ -59,7 +58,7 @@ public class MapDrawer extends View {
     private Paint paintPath;
     private Matrix canvasMatrix;
     private Matrix invertedCanvasMatrix;
-    private MapDrawerGestureListener mMapDrawerGestureListener;
+    private MapDrawerGestureListener mapDrawerGestureListener;
 
 
     public MapDrawer(Context context) {
@@ -149,35 +148,26 @@ public class MapDrawer extends View {
 
 
     /**
-     * Setting map to be drawn on canvas
-     * and getting dimensions from bitmap
-     * to set up scale parameters
-     * If floor exceeds size of
-     * floors list method gets the last one floor
-     * map possible
-     * @param floor number of the floor to be drawn
+     * Setting bitmap to be draw instantly
+     * on canvas.
+     * @param floor info about displayed map for MapDrawer
+     * @param floorMap bitmap which represents floor
      */
-    public void showFloor(int floor) {
+    public void showFloor(int floor,Bitmap floorMap) {
         if (floor < 0) throw new IllegalArgumentException("Positive value needed");
-        if (floor >= model.getFloorCount()) {
-            originalMap = model.getFloorMap(model.getFloorCount() - 1);
-            currentlyDisplayedFloor = model.getFloorCount() - 1;
-        } else {
-            originalMap = model.getFloorMap(floor);
-            currentlyDisplayedFloor = floor;
-        }
+        originalMap = floorMap;
         if (originalMap == null) throw new NullPointerException();
+        currentlyDisplayedFloor = floor;
         invalidate();
     }
 
     /**
-     * Zoom view on given point. Floor will be
-     * changed if needed. Zoom is equal to scaleDetectorMAX
+     * Zoom view on given point.
+     * Zoom is equal to scaleDetectorMAX
      * @param point point to center on and zoom
      */
-    public void showPoint(MapPoint point) {
+    public void zoomOnPoint(MapPoint point) {
         mode = ZOOM_POINT;
-        showFloor(point.getFloor());
         scaleDetector = scaleDetectorMAX;
         pointToShow.x = point.getX();
         pointToShow.y = point.getY();
@@ -385,15 +375,6 @@ public class MapDrawer extends View {
         return tackTextures.get(type);
     }
 
-    /**
-     * Method sets model
-     * which will be used to
-     * get maps textures.
-     * @param model object that implements MapModel interface
-     */
-    public void setModel(MapModel model) {
-        this.model = model;
-    }
 
 
     /**
@@ -453,7 +434,7 @@ public class MapDrawer extends View {
      * @param mapDrawerGestureListener
      */
     public void setOnLongPressListener(MapDrawerGestureListener mapDrawerGestureListener){
-        this.mMapDrawerGestureListener = mapDrawerGestureListener;
+        this.mapDrawerGestureListener = mapDrawerGestureListener;
     }
 
 
@@ -492,13 +473,16 @@ public class MapDrawer extends View {
 
         @Override
         public void onLongPress(MotionEvent e) {
+            if (mapDrawerGestureListener == null) return;
             invertedCanvasMatrix = new Matrix(canvasMatrix);
             invertedCanvasMatrix.invert(invertedCanvasMatrix);
             e.transform(invertedCanvasMatrix);
             int x = (int) (e.getX()*originalScale);
             int y = (int) (e.getY()*originalScale);
-            mMapDrawerGestureListener.onLongPress(
-                    MapPointFactory.create(x,y,currentlyDisplayedFloor));
+
+               mapDrawerGestureListener.onLongPress(
+                        MapPointFactory.create(x,y,currentlyDisplayedFloor));
+
         }
 
     }

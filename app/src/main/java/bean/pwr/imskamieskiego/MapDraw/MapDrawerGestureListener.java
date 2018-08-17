@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.MapGenerator;
+package bean.pwr.imskamieskiego.MapDrawer;
 
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
