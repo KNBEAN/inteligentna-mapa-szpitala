@@ -5,11 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
-
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -34,9 +33,9 @@ public class MapActivity extends AppCompatActivity
     private FloatingActionButton foodButton;
     private FloatingActionButton quickAccessButton;
     private ImageButton changeFloorButton;
-
     private Fragment navWindowFragment;
     private Toolbar toolbar;
+    private Boolean fragmentIsAdd = false;
     private static final String TAG = "MapActivity";
 
 
@@ -49,6 +48,17 @@ public class MapActivity extends AppCompatActivity
 
         changeFloorButton = findViewById(R.id.floors_button);
         quickAccessButtonInit();
+
+        if (savedInstanceState != null){
+            Boolean isAdd = savedInstanceState.getBoolean("fragIsAdd");
+
+            if (isAdd) {
+                quickAccessButton.setVisibility(View.GONE);
+                changeFloorButton.setVisibility(View.GONE);
+                toolbar.setVisibility(View.GONE);
+            }
+
+        }
 
         changeFloorButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +100,7 @@ public class MapActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        fragmentIsAdd = false;
     }
 
     @Override
@@ -259,9 +270,10 @@ public class MapActivity extends AppCompatActivity
             fragmentTransaction
                     .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
                             R.anim.slide_in_from_left, android.R.anim.slide_out_right)
-                    .add(R.id.drawer_layout,navWindowFragment,"NavWindowFragment")
+                    .add(R.id.drawer_layout,navWindowFragment)
                     .addToBackStack(null)
                     .commit();
+            fragmentIsAdd = true;
         }
     }
 
@@ -305,5 +317,12 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Log.i("FragisAdd",String.valueOf(fragmentIsAdd));
+        outState.putBoolean("fragIsAdd",fragmentIsAdd);
+    }
 
 }

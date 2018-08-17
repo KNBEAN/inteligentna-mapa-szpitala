@@ -73,6 +73,7 @@ public class SearchFragment extends Fragment {
 
         SearchView searchView = (SearchView) item.getActionView();
 
+        searchView.setMaxWidth(10000);
         searchView.setIconified(false);
         searchView.setQueryHint(getHintText());
 

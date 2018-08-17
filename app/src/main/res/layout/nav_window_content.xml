@@ -4,18 +4,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NavigationWindow.NavStartActivity"
     tools:showIn="@layout/nav_window">
 
 
+    <ImageButton
+        android:id="@+id/oppositeArrowsButton"
+        style="@android:style/Widget.ImageButton"
+        android:layout_width="30dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="57dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="48dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/startButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/opposite_arrows" />
+
     <Button
         android:id="@+id/startButton"
-        android:layout_width="64dp"
-        android:layout_height="63dp"
-        android:background="@drawable/round_button"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="90dp"
+        android:layout_height="45dp"
         android:gravity="center_vertical|center_horizontal"
         android:text="Start"
         android:textColor="#fff"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.903"
@@ -25,21 +41,19 @@
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="41dp"
+        android:layout_width="wrap_content"
         android:layout_height="85dp"
-        android:layout_marginBottom="102dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/textViewFrom"
             android:layout_width="match_parent"
             android:layout_height="19dp"
             android:layout_marginBottom="15dp"
@@ -50,29 +64,29 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textViewTo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Do"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/textViewFrom"
             app:layout_constraintVertical_bias="1.0" />
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_width="231dp"
+        android:layout_width="210dp"
         android:layout_height="85dp"
-        android:layout_marginBottom="13dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginEnd="148dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/startButton"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
@@ -91,7 +105,7 @@
             android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/textViewCel"
+            android:id="@+id/textViewDestination"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/back"
@@ -103,21 +117,19 @@
             android:paddingTop="2dp"
             android:textSize="18sp" />
 
+
     </LinearLayout>
 
     <CheckBox
         android:id="@+id/checkStairs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="23dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="16dp"
         android:text="Schody"
         android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
 
 </android.support.constraint.ConstraintLayout>
