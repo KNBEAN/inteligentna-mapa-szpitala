@@ -73,7 +73,7 @@ public class SearchFragment extends Fragment {
 
         SearchView searchView = (SearchView) item.getActionView();
 
-        searchView.setMaxWidth(10000);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setIconified(false);
         searchView.setQueryHint(getHintText());
 
@@ -120,9 +120,9 @@ public class SearchFragment extends Fragment {
     public void StartOrDest(boolean isDest){
 
         if(isDest)
-            hintText = "Wpisz miejsce docelowe";
+            hintText = getString(R.string.nav_window_destination);
         else
-            hintText = "Wpisz miejsce startowe";
+            hintText = getString(R.string.nav_window_start);
 
     }
 
