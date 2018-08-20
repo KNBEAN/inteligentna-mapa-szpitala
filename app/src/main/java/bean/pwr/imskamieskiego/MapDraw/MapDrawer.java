@@ -19,6 +19,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.model.map.MapPointFactory;
@@ -92,7 +93,7 @@ public class MapDrawer extends View {
         originalScale = 1;
         offsetX = 0;
         offsetY = 0;
-        paintPath = new DottedPaint();
+        paintPath = new bean.pwr.imskamieskiego.MapDrawer.DottedPaint();
         pointFlast = new PointF();
         scaleDetector = 1.f;
         pathPoints = new ArrayList<>();
@@ -356,7 +357,7 @@ public class MapDrawer extends View {
         tackTextures = new ArrayList<>();
         try {
             for (int resourceName : resourceTacksId) {
-                texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
+                texture = bean.pwr.imskamieskiego.MapDrawer.BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
                         , resourceName
                         , tackWidth
                         , tackHeight);
@@ -433,7 +434,7 @@ public class MapDrawer extends View {
      * gestures in widget
      * @param mapDrawerGestureListener
      */
-    public void setOnLongPressListener(MapDrawerGestureListener mapDrawerGestureListener){
+    public void setOnLongPressListener(bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener mapDrawerGestureListener){
         this.mapDrawerGestureListener = mapDrawerGestureListener;
     }
 
