@@ -14,7 +14,6 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.internal.matchers.Null;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -79,14 +78,22 @@ public class FloorInfoDaoTest {
     }
 
     @Test
-    public void getMapResourceName() {
+    public void getMapResourcePath() {
         String expectedNames = "mapFile2";
 
-        LiveData<String> floorResourceName = floorInfoDao.getFloorMapName(1);
+        LiveData<String> floorResourceName = floorInfoDao.getFloorImagePath(1);
         floorResourceName.observeForever(observer);
 
 
         assertEquals(expectedNames, floorResourceName.getValue());
 
+    }
+
+    @Test
+    public void getMapResourcePathFromNonExistFloor() {
+        LiveData<String> floorResourceName = floorInfoDao.getFloorImagePath(-1);
+        floorResourceName.observeForever(observer);
+
+        assertNull(floorResourceName.getValue());
     }
 }

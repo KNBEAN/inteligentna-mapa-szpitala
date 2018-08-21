@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "0bd789dcaadabe437f8bbd54995839aa",
+    "identityHash": "975922a8b70cd95bb288af3c08ca7dbe",
     "entities": [
       {
         "tableName": "nodes",
@@ -120,7 +120,7 @@
       },
       {
         "tableName": "floors",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`floorNumber` INTEGER NOT NULL, `floorName` TEXT NOT NULL, `floorMap` TEXT NOT NULL, PRIMARY KEY(`floorNumber`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`floorNumber` INTEGER NOT NULL, `floorName` TEXT NOT NULL, `imagePath` TEXT NOT NULL, PRIMARY KEY(`floorNumber`))",
         "fields": [
           {
             "fieldPath": "floorNumber",
@@ -135,8 +135,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "floorMap",
-            "columnName": "floorMap",
+            "fieldPath": "imagePath",
+            "columnName": "imagePath",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -153,7 +153,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0bd789dcaadabe437f8bbd54995839aa\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"975922a8b70cd95bb288af3c08ca7dbe\")"
     ]
   }
 }
