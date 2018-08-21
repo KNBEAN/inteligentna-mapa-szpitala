@@ -19,9 +19,11 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import bean.pwr.imskamieskiego.MapDrawer.DottedPaint;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.model.map.MapPointFactory;
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 
 import static android.content.ContentValues.TAG;
 
@@ -356,7 +358,7 @@ public class MapDrawer extends View {
         tackTextures = new ArrayList<>();
         try {
             for (int resourceName : resourceTacksId) {
-                texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
+                texture = bean.pwr.imskamieskiego.MapDrawer.BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
                         , resourceName
                         , tackWidth
                         , tackHeight);

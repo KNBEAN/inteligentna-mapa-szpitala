@@ -1,10 +1,14 @@
 package bean.pwr.imskamieskiego;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,6 +22,7 @@ import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -39,6 +44,7 @@ public class MapActivity extends AppCompatActivity
     private Button foodButtonDescription;
     private Button wcButtonDescription;
     private ImageButton changeFloorButton;
+    private Fragment infoFragment;
 
 
     private static final String TAG = "MapActivity";
@@ -120,6 +126,9 @@ public class MapActivity extends AppCompatActivity
         if (id == R.id.nav_ap) {
 
         } else if (id == R.id.nav_authors) {
+
+            Intent intent = new Intent(this,AuthorsActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_help) {
 
