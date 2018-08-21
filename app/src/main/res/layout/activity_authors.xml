@@ -17,6 +17,7 @@
         android:background="@drawable/round_corners">
 
         <LinearLayout
+            android:id="@+id/appInfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -74,16 +75,16 @@
 
             <TextView
                 android:id="@+id/authorsTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:background="@drawable/round_corners"
                 android:gravity="center"
-                android:padding="5dp"
+                android:paddingEnd="10dp"
                 android:paddingStart="10dp"
+                android:paddingTop="5dp"
                 android:text="@string/authors_window_title_authors"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -102,15 +103,15 @@
 
             <TextView
                 android:id="@+id/translateTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/round_corners"
                 android:gravity="center"
-                android:padding="5dp"
+                android:paddingEnd="10dp"
                 android:paddingStart="10dp"
+                android:paddingTop="5dp"
                 android:text="@string/authors_window_title_translations"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textAllCaps="false"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -128,14 +129,14 @@
 
             <TextView
                 android:id="@+id/thanksTitle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/round_corners"
-                android:padding="5dp"
+                android:paddingEnd="10dp"
                 android:paddingStart="10dp"
+                android:paddingTop="5dp"
                 android:text="@string/authors_window_title_thanks"
-                android:textAlignment="center"
+                android:textAlignment="viewStart"
                 android:textAllCaps="false"
                 android:textSize="18sp"
                 android:textStyle="bold" />
