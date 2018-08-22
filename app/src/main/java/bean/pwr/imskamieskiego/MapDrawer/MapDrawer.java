@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.MapDraw;
+package bean.pwr.imskamieskiego.MapDrawer;
 
 import android.content.Context;
 import android.content.res.TypedArray;
