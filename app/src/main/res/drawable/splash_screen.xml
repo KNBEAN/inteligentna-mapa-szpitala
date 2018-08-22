@@ -5,14 +5,16 @@
     <item android:drawable="@android:color/white"/>
     <item>
         <bitmap
-            android:src="@drawable/splash_icon"
+            android:src="@mipmap/splash_icon"
             android:gravity="center"/>
-    </item>
-    <item>
 
+    </item>
+    <item android:bottom="120dp">
         <bitmap
-            android:src="@drawable/text_splash_screen"
-            android:gravity="bottom"/>
+            android:src="@mipmap/splash_text"
+            android:gravity="center_horizontal|bottom"
+
+            />
     </item>
 
 </layer-list>
