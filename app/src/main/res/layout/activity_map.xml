@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         tools:context=".MapActivity">
 
-        <include
-            layout="@layout/content_map"        />
+        <include layout="@layout/content_map" />
+        <include layout="@layout/info_sheet"/>
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
+                android:background="@color/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         </FrameLayout>

@@ -1,0 +1,8 @@
+
+<resources>
+    <declare-styleable name="MapDrawer">
+        <attr name="defaultTackDrawable" format="reference" />
+        <attr name="startTackDrawable" format="reference" />
+        <attr name="endTackDrawable" format="reference"/>
+    </declare-styleable>
+</resources>

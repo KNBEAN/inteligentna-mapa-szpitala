@@ -5,4 +5,5 @@ bean.pwr.imskamieskiego.data.converters
 bean.pwr.imskamieskiego.data.map.dao
 bean.pwr.imskamieskiego.data.map.entity
 bean.pwr.imskamieskiego.model.map
+bean.pwr.imskamieskiego.path_search
 bean.pwr.imskamieskiego.repository
