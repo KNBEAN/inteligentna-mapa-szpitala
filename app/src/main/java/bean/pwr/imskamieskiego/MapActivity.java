@@ -19,8 +19,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -52,12 +50,13 @@ public class MapActivity extends AppCompatActivity
         quickAccessButtonInit();
 
         if (savedInstanceState != null){
-
+            
                 if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
                     quickAccessButton.setVisibility(View.GONE);
                     changeFloorButton.setVisibility(View.GONE);
                     toolbar.setVisibility(View.GONE);
                 }
+
         }
 
         changeFloorButton.setOnClickListener(v -> {
@@ -97,22 +96,30 @@ public class MapActivity extends AppCompatActivity
             super.onBackPressed();
         }
 
-        if (getFragmentManager().findFragmentById(R.id.drawer_layout ) != null){
-            setNavFragmentIsAdd(true);
-            quickAccessButton.setVisibility(View.GONE);
-            changeFloorButton.setVisibility(View.GONE);
-            toolbar.setVisibility(View.GONE);
 
+        if (getSupportFragmentManager().findFragmentById(R.id.drawer_layout ) != null){
+
+            if (getSupportFragmentManager().getBackStackEntryCount() >= 1){
+                navFragmentIsAdd = true;
+                quickAccessButton.setVisibility(View.GONE);
+                changeFloorButton.setVisibility(View.GONE);
+                toolbar.setVisibility(View.GONE);
+            }
+            else{
+                navFragmentIsAdd = false;
+                quickAccessButton.setVisibility(View.VISIBLE);
+                changeFloorButton.setVisibility(View.VISIBLE);
+                toolbar.setVisibility(View.VISIBLE);
+            }
         }
         else {
-            setNavFragmentIsAdd(false);
+            navFragmentIsAdd = false;
             quickAccessButton.setVisibility(View.VISIBLE);
             changeFloorButton.setVisibility(View.VISIBLE);
             toolbar.setVisibility(View.VISIBLE);
         }
 
-        Log.i("onBackPressed",String.valueOf(getNavFragmentIsAdd()));
-
+        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
     }
 
     @Override
@@ -212,30 +219,19 @@ public class MapActivity extends AppCompatActivity
             }
         });
         AnimationAdapter animationHide = new AnimationAdapter(MapActivity.this, R.anim.hide_anim);
-        wcButton.setOnClickListener(view -> {
+        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.GONE);
 
-            animationHide.startAnimation(changeFloorButton, animatedView -> animatedView.setVisibility(View.GONE));
-            animationHide.startAnimation(toolbar,animatedView -> animatedView.setVisibility(View.GONE));
+        View.OnClickListener quickButtonsOnClick = view -> {
+            animationHide.startAnimation(changeFloorButton, animationEndListener);
+            animationHide.startAnimation(toolbar, animationEndListener);
             setNewNavWindowFragment();
             hideQuickAccessButtons();
-            animationHide.startAnimation(quickAccessButton,animatedView -> animatedView.setVisibility(View.GONE));
-        });
-        foodButton.setOnClickListener(view -> {
+            animationHide.startAnimation(quickAccessButton, animationEndListener);
+        };
 
-            animationHide.startAnimation(changeFloorButton, animatedView -> animatedView.setVisibility(View.GONE));
-            animationHide.startAnimation(toolbar,animatedView -> animatedView.setVisibility(View.GONE));
-            setNewNavWindowFragment();
-            hideQuickAccessButtons();
-            animationHide.startAnimation(quickAccessButton,animatedView -> animatedView.setVisibility(View.GONE));
-        });
-        patientAssistantButton.setOnClickListener(view -> {
-
-            animationHide.startAnimation(changeFloorButton, animatedView -> animatedView.setVisibility(View.GONE));
-            animationHide.startAnimation(toolbar,animatedView -> animatedView.setVisibility(View.GONE));
-            setNewNavWindowFragment();
-            hideQuickAccessButtons();
-            animationHide.startAnimation(quickAccessButton,animatedView -> animatedView.setVisibility(View.GONE));
-        });
+        wcButton.setOnClickListener(quickButtonsOnClick);
+        foodButton.setOnClickListener(quickButtonsOnClick);
+        patientAssistantButton.setOnClickListener(quickButtonsOnClick);
 
     }
 
@@ -254,7 +250,7 @@ public class MapActivity extends AppCompatActivity
                     .add(R.id.drawer_layout,navWindowFragment)
                     .addToBackStack(null)
                     .commit();
-            setNavFragmentIsAdd(true);
+            navFragmentIsAdd = true;
         }
     }
 
@@ -262,12 +258,13 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void onBack() {
         AnimationAdapter animationShow = new AnimationAdapter(MapActivity.this, R.anim.show_anim);
+        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.VISIBLE);
 
-        setNavFragmentIsAdd(true);
+        navFragmentIsAdd = true;
 
-        animationShow.startAnimation(changeFloorButton,animatedView -> animatedView.setVisibility(View.VISIBLE));
-        animationShow.startAnimation(toolbar,animatedView -> animatedView.setVisibility(View.VISIBLE));
-        animationShow.startAnimation(quickAccessButton,animatedView -> animatedView.setVisibility(View.VISIBLE));
+        animationShow.startAnimation(changeFloorButton,animationEndListener);
+        animationShow.startAnimation(toolbar,animationEndListener);
+        animationShow.startAnimation(quickAccessButton,animationEndListener);
 
     }
 
@@ -278,7 +275,7 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void updateNavFragmentState() {
-        setNavFragmentIsAdd(true);
+        navFragmentIsAdd = true;
 
     }
 
@@ -286,17 +283,10 @@ public class MapActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        Log.i("navFragIsAdd",String.valueOf(getNavFragmentIsAdd()));
-        outState.putBoolean("navFragIsAdd", getNavFragmentIsAdd());
+        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
+        outState.putBoolean("navFragIsAdd", navFragmentIsAdd);
     }
 
 
-    public Boolean getNavFragmentIsAdd() {
-        return navFragmentIsAdd;
-    }
-
-    public void setNavFragmentIsAdd(Boolean navFragmentIsAdd) {
-        this.navFragmentIsAdd = navFragmentIsAdd;
-    }
 
 }
