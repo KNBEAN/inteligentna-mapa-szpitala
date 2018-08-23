@@ -1,5 +1,11 @@
 package bean.pwr.imskamieskiego;
 
+import android.os.Build;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -7,11 +13,14 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
+import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
+import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
+import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,12 +33,15 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 
 import static bean.pwr.imskamieskiego.GUI.InfoSheet.COLLAPSED;
 
+
 public class MapActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NavWindowListener {
+
 
     private FloatingActionButton wcButton;
     private FloatingActionButton patientAssistantButton;
@@ -39,19 +51,35 @@ public class MapActivity extends AppCompatActivity
     private Button foodButtonDescription;
     private Button wcButtonDescription;
     private ImageButton changeFloorButton;
+    private Fragment navWindowFragment;
+    private Toolbar toolbar;
+    private Boolean navFragmentIsAdd = false;
 
 
     private static final String TAG = "MapActivity";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        final Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         InfoSheet infoSheet = new InfoSheet(this);
         quickAccessButtonInit();
         changeFloorButtonInit();
+
+
+        if (savedInstanceState != null){
+
+            if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
+                quickAccessButton.setVisibility(View.GONE);
+                changeFloorButton.setVisibility(View.GONE);
+                toolbar.setVisibility(View.GONE);
+            }
+
+        }
+
 
         infoSheet.setListener(new InfoSheet.InfoSheetListener() {
             @Override
@@ -59,6 +87,7 @@ public class MapActivity extends AppCompatActivity
 
 
             }
+
 
             @Override
             public void onSheetCollapsed() {
@@ -101,6 +130,31 @@ public class MapActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+
+
+        if (getSupportFragmentManager().findFragmentById(R.id.drawer_layout ) != null){
+
+            if (getSupportFragmentManager().getBackStackEntryCount() >= 1){
+                navFragmentIsAdd = true;
+                quickAccessButton.setVisibility(View.GONE);
+                changeFloorButton.setVisibility(View.GONE);
+                toolbar.setVisibility(View.GONE);
+            }
+            else{
+                navFragmentIsAdd = false;
+                quickAccessButton.setVisibility(View.VISIBLE);
+                changeFloorButton.setVisibility(View.VISIBLE);
+                toolbar.setVisibility(View.VISIBLE);
+            }
+        }
+        else {
+            navFragmentIsAdd = false;
+            quickAccessButton.setVisibility(View.VISIBLE);
+            changeFloorButton.setVisibility(View.VISIBLE);
+            toolbar.setVisibility(View.VISIBLE);
+        }
+
+        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
     }
 
     @Override
@@ -137,50 +191,10 @@ public class MapActivity extends AppCompatActivity
         return true;
     }
 
-    public void rotateRight(View v) {
-        final Animation rotateRightAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.rotate_show);
-        v.startAnimation(rotateRightAnimation);
-
-
-    }
-
-    public void rotateLeft(View v) {
-        final Animation rotateLeftAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.rotate_hide);
-        v.startAnimation(rotateLeftAnimation);
-
-    }
-
-    public void animate_hide(View v) {
-        final Animation hideAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.hide_anim);
-        v.startAnimation(hideAnimation);
-
-
-    }
-
-    public void animate_show(View v) {
-        final Animation showAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.show_anim);
-        v.startAnimation(showAnimation);
-
-
-    }
-
-    public void rotate_180_deg(View v) {
-        final Animation rotate180Deg = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.rotate_180deg);
-        v.startAnimation(rotate180Deg);
-
-    }
-
     public void hideQuickAccessButtons() {
 
-        // animate_hide(wcButton);
-        // animate_hide(foodButton);
-        // animate_hide(patientAssistantButton);
-        rotateLeft(quickAccessButton);
+        AnimationAdapter animationRotateHide = new AnimationAdapter(MapActivity.this,R.anim.rotate_hide);
+        animationRotateHide.startAnimation(quickAccessButton,null);
 
         wcButton.setVisibility(View.GONE);
         foodButton.setVisibility(View.GONE);
@@ -188,7 +202,6 @@ public class MapActivity extends AppCompatActivity
         patientAssistantButtonDescription.setVisibility(View.GONE);
         foodButtonDescription.setVisibility(View.GONE);
         wcButtonDescription.setVisibility(View.GONE);
-
 
 
         wcButton.setClickable(false);
@@ -200,10 +213,8 @@ public class MapActivity extends AppCompatActivity
 
     public void showQuickAccessButtons() {
 
-        //animate_show(wcButton);
-        //animate_show(foodButton);
-        // animate_show(patientAssistantButton);
-        rotateRight(quickAccessButton);
+        AnimationAdapter animationRotateShow = new AnimationAdapter(MapActivity.this,R.anim.rotate_show);
+        animationRotateShow.startAnimation(quickAccessButton,null);
 
         wcButton.setVisibility(View.VISIBLE);
         foodButton.setVisibility(View.VISIBLE);
@@ -244,31 +255,81 @@ public class MapActivity extends AppCompatActivity
                 }
             }
         });
-        wcButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideQuickAccessButtons();
+        AnimationAdapter animationHide = new AnimationAdapter(MapActivity.this, R.anim.hide_anim);
+        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.GONE);
 
-            }
-        });
-        foodButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideQuickAccessButtons();
-            }
-        });
-        patientAssistantButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                hideQuickAccessButtons();
-            }
-        });
+        View.OnClickListener quickButtonsOnClick = view -> {
+            animationHide.startAnimation(changeFloorButton, animationEndListener);
+            animationHide.startAnimation(toolbar, animationEndListener);
+            setNewNavWindowFragment();
+            hideQuickAccessButtons();
+            animationHide.startAnimation(quickAccessButton, animationEndListener);
+        };
 
+        wcButton.setOnClickListener(quickButtonsOnClick);
+        foodButton.setOnClickListener(quickButtonsOnClick);
+        patientAssistantButton.setOnClickListener(quickButtonsOnClick);
+
+    }
+
+    public void setNewNavWindowFragment(){
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        navWindowFragment = fragmentManager.findFragmentById(R.id.drawer_layout);
+
+
+        if (navWindowFragment == null){
+            navWindowFragment = new NavWindowFragment();
+
+            fragmentTransaction
+                    .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
+                            R.anim.slide_in_from_left, android.R.anim.slide_out_right)
+                    .add(R.id.drawer_layout,navWindowFragment)
+                    .addToBackStack(null)
+                    .commit();
+            navFragmentIsAdd = true;
+        }
+    }
+
+
+
+    @Override
+    public void onBack() {
+        AnimationAdapter animationShow = new AnimationAdapter(MapActivity.this, R.anim.show_anim);
+        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.VISIBLE);
+
+        navFragmentIsAdd = true;
+
+        animationShow.startAnimation(changeFloorButton,animationEndListener);
+        animationShow.startAnimation(toolbar,animationEndListener);
+        animationShow.startAnimation(quickAccessButton,animationEndListener);
+
+    }
+
+    @Override
+    public void startNavigation() {
+
+    }
+
+    @Override
+    public void updateNavFragmentState() {
+        navFragmentIsAdd = true;
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
+        outState.putBoolean("navFragIsAdd", navFragmentIsAdd);
     }
 
     private void changeFloorButtonInit() {
         changeFloorButton = findViewById(R.id.floors_button);
         changeFloorButton.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View v) {
 
