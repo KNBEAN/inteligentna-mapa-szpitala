@@ -56,12 +56,9 @@ public class MapActivity extends AppCompatActivity
     private Boolean navFragmentIsAdd = false;
 
 
-
-
     private static final String TAG = "MapActivity";
 
 
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,12 +71,12 @@ public class MapActivity extends AppCompatActivity
 
 
         if (savedInstanceState != null){
-            
-                if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
-                    quickAccessButton.setVisibility(View.GONE);
-                    changeFloorButton.setVisibility(View.GONE);
-                    toolbar.setVisibility(View.GONE);
-                }
+
+            if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
+                quickAccessButton.setVisibility(View.GONE);
+                changeFloorButton.setVisibility(View.GONE);
+                toolbar.setVisibility(View.GONE);
+            }
 
         }
 
@@ -121,9 +118,6 @@ public class MapActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-
 
     }
 
@@ -197,52 +191,7 @@ public class MapActivity extends AppCompatActivity
         return true;
     }
 
-
-    public void rotateRight(View v) {
-        final Animation rotateRightAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.rotate_show);
-        v.startAnimation(rotateRightAnimation);
-
-
-    }
-
-    public void rotateLeft(View v) {
-        final Animation rotateLeftAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.rotate_hide);
-        v.startAnimation(rotateLeftAnimation);
-
-    }
-
-    public void animate_hide(View v) {
-        final Animation hideAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.hide_anim);
-        v.startAnimation(hideAnimation);
-
-
-    }
-
-    public void animate_show(View v) {
-        final Animation showAnimation = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.show_anim);
-        v.startAnimation(showAnimation);
-
-
-    }
-
-    public void rotate_180_deg(View v) {
-        final Animation rotate180Deg = AnimationUtils.loadAnimation(
-                MapActivity.this, R.anim.rotate_180deg);
-        v.startAnimation(rotate180Deg);
-
-    }
-
-
     public void hideQuickAccessButtons() {
-
-        // animate_hide(wcButton);
-        // animate_hide(foodButton);
-        // animate_hide(patientAssistantButton);
-        //rotateLeft(quickAccessButton);
 
         AnimationAdapter animationRotateHide = new AnimationAdapter(MapActivity.this,R.anim.rotate_hide);
         animationRotateHide.startAnimation(quickAccessButton,null);
@@ -255,7 +204,6 @@ public class MapActivity extends AppCompatActivity
         wcButtonDescription.setVisibility(View.GONE);
 
 
-
         wcButton.setClickable(false);
         foodButton.setClickable(false);
         patientAssistantButton.setClickable(false);
@@ -264,11 +212,6 @@ public class MapActivity extends AppCompatActivity
     }
 
     public void showQuickAccessButtons() {
-
-        //animate_show(wcButton);
-        //animate_show(foodButton);
-        // animate_show(patientAssistantButton);
-        //rotateRight(quickAccessButton);
 
         AnimationAdapter animationRotateShow = new AnimationAdapter(MapActivity.this,R.anim.rotate_show);
         animationRotateShow.startAnimation(quickAccessButton,null);
@@ -406,9 +349,3 @@ public class MapActivity extends AppCompatActivity
 
 
 }
-
-
-
-
-
-
