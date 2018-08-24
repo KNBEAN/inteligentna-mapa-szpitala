@@ -1,5 +1,7 @@
 bean.pwr.imskamieskiego
-bean.pwr.imskamieskiego.MapGenerator
+bean.pwr.imskamieskiego.GUI
+bean.pwr.imskamieskiego.MapDrawer
+bean.pwr.imskamieskiego.NavigationWindow
 bean.pwr.imskamieskiego.data
 bean.pwr.imskamieskiego.data.converters
 bean.pwr.imskamieskiego.data.map.dao
