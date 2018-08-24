@@ -27,18 +27,9 @@ public class AuthorsActivity extends AppCompatActivity {
 
         layoutInit();
 
-        authorsText.setText(
-                getString(R.string.karol_data) + "\n"
-                +getString(R.string.anna_data) + "\n"
-                +getString(R.string.kamil_data) + "\n"
-                +getString(R.string.piotr_data)
-        );
+        authorsText.setText(getString(R.string.authors));
 
-        translateText.setText(
-                getString(R.string.translations_English) + " - " + getString(R.string.translator_English)+"\n"+
-                getString(R.string.translations_Russian) + " - " + getString(R.string.translator_Russian)+"\n"+
-                getString(R.string.translations_German) + " - " + getString(R.string.translator_German)
-        );
+        translateText.setText(getString(R.string.translations_authors));
 
         layoutAnimations();
     }

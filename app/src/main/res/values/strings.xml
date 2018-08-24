@@ -22,20 +22,12 @@
     <string name="wc_quick_access_button">Toaleta</string>
     <string name="guide_to">Prowadź do</string>
     <string name="place_name">Place name</string>
-    
+
     <string name="authors_window_title_authors">Autorzy</string>
-    <string name="karol_data">Karol Wyskocki</string>
-    <string name="anna_data">Anna Lasota</string>
-    <string name="kamil_data">Kamil Świechowski</string>
-    <string name="piotr_data">Piotr Janus</string>
+    <string name="authors">Karol Wyskocki\nAnna Lasota\nKamil Świechowski\nPiotr Janus</string>
 
     <string name="authors_window_title_translations">Tłumaczenia</string>
-    <string name="translations_English">Język angielski</string>
-    <string name="translations_Russian">Język rosyjski</string>
-    <string name="translations_German">Język niemiecki</string>
-    <string name="translator_English">Jan Kowalski</string>
-    <string name="translator_Russian">Adam Nowak</string>
-    <string name="translator_German">Joanna Kowalska</string>
+    <string name="translations_authors">Język angielski - Jan Kowalski\nJęzyk rosyjski - Adam Nowak\nJęzyk niemiecki - Joanna Kowalska</string>
 
     <string name="authors_window_title_thanks">Podziękowania</string>
     <string name="thanks">Dziękujemy przede wszystkim </string>

@@ -44,7 +44,6 @@ public class MapActivity extends AppCompatActivity
     private Button foodButtonDescription;
     private Button wcButtonDescription;
     private ImageButton changeFloorButton;
-    private Fragment infoFragment;
 
 
     private static final String TAG = "MapActivity";
