@@ -358,7 +358,7 @@ public class MapDrawer extends View {
         tackTextures = new ArrayList<>();
         try {
             for (int resourceName : resourceTacksId) {
-                texture = bean.pwr.imskamieskiego.MapDrawer.BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
+                texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
                         , resourceName
                         , tackWidth
                         , tackHeight);
