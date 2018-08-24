@@ -34,5 +34,18 @@
     <string name="guide_to">Prowadź do</string>
     <string name="place_name">Place name</string>
 
+    <string name="authors_window_title_authors">Autorzy</string>
+    <string name="authors">Karol Wyskocki\nAnna Lasota\nKamil Świechowski\nPiotr Janus</string>
+
+    <string name="authors_window_title_translations">Tłumaczenia</string>
+    <string name="translations_authors">Język angielski - Jan Kowalski\nJęzyk rosyjski - Adam Nowak\nJęzyk niemiecki - Joanna Kowalska</string>
+
+    <string name="authors_window_title_thanks">Podziękowania</string>
+    <string name="thanks">Dziękujemy przede wszystkim </string>
+    <string name="version_number">1.0</string>
+
+    <string name="short_description">Głównym celem aplikacji jest pomoc pacjentom,
+        osobom odwiedzającym oraz pracownikom szpitala w
+        odnajdywaniu się w budynku.</string>
 
 </resources>
