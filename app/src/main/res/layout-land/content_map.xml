@@ -173,4 +173,5 @@
         app:layout_constraintEnd_toStartOf="@+id/wc_button"
         app:layout_constraintTop_toTopOf="@+id/wc_button"
         android:textAllCaps="false" />
+
 </android.support.constraint.ConstraintLayout>
