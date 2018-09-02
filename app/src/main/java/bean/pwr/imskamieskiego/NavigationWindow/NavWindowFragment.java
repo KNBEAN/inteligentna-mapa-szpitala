@@ -79,14 +79,12 @@ public class NavWindowFragment extends Fragment {
                     if (motionEvent.getX() != nav_buttonX && motionEvent.getY() != nav_buttonY) {
                         removeSearchMapFragment();
                     }
-
                 }
                 return false;
             }
         });
         return onTouchListener;
     }
-
 
 
     @Override
@@ -153,15 +151,12 @@ public class NavWindowFragment extends Fragment {
 
     public Bundle setCoordsBundle(float X, float Y){
 
-        ClickX = X + nav_button.getWidth()/2;
-        ClickY = Y;
-
-        Log.i("CoordX",String.valueOf(ClickX));
-        Log.i("CoordY",String.valueOf(ClickY));
+        Log.i("CoordX",String.valueOf(X));
+        Log.i("CoordY",String.valueOf(Y));
 
         Bundle bundle = new Bundle();
-        bundle.putFloat("xCoord",ClickX);
-        bundle.putFloat("yCoord",ClickY);
+        bundle.putFloat("xCoord",X);
+        bundle.putFloat("yCoord",Y);
 
         return bundle;
     }
@@ -210,15 +205,14 @@ public class NavWindowFragment extends Fragment {
 
             nav_button.setOnClickListener(view -> {
 
+                ClickX = nav_button.getX() + nav_button.getWidth()/2;
+                ClickY = nav_button.getY();
                 Fragment searchMapFrag = new SearchMap();
-                goToNextFragment(searchMapFrag, setCoordsBundle(
-                        nav_button.getX(),
-                        nav_button.getY()),
+                goToNextFragment(searchMapFrag,
+                        setCoordsBundle(ClickX,ClickY),
                         "SearchMap");
-
             });
 
     }
-
 
 }

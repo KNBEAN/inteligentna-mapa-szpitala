@@ -5,5 +5,4 @@ public interface NavWindowListener {
     void onBack();
     void startNavigation();
     void updateNavFragmentState();
-
 }
