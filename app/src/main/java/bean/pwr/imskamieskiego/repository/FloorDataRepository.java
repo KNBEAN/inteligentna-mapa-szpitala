@@ -12,6 +12,10 @@ import java.io.InputStream;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.FloorInfoDao;
 
+/**
+ * Implementation of IFloorDataRepository. Data for floors names are taken from database, and floor
+ * images from assets.
+ */
 public class FloorDataRepository implements IFloorDataRepository {
 
     private final String TAG = "MapImgRepository";

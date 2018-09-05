@@ -1,6 +1,5 @@
 package bean.pwr.imskamieskiego.repository;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
 import java.util.List;
