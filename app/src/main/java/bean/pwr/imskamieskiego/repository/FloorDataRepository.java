@@ -19,6 +19,7 @@ import bean.pwr.imskamieskiego.data.map.dao.FloorInfoDao;
 public class FloorDataRepository implements IFloorDataRepository {
 
     private final String TAG = "MapImgRepository";
+    private InputStream mapImageStream;
     private FloorInfoDao floorInfoDao;
     private MutableLiveData<InputStream> mapImageLiveData;
     private Context context;
@@ -26,6 +27,7 @@ public class FloorDataRepository implements IFloorDataRepository {
     public FloorDataRepository(LocalDB dataBase, Context context) {
         this.context = context;
         floorInfoDao = dataBase.getFloorInfoDao();
+        mapImageStream = null;
     }
 
     @Override
@@ -40,7 +42,17 @@ public class FloorDataRepository implements IFloorDataRepository {
             mapImageLiveData = new MutableLiveData<>();
         }
 
-        mapImageLiveData.postValue(getMapStream(floor));
+        if (mapImageStream != null){
+            try {
+                mapImageStream.close();
+            } catch (IOException e) {
+                Log.i(TAG, "mapImageStream closed with error");
+                e.printStackTrace();
+            }
+        }
+
+        mapImageStream = getMapStream(floor);
+        mapImageLiveData.postValue(mapImageStream);
 
         return mapImageLiveData;
     }
