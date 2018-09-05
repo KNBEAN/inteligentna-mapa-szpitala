@@ -12,14 +12,14 @@ import java.io.InputStream;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.FloorInfoDao;
 
-public class MapImagesRepositoryImpl implements MapImagesRepository {
+public class FloorDataRepository implements IFloorDataRepository {
 
     private final String TAG = "MapImgRepository";
     private FloorInfoDao floorInfoDao;
     private MutableLiveData<InputStream> mapImageLiveData;
     private Context context;
 
-    public MapImagesRepositoryImpl(LocalDB dataBase, Context context) {
+    public FloorDataRepository(LocalDB dataBase, Context context) {
         this.context = context;
         floorInfoDao = dataBase.getFloorInfoDao();
     }

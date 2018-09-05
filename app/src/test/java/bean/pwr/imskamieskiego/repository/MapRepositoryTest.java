@@ -20,10 +20,10 @@ import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 import bean.pwr.imskamieskiego.model.map.Edge;
 
 
-public class MapRepositoryImplTest {
+public class MapRepositoryTest {
 
 
-    private MapRepositoryImpl mapRepository;
+    private MapRepository mapRepository;
     @Mock private LocalDB localDB;
     @Mock private EdgeDao edgeDao;
 
@@ -54,7 +54,7 @@ public class MapRepositoryImplTest {
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
 
-        mapRepository = new MapRepositoryImpl(localDB);
+        mapRepository = new MapRepository(localDB);
         Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyList());
 
         assertEquals(expected, result);
@@ -65,7 +65,7 @@ public class MapRepositoryImplTest {
         when(edgeDao.getOutgoingEdges(anyList())).thenReturn(new ArrayList<>());
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
-        mapRepository = new MapRepositoryImpl(localDB);
+        mapRepository = new MapRepository(localDB);
         Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyList());
         assertTrue(result.isEmpty());
     }
@@ -75,7 +75,7 @@ public class MapRepositoryImplTest {
 
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
-        mapRepository = new MapRepositoryImpl(localDB);
+        mapRepository = new MapRepository(localDB);
         mapRepository.getOutgoingEdges(null);
 
     }

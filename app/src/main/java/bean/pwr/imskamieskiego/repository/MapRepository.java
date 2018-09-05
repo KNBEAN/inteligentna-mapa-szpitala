@@ -1,75 +1,84 @@
 package bean.pwr.imskamieskiego.repository;
 
-import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
+import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
+import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
 import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
-
 /**
- * This interface represents repository of data related to map and navigation graph.
+ * This class is implementation of IMapRepository. It should be used to get access to data related
+ * to map and navigation graph. Methods of this class must be call from thread other
+ * than main thread.
  */
-public interface MapRepository {
+public class MapRepository implements IMapRepository {
 
-    /**
-     * Returns the point on the map represented by the given ID.
-     * @param id id of point
-     * @return MapPoint object. Can be null, when object for passed ID does not exist.
-     */
-    MapPoint getPointByID(int id);
+    private MapPointDao mapPointDao;
+    private LocationDao locationDao;
+    private EdgeDao edgeDao;
 
-    /**
-     * Returns the list of point on the map represented by the given ID list.
-     * @param id list of point's ID
-     * @return List of MapPoint. Can be empty, when IDs don't match to any point.
-     */
-    List<MapPoint> getPointByID(@NonNull List<Integer> id) throws NullPointerException;
+    public MapRepository(LocalDB dataBase) {
+        mapPointDao = dataBase.getMapPointDao();
+        locationDao = dataBase.getLocationDao();
+        edgeDao = dataBase.getEdgeDao();
+    }
 
-    /**
-     * Returns the point on the map which is nearest to given coordinates on specified floor.
-     * Points from other floors are omit.
-     * @param x coordinate on the map
-     * @param y coordinate on the map
-     * @param floor floor on which points will be searched
-     * @return MapPoint object. Can be null, when specified floor haven't any point.
-     */
-    MapPoint getNearestPoint(int x, int y, int floor);
+    @Override
+    public MapPoint getPointByID(int id) {
+        return mapPointDao.getByID(id);
+    }
 
-    /**
-     * Returns list of points on map associated with location.
-     * @param id location ID
-     * @return return list of MapPoint. List can be empty if location hasn't any associated point.
-     */
-    List<MapPoint> getPointsByLocationID(int id);
+    @Override
+    public List<MapPoint> getPointByID(@NonNull List<Integer> id) {
+        return new ArrayList<MapPoint>(mapPointDao.getByID(id));
+    }
 
-    /**
-     * Returns location represented by the given ID.
-     * @param id ID of location
-     * @return Location object. Cab be null when object for passed ID not exist.
-     */
-    Location getLocationByID(int id);
+    @Override
+    public MapPoint getNearestPoint(int x, int y, int floor) {
+        return mapPointDao.getNearest(x, y, floor);
+    }
 
+    @Override
+    public List<MapPoint> getPointsByLocationID(int id) {
+        return new ArrayList<MapPoint>(mapPointDao.getByLocationID(id));
+    }
 
-    /**
-     * Returns all edges, which start from point with given ID
-     * @param pointID ID of point
-     * @return List of edges. If point with given ID hasn't any edge, return empty list.
-     */
-    List<Edge> getOutgoingEdges(int pointID);
+    @Override
+    public Location getLocationByID(int id) {
+        return locationDao.getByID(id);
+    }
 
+    @Override
+    public List<Edge> getOutgoingEdges(int pointID) {
+        return  new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
+    }
 
-    /**
-     * Returns a list of all edges for all points in the list. If the point with the given ID
-     * does not exist, it will not be added to the result map. If all the points in the list
-     * do not exist, the map will be empty.
-     * @param pointID list of point IDs
-     * @return Map where key is point ID and value is list of edges for this ID.
-     */
-    Map<Integer, List<Edge>> getOutgoingEdges(@NonNull List<Integer> pointID) throws NullPointerException;
+    @Override
+    public Map<Integer, List<Edge>> getOutgoingEdges(@NonNull List<Integer> pointID) {
+        if (pointID == null) throw new NullPointerException();
 
+        List<Edge> edges = new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
+
+        Map<Integer, List<Edge>> map = new Hashtable<>();
+        for (Edge edge:edges) {
+            if (map.containsKey(edge.getFrom())){
+                map.get(edge.getFrom()).add(edge);
+            }else {
+                ArrayList<Edge> edgeList = new ArrayList<>();
+                edgeList.add(edge);
+                map.put(edge.getFrom(), edgeList);
+            }
+        }
+
+        return map;
+    }
 }

@@ -8,14 +8,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.model.map.MapPoint;
-import bean.pwr.imskamieskiego.repository.MapRepository;
+import bean.pwr.imskamieskiego.repository.IMapRepository;
 
 import static org.junit.Assert.*;
 
 public class DijkstraSearchTest {
 
     private DijkstraSearch dijkstraSearch;
-    private MapRepository mapRepository;
+    private IMapRepository mapRepository;
 
     @Before
     public void setUp() {

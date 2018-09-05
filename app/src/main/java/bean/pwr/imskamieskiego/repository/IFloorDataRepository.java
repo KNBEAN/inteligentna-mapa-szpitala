@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 
 import java.io.InputStream;
 
-public interface MapImagesRepository {
+public interface IFloorDataRepository {
 
     LiveData<String[]> getFloorNames();
 
