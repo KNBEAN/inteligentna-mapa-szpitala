@@ -23,7 +23,7 @@ import bean.pwr.imskamieskiego.model.map.Edge;
 public class MapRepositoryImplTest {
 
 
-    @Mock private MapRepositoryImpl mapRepository;
+    private MapRepositoryImpl mapRepository;
     @Mock private LocalDB localDB;
     @Mock private EdgeDao edgeDao;
 

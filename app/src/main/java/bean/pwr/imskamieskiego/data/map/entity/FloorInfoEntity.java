@@ -12,13 +12,10 @@ public class FloorInfoEntity {
     private int floorNumber;
     @NonNull
     private String floorName;
-    @NonNull
-    private String imagePath;
 
-    public FloorInfoEntity(int floorNumber, String floorName, String imagePath) {
+    public FloorInfoEntity(int floorNumber, String floorName) {
         this.floorNumber = floorNumber;
         this.floorName = floorName;
-        this.imagePath = imagePath;
     }
 
     public int getFloorNumber() {
@@ -29,7 +26,4 @@ public class FloorInfoEntity {
         return floorName;
     }
 
-    public String getImagePath() {
-        return imagePath;
-    }
 }

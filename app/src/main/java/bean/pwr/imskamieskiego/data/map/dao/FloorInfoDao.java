@@ -19,7 +19,4 @@ public interface FloorInfoDao {
     @Query("SELECT floorName FROM floors ORDER BY floorNumber ASC")
     LiveData<String[]> getFloorNames();
 
-    @Query("SELECT imagePath FROM floors WHERE floorNumber = :floorNumber")
-    LiveData<String> getFloorImagePath(int floorNumber);
-
 }

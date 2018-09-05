@@ -2,8 +2,11 @@ package bean.pwr.imskamieskiego.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
+import android.content.Context;
+import android.content.res.AssetManager;
+import android.util.Log;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
@@ -11,16 +14,14 @@ import bean.pwr.imskamieskiego.data.map.dao.FloorInfoDao;
 
 public class MapImagesRepositoryImpl implements MapImagesRepository {
 
+    private final String TAG = "MapImgRepository";
     private FloorInfoDao floorInfoDao;
+    private MutableLiveData<InputStream> mapImageLiveData;
+    private Context context;
 
-    private LiveData<InputStream> mapImageLiveData;
-    private MutableLiveData<Integer> queryFloorNumber;
-
-
-    public MapImagesRepositoryImpl(LocalDB dataBase) {
+    public MapImagesRepositoryImpl(LocalDB dataBase, Context context) {
+        this.context = context;
         floorInfoDao = dataBase.getFloorInfoDao();
-        queryFloorNumber = new MutableLiveData<>();
-
     }
 
     @Override
@@ -30,24 +31,34 @@ public class MapImagesRepositoryImpl implements MapImagesRepository {
 
     @Override
     public LiveData<InputStream> getMapImage(int floor) {
-        if (mapImageLiveData == null) {
 
-            LiveData<String> imagePathLive = Transformations.switchMap(
-                    queryFloorNumber, (floorNumber) ->
-                    floorInfoDao.getFloorImagePath(queryFloorNumber.getValue())v
-            );
-
-            mapImageLiveData = Transformations.map(imagePathLive, this::getImageStream);
+        if (mapImageLiveData == null){
+            mapImageLiveData = new MutableLiveData<>();
         }
 
-        queryFloorNumber.postValue(floor);
+        mapImageLiveData.postValue(getMapStream(floor));
+
         return mapImageLiveData;
     }
 
 
+    private InputStream getMapStream(int floor){
+        final String MAP_IMAGE_DIR = "map-img/";
+        final String MAP_IMG_TYPE = "png";
 
-    private InputStream getImageStream(String path){
+        InputStream mapImageStream = null;
+        String imgPath = MAP_IMAGE_DIR + floor + "." + MAP_IMG_TYPE;
 
-        return null;
+        Log.d(TAG, "Path: " + imgPath);
+
+        try {
+            mapImageStream = context.getAssets().open(imgPath, AssetManager.ACCESS_STREAMING);
+        } catch (IOException e) {
+            Log.w(TAG, "Problem with map image open.");
+            e.printStackTrace();
+        }
+
+        return mapImageStream;
     }
+
 }
