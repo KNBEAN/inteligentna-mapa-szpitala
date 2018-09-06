@@ -1,25 +1,19 @@
 package bean.pwr.imskamieskiego;
 
+import android.animation.ObjectAnimator;
 import android.content.Intent;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
-import android.support.design.widget.FloatingActionButton;
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,20 +21,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
-
-import static bean.pwr.imskamieskiego.GUI.InfoSheet.COLLAPSED;
 
 
 public class MapActivity extends AppCompatActivity
@@ -58,6 +46,9 @@ public class MapActivity extends AppCompatActivity
     private Fragment navWindowFragment;
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
+    private float changeFloorButtonOldY;
+    private float toolbarHeight;
+    private float changeFloorButtonNewY;
 
 
     private static final String TAG = "MapActivity";
@@ -72,14 +63,18 @@ public class MapActivity extends AppCompatActivity
         InfoSheet infoSheet = new InfoSheet(this);
         quickAccessButtonInit();
         changeFloorButtonInit();
+        getChangeFloorButtonCoords();
 
 
         if (savedInstanceState != null){
 
             if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
                 quickAccessButton.setVisibility(View.GONE);
-                changeFloorButton.setVisibility(View.GONE);
+                changeFloorButton.setY(changeFloorButtonNewY);
                 toolbar.setVisibility(View.GONE);
+                quickAccessButton.setClickable(false);
+                toolbar.setClickable(false);
+
             }
 
         }
@@ -141,21 +136,26 @@ public class MapActivity extends AppCompatActivity
             if (getSupportFragmentManager().getBackStackEntryCount() >= 1){
                 navFragmentIsAdd = true;
                 quickAccessButton.setVisibility(View.GONE);
-                changeFloorButton.setVisibility(View.GONE);
                 toolbar.setVisibility(View.GONE);
+                quickAccessButton.setClickable(false);
+                toolbar.setClickable(false);
             }
             else{
                 navFragmentIsAdd = false;
                 quickAccessButton.setVisibility(View.VISIBLE);
-                changeFloorButton.setVisibility(View.VISIBLE);
                 toolbar.setVisibility(View.VISIBLE);
+                quickAccessButton.setClickable(true);
+                toolbar.setClickable(true);
             }
         }
         else {
             navFragmentIsAdd = false;
             quickAccessButton.setVisibility(View.VISIBLE);
-            changeFloorButton.setVisibility(View.VISIBLE);
+            translateAnimation(changeFloorButton, changeFloorButtonOldY, changeFloorButtonNewY, true);
             toolbar.setVisibility(View.VISIBLE);
+            quickAccessButton.setClickable(true);
+            toolbar.setClickable(true);
+
         }
 
         Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
@@ -264,10 +264,14 @@ public class MapActivity extends AppCompatActivity
             }
         });
         AnimationAdapter animationHide = new AnimationAdapter(MapActivity.this, R.anim.hide_anim);
-        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.GONE);
+        AnimationAdapter.AnimationEndListener animationEndListener = view -> {
+            view.setVisibility(View.GONE);
+            view.setClickable(false);
+        };
 
         View.OnClickListener quickButtonsOnClick = view -> {
-            animationHide.startAnimation(changeFloorButton, animationEndListener);
+            //animationHide.startAnimation(changeFloorButton, animationEndListener);
+            //translateAnimation(changeFloorButton, changeFloorButtonOldY, changeFloorButtonNewY, false);
             animationHide.startAnimation(toolbar, animationEndListener);
             setNewNavWindowFragment();
             hideQuickAccessButtons();
@@ -308,7 +312,8 @@ public class MapActivity extends AppCompatActivity
 
         navFragmentIsAdd = true;
 
-        animationShow.startAnimation(changeFloorButton,animationEndListener);
+        translateAnimation(changeFloorButton,changeFloorButtonNewY,changeFloorButtonOldY,true);
+
         animationShow.startAnimation(toolbar,animationEndListener);
         animationShow.startAnimation(quickAccessButton,animationEndListener);
 
@@ -353,6 +358,41 @@ public class MapActivity extends AppCompatActivity
                 floorSelect.show();
             }
         });
+    }
+
+    @Override
+    public void setChangeFloorButtonCoords(int barHeight) {
+        float padding = 20;
+        float translationY = barHeight;
+        changeFloorButtonNewY = translationY + padding;
+
+        translateAnimation(changeFloorButton, changeFloorButtonOldY, changeFloorButtonNewY, false);
+
+    }
+
+    public void getChangeFloorButtonCoords(){
+        ViewTreeObserver viewTreeObserver = changeFloorButton.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                changeFloorButton.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                changeFloorButtonOldY = changeFloorButton.getY();
+            }
+        });
+    }
+
+    public void translateAnimation(View view, float startY, float endY, boolean backToActivity){
+        if (backToActivity){
+            ObjectAnimator translateAnim = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, 0);
+
+            translateAnim.setDuration(500);
+            translateAnim.start();
+        }else {
+            ObjectAnimator translateAnim = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, endY-startY);
+
+            translateAnim.setDuration(500);
+            translateAnim.start();
+        }
     }
 
 }

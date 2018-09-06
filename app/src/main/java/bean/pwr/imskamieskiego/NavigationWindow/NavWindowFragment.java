@@ -3,6 +3,7 @@ package bean.pwr.imskamieskiego.NavigationWindow;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -30,9 +32,8 @@ public class NavWindowFragment extends Fragment {
     private Button startButton;
     private Fragment searchFragment;
     private NavWindowListener navWindowListener;
-    private ImageView nav_button;
-    private float ClickX;
-    private float ClickY;
+    private ImageView exampleLocation;
+    private AppBarLayout navigationBar;
 
 
     @Override
@@ -51,7 +52,10 @@ public class NavWindowFragment extends Fragment {
         textViewDestination = (TextView) view.findViewById(R.id.textViewDestination);
         checkStairs = (CheckBox) view.findViewById(R.id.checkStairs);
         startButton = (Button) view.findViewById(R.id.startButton);
-        nav_button = (ImageView) view.findViewById(R.id.nav_button);
+        exampleLocation = (ImageView) view.findViewById(R.id.example_location);
+        navigationBar = view.findViewById(R.id.navigationBar);
+
+        sendChangeFloorButtonCoords();
 
         view.setOnTouchListener(myOnTouchListener());
 
@@ -68,13 +72,26 @@ public class NavWindowFragment extends Fragment {
         navWindowListener.onBack();
     }
 
+
+    public void sendChangeFloorButtonCoords(){
+        ViewTreeObserver viewTreeObserver = navigationBar.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                navigationBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                navWindowListener.setChangeFloorButtonCoords(navigationBar.getHeight());
+
+            }
+        });
+    }
+
     public View.OnTouchListener myOnTouchListener() {
         View.OnTouchListener onTouchListener = (new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    float nav_buttonX = nav_button.getX();
-                    float nav_buttonY = nav_button.getY();
+                    float nav_buttonX = exampleLocation.getX();
+                    float nav_buttonY = exampleLocation.getY();
 
                     if (motionEvent.getX() != nav_buttonX && motionEvent.getY() != nav_buttonY) {
                         removeSearchMapFragment();
@@ -145,7 +162,7 @@ public class NavWindowFragment extends Fragment {
 
     /**
      * Set coordinates of clicked item, they will be send to SearchMap fragment
-     * to set fragment's location
+     * to set fragment's location name
      *  @param X,Y coords of clicked item
      */
 
@@ -203,16 +220,16 @@ public class NavWindowFragment extends Fragment {
     //It has to be: on long press listener
     public void navButtonListener(){
 
-            nav_button.setOnClickListener(view -> {
+            exampleLocation.setOnClickListener(view -> {
 
-                ClickX = nav_button.getX() + nav_button.getWidth()/2;
-                ClickY = nav_button.getY();
+                float ClickX = exampleLocation.getX() + exampleLocation.getWidth()/2;
+                float ClickY = exampleLocation.getY();
+
                 Fragment searchMapFrag = new SearchMap();
                 goToNextFragment(searchMapFrag,
                         setCoordsBundle(ClickX,ClickY),
                         "SearchMap");
             });
-
     }
 
 }

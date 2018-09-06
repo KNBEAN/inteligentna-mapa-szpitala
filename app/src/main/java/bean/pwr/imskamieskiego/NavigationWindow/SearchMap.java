@@ -1,14 +1,18 @@
 package bean.pwr.imskamieskiego.NavigationWindow;
 
 
+import android.content.Context;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -30,10 +34,9 @@ public class SearchMap extends Fragment{
     private Button toButton;
     private float xCoord;
     private float yCoord;
+    private int screenWidth;
+    private int screenHeight;
 
-    public SearchMap() {
-        // Required empty public constructor
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,7 +58,8 @@ public class SearchMap extends Fragment{
         toButton = view.findViewById(R.id.toButton);
 
         selectedPlaceName.setText("X: "+String.valueOf(xCoord)+" Y: "+ String.valueOf(yCoord));
-        Log.i("onCreateViewSearch","X: "+String.valueOf(xCoord)+ " Y: "+String.valueOf(yCoord));
+
+        getScreenDimensions();
         buttonsListener();
         setViewCoords(popUpWindow);
         animateView(popUpWindow,R.anim.show_anim);
@@ -63,7 +67,7 @@ public class SearchMap extends Fragment{
 
         return view;
     }
-    
+
 
     public void setViewCoords(View view){
         ViewTreeObserver viewTreeObserver = view.getViewTreeObserver();
@@ -74,8 +78,8 @@ public class SearchMap extends Fragment{
                 int contentHeight = popUpContent.getMeasuredHeight();
                 int winWidth = view.getMeasuredWidth();
 
-                view.setX(xCoord - winWidth / 2);
-                view.setY(yCoord - contentHeight);
+                view.setX(screenWidth/2 - winWidth/2);
+                view.setY(screenHeight/2 - contentHeight);
 
             }
         });
@@ -94,6 +98,15 @@ public class SearchMap extends Fragment{
         toButton.setOnClickListener(view -> {
             Log.i("SearchMapButton","toButton");
         });
+    }
+
+    public void getScreenDimensions(){
+        WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        screenWidth = size.x;
+        screenHeight = size.y;
     }
 
 }
