@@ -47,7 +47,6 @@ public class MapActivity extends AppCompatActivity
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
     private float changeFloorButtonOldY;
-    private float toolbarHeight;
     private float changeFloorButtonNewY;
 
 
@@ -361,12 +360,15 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
-    public void setChangeFloorButtonCoords(int barHeight) {
+    public void setChangeFloorButtonCoords(int barHeight, int resumeCounter) {
         float padding = 20;
         float translationY = barHeight;
         changeFloorButtonNewY = translationY + padding;
 
-        translateAnimation(changeFloorButton, changeFloorButtonOldY, changeFloorButtonNewY, false);
+        if (resumeCounter > 1)
+            changeFloorButton.setY(changeFloorButtonNewY);
+        else
+            translateAnimation(changeFloorButton, changeFloorButtonOldY, changeFloorButtonNewY, false);
 
     }
 

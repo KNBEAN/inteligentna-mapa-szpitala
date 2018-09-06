@@ -3,6 +3,7 @@ package bean.pwr.imskamieskiego.NavigationWindow;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,11 +35,16 @@ public class NavWindowFragment extends Fragment {
     private NavWindowListener navWindowListener;
     private ImageView exampleLocation;
     private AppBarLayout navigationBar;
+    private int resumeCounter;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            resumeCounter = savedInstanceState.getInt("CountResume");
+        }
 
     }
 
@@ -48,11 +54,11 @@ public class NavWindowFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.nav_window, container, false);
 
-        textViewStart = (TextView) view.findViewById(R.id.textViewStart);
-        textViewDestination = (TextView) view.findViewById(R.id.textViewDestination);
-        checkStairs = (CheckBox) view.findViewById(R.id.checkStairs);
-        startButton = (Button) view.findViewById(R.id.startButton);
-        exampleLocation = (ImageView) view.findViewById(R.id.example_location);
+        textViewStart = view.findViewById(R.id.textViewStart);
+        textViewDestination = view.findViewById(R.id.textViewDestination);
+        checkStairs = view.findViewById(R.id.checkStairs);
+        startButton = view.findViewById(R.id.startButton);
+        exampleLocation = view.findViewById(R.id.example_location);
         navigationBar = view.findViewById(R.id.navigationBar);
 
         sendChangeFloorButtonCoords();
@@ -72,6 +78,11 @@ public class NavWindowFragment extends Fragment {
         navWindowListener.onBack();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        resumeCounter++;
+    }
 
     public void sendChangeFloorButtonCoords(){
         ViewTreeObserver viewTreeObserver = navigationBar.getViewTreeObserver();
@@ -79,7 +90,7 @@ public class NavWindowFragment extends Fragment {
             @Override
             public void onGlobalLayout() {
                 navigationBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                navWindowListener.setChangeFloorButtonCoords(navigationBar.getHeight());
+                navWindowListener.setChangeFloorButtonCoords(navigationBar.getHeight(), resumeCounter);
 
             }
         });
@@ -145,7 +156,6 @@ public class NavWindowFragment extends Fragment {
         if (searchMap != null){
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction
-                    //.setCustomAnimations(R.anim.show_anim,R.anim.hide_anim)
                     .remove(searchMap)
                     .commit();
             fragmentManager.popBackStack();
@@ -232,4 +242,9 @@ public class NavWindowFragment extends Fragment {
             });
     }
 
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("CountResume", resumeCounter);
+    }
 }
