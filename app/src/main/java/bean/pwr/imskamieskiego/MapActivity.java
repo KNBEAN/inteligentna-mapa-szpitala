@@ -154,9 +154,7 @@ public class MapActivity extends AppCompatActivity
             toolbar.setVisibility(View.VISIBLE);
             quickAccessButton.setClickable(true);
             toolbar.setClickable(true);
-
         }
-
         Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
     }
 
@@ -269,8 +267,6 @@ public class MapActivity extends AppCompatActivity
         };
 
         View.OnClickListener quickButtonsOnClick = view -> {
-            //animationHide.startAnimation(changeFloorButton, animationEndListener);
-            //translateAnimation(changeFloorButton, changeFloorButtonOldY, changeFloorButtonNewY, false);
             animationHide.startAnimation(toolbar, animationEndListener);
             setNewNavWindowFragment();
             hideQuickAccessButtons();
@@ -361,9 +357,9 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void setChangeFloorButtonCoords(int barHeight, int resumeCounter) {
-        float padding = 20;
+        float margin = 20;
         float translationY = barHeight;
-        changeFloorButtonNewY = translationY + padding;
+        changeFloorButtonNewY = translationY + margin;
 
         if (resumeCounter > 1)
             changeFloorButton.setY(changeFloorButtonNewY);

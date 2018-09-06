@@ -63,11 +63,11 @@ public class NavWindowFragment extends Fragment {
 
         sendChangeFloorButtonCoords();
 
-        view.setOnTouchListener(myOnTouchListener());
+        view.setOnTouchListener(checkOnTouchCoords());
 
         addSelectPlaceListeners();
         startButtonListener();
-        navButtonListener();
+        exampleLocationListener();
 
         return view;
     }
@@ -91,20 +91,19 @@ public class NavWindowFragment extends Fragment {
             public void onGlobalLayout() {
                 navigationBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 navWindowListener.setChangeFloorButtonCoords(navigationBar.getHeight(), resumeCounter);
-
             }
         });
     }
 
-    public View.OnTouchListener myOnTouchListener() {
+    public View.OnTouchListener checkOnTouchCoords() {
         View.OnTouchListener onTouchListener = (new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    float nav_buttonX = exampleLocation.getX();
-                    float nav_buttonY = exampleLocation.getY();
+                    float exampleLocationX = exampleLocation.getX();
+                    float exampleLocationY = exampleLocation.getY();
 
-                    if (motionEvent.getX() != nav_buttonX && motionEvent.getY() != nav_buttonY) {
+                    if (motionEvent.getX() != exampleLocationX && motionEvent.getY() != exampleLocationY) {
                         removeSearchMapFragment();
                     }
                 }
@@ -228,7 +227,7 @@ public class NavWindowFragment extends Fragment {
 
 
     //It has to be: on long press listener
-    public void navButtonListener(){
+    public void exampleLocationListener(){
 
             exampleLocation.setOnClickListener(view -> {
 
