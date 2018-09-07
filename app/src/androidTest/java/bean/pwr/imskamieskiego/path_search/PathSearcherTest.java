@@ -21,7 +21,7 @@ public class PathSearcherTest {
     @Mock
     private PathSearchAlgorithm searchAlgorithm;
     @Mock
-    Observer observer;
+    private Observer<List<MapPoint>> observer;
 
     @Before
     public void setUp() {

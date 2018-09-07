@@ -1,5 +1,6 @@
 package bean.pwr.imskamieskiego.path_search;
 
+
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -13,9 +14,9 @@ import bean.pwr.imskamieskiego.model.map.EdgeFactory;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.model.map.MapPointFactory;
-import bean.pwr.imskamieskiego.repository.MapRepository;
+import bean.pwr.imskamieskiego.repository.IMapRepository;
 
-public class StaubGraphMapRepository implements MapRepository {
+public class StaubGraphMapRepository implements IMapRepository {
 
     private List<MapPoint> nodes;
     private List<Edge> edges;

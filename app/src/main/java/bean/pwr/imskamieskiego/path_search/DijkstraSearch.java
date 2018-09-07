@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 
 import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
-import bean.pwr.imskamieskiego.repository.MapRepository;
+import bean.pwr.imskamieskiego.repository.IMapRepository;
 
 /**
  * Implementation of Dijkstra algorithm.
@@ -20,7 +20,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
 
     private int startPointID;
     private int[] endPointIDs;
-    private MapRepository mapRepository;
+    private IMapRepository mapRepository;
     private List<MapPoint> trace;
 
     /**
@@ -32,7 +32,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
      * @param endPoint target point
      * @throws IllegalArgumentException throws when start and end point are the same node
      */
-    public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, MapPoint endPoint) throws IllegalArgumentException {
+    public DijkstraSearch(IMapRepository mapRepository, MapPoint startPoint, MapPoint endPoint) throws IllegalArgumentException {
         if (startPoint.getId()==endPoint.getId()){
             throw new IllegalArgumentException("End point and start point are the same points!");
         }
@@ -53,7 +53,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
      * @throws IllegalArgumentException throws when start point and any of end points are the same
      * node. Throws this exception also, when targets list is empty.
      */
-    public DijkstraSearch(MapRepository mapRepository, MapPoint startPoint, List<MapPoint> endPoints) throws IllegalArgumentException {
+    public DijkstraSearch(IMapRepository mapRepository, MapPoint startPoint, List<MapPoint> endPoints) throws IllegalArgumentException {
         for (MapPoint point:endPoints) {
             if (startPoint.getId()==point.getId()){
                 throw new IllegalArgumentException("End point and start point are the same points!");
