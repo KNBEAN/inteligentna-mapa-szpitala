@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "de57e6eabe03d172f8be3e02a8c979ed",
+    "identityHash": "30a9d5cc261f25b59ece687e0c7869b7",
     "entities": [
       {
         "tableName": "nodes",
@@ -143,11 +143,58 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "location_tags",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`tag` TEXT NOT NULL, `location_id` INTEGER NOT NULL, PRIMARY KEY(`tag`), FOREIGN KEY(`location_id`) REFERENCES `locations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "tag",
+            "columnName": "tag",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "location_id",
+            "columnName": "location_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "tag"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_location_tags_location_id",
+            "unique": false,
+            "columnNames": [
+              "location_id"
+            ],
+            "createSql": "CREATE  INDEX `index_location_tags_location_id` ON `${TABLE_NAME}` (`location_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "locations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "location_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"de57e6eabe03d172f8be3e02a8c979ed\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"30a9d5cc261f25b59ece687e0c7869b7\")"
     ]
   }
 }
