@@ -25,13 +25,9 @@ public interface LocationDao {
     @Query("SELECT * FROM locations WHERE id = :ID")
     LocationEntity getByID(int ID);
 
-//    @Query("SELECT id, name, description FROM location_tags, locations WHERE tag LIKE :tag LIMIT :limit")
-//    @Query("SELECT l.id, l.name, l.description FROM  locations l JOIN location_tags t ON l.id = t.location_id WHERE t.tag LIKE :tag LIMIT :limit")
-
     @Query("SELECT id, name, description FROM  locations JOIN location_tags ON id = location_id WHERE tag LIKE :tag LIMIT :limit")
-//    @Query("SELECT * FROM  locations l, location_tags t WHERE t.tag LIKE :tag LIMIT :limit")
     LiveData<List<LocationEntity>> getListByTag(String tag, int limit);
 
-    @Query("SELECT id, name, description FROM location_tags, locations WHERE tag LIKE :tag LIMIT :limit")
+    @Query("SELECT id, name, description FROM  locations JOIN location_tags ON id = location_id WHERE tag LIKE :tag LIMIT :limit")
     Cursor getCursorByTag(String tag, int limit);
 }

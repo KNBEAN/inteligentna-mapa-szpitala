@@ -1,6 +1,8 @@
 package bean.pwr.imskamieskiego.path_search;
 
 
+import android.arch.lifecycle.LiveData;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -129,6 +131,16 @@ public class StaubGraphMapRepository implements IMapRepository {
 
     @Override
     public Location getLocationByID(int id) {
+        return null;
+    }
+
+    @Override
+    public LiveData<List<Location>> getLocationsListByName(String name, int limit) {
+        return null;
+    }
+
+    @Override
+    public Cursor getLocationsCursorByName(String name, int limit) {
         return null;
     }
 }

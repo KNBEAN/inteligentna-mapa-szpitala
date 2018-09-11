@@ -1,5 +1,7 @@
 package bean.pwr.imskamieskiego.repository;
 
+import android.arch.lifecycle.LiveData;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.util.List;
@@ -70,5 +72,23 @@ public interface IMapRepository {
      * @return Map where key is point ID and value is list of edges for this ID.
      */
     Map<Integer, List<Edge>> getOutgoingEdges(@NonNull List<Integer> pointID) throws NullPointerException;
+
+    /**
+     * Returns a list of locations whose text given as an argument is a substring of the location
+     * names.
+     * @param name The search string in the location names.
+     * @param limit Max length of list
+     * @return LiveData with list of locations
+     */
+    LiveData<List<Location>> getLocationsListByName(String name, int limit);
+
+    /**
+     * Returns a list of locations as a Cursor, whose text given as an argument is a substring of the location
+     * names.
+     * @param name The search string in the location names.
+     * @param limit Max length of list
+     * @return Cursor with list of locations
+     */
+    Cursor getLocationsCursorByName(String name, int limit);
 
 }

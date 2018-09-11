@@ -1,5 +1,10 @@
 package bean.pwr.imskamieskiego.repository;
 
+import android.arch.core.util.Function;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -11,6 +16,7 @@ import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
 import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
+import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -80,5 +86,18 @@ public class MapRepository implements IMapRepository {
         }
 
         return map;
+    }
+
+    @Override
+    public LiveData<List<Location>> getLocationsListByName(String name, int limit) {
+        return Transformations.map(
+                locationDao.getListByTag(name.toLowerCase(), limit),
+                list-> new ArrayList<>(list)
+        );
+    }
+
+    @Override
+    public Cursor getLocationsCursorByName(String name, int limit) {
+        return locationDao.getCursorByTag(name.toLowerCase(), limit);
     }
 }
