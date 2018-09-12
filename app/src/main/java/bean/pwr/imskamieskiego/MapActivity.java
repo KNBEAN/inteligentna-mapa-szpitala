@@ -73,7 +73,6 @@ public class MapActivity extends AppCompatActivity
         quickAccessButtonInit();
         changeFloorButtonInit();
 
-
         if (savedInstanceState != null){
 
             if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
