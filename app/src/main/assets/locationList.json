@@ -1,0 +1,367 @@
+[
+  {
+    "id": 51,
+    "name": "entry0_2",
+    "description": null
+  },
+  {
+    "id": 50,
+    "name": "entry0_1",
+    "description": null
+  },
+  {
+    "id": 49,
+    "name": "hall0_1",
+    "description": null
+  },
+  {
+    "id": 48,
+    "name": "stairs0_3",
+    "description": null
+  },
+  {
+    "id": 47,
+    "name": "stairs0_2",
+    "description": null
+  },
+  {
+    "id": 46,
+    "name": "stairs0_1",
+    "description": null
+  },
+  {
+    "id": 45,
+    "name": "lifts01_0",
+    "description": null
+  },
+  {
+    "id": 42,
+    "name": "lifts0_1",
+    "description": null
+  },
+  {
+    "id": 43,
+    "name": "lifts0_2",
+    "description": null
+  },
+  {
+    "id": 44,
+    "name": "lifts0_3",
+    "description": null
+  },
+  {
+    "id": 40,
+    "name": "place39",
+    "description": null
+  },
+  {
+    "id": 39,
+    "name": "place38",
+    "description": null
+  },
+  {
+    "id": 38,
+    "name": "place37",
+    "description": null
+  },
+  {
+    "id": 37,
+    "name": "place36",
+    "description": null
+  },
+  {
+    "id": 36,
+    "name": "place35",
+    "description": null
+  },
+  {
+    "id": 35,
+    "name": "place34",
+    "description": null
+  },
+  {
+    "id": 34,
+    "name": "place33",
+    "description": null
+  },
+  {
+    "id": 33,
+    "name": "place32",
+    "description": null
+  },
+  {
+    "id": 32,
+    "name": "place31",
+    "description": null
+  },
+  {
+    "id": 31,
+    "name": "place30",
+    "description": null
+  },
+  {
+    "id": 30,
+    "name": "place29",
+    "description": null
+  },
+  {
+    "id": 29,
+    "name": "place28",
+    "description": null
+  },
+  {
+    "id": 28,
+    "name": "place27",
+    "description": null
+  },
+  {
+    "id": 27,
+    "name": "place26",
+    "description": null
+  },
+  {
+    "id": 26,
+    "name": "place25",
+    "description": null
+  },
+  {
+    "id": 25,
+    "name": "place24",
+    "description": null
+  },
+  {
+    "id": 24,
+    "name": "place23",
+    "description": null
+  },
+  {
+    "id": 23,
+    "name": "place22",
+    "description": null
+  },
+  {
+    "id": 22,
+    "name": "place21",
+    "description": null
+  },
+  {
+    "id": 21,
+    "name": "place20",
+    "description": null
+  },
+  {
+    "id": 20,
+    "name": "place19",
+    "description": null
+  },
+  {
+    "id": 19,
+    "name": "place18",
+    "description": null
+  },
+  {
+    "id": 18,
+    "name": "place17",
+    "description": null
+  },
+  {
+    "id": 17,
+    "name": "place16",
+    "description": null
+  },
+  {
+    "id": 16,
+    "name": "place15",
+    "description": null
+  },
+  {
+    "id": 15,
+    "name": "place14",
+    "description": null
+  },
+  {
+    "id": 14,
+    "name": "place13",
+    "description": null
+  },
+  {
+    "id": 13,
+    "name": "place12",
+    "description": null
+  },
+  {
+    "id": 12,
+    "name": "place11",
+    "description": null
+  },
+  {
+    "id": 11,
+    "name": "place10",
+    "description": null
+  },
+  {
+    "id": 10,
+    "name": "place9",
+    "description": null
+  },
+  {
+    "id": 9,
+    "name": "place8",
+    "description": null
+  },
+  {
+    "id": 8,
+    "name": "place7",
+    "description": null
+  },
+  {
+    "id": 7,
+    "name": "place6",
+    "description": null
+  },
+  {
+    "id": 6,
+    "name": "place5",
+    "description": null
+  },
+  {
+    "id": 5,
+    "name": "place4",
+    "description": null
+  },
+  {
+    "id": 4,
+    "name": "place3",
+    "description": null
+  },
+  {
+    "id": 3,
+    "name": "place2",
+    "description": null
+  },
+  {
+    "id": 2,
+    "name": "place1",
+    "description": null
+  },
+  {
+    "id": 41,
+    "name": "bufet",
+    "description": null
+  },
+  {
+    "id": 504,
+    "name": "stairs1_1",
+    "description": null
+  },
+  {
+    "id": 1,
+    "name": "toilets",
+    "description": null
+  },
+  {
+    "id": 505,
+    "name": "stairs1_2",
+    "description": null
+  },
+  {
+    "id": 506,
+    "name": "stairs1_3",
+    "description": null
+  },
+  {
+    "id": 507,
+    "name": "lifts1_1",
+    "description": null
+  },
+  {
+    "id": 508,
+    "name": "lifts1_2",
+    "description": null
+  },
+  {
+    "id": 509,
+    "name": "lifts1_3",
+    "description": null
+  },
+  {
+    "id": 510,
+    "name": "lifts01_1",
+    "description": null
+  },
+  {
+    "id": 511,
+    "name": "place40",
+    "description": null
+  },
+  {
+    "id": 512,
+    "name": "place41",
+    "description": null
+  },
+  {
+    "id": 513,
+    "name": "place42",
+    "description": null
+  },
+  {
+    "id": 514,
+    "name": "place43",
+    "description": null
+  },
+  {
+    "id": 515,
+    "name": "place44",
+    "description": null
+  },
+  {
+    "id": 647,
+    "name": "stairs2_1",
+    "description": null
+  },
+  {
+    "id": 646,
+    "name": "lift2_3",
+    "description": null
+  },
+  {
+    "id": 645,
+    "name": "lift2_2",
+    "description": null
+  },
+  {
+    "id": 644,
+    "name": "lift2_1",
+    "description": null
+  },
+  {
+    "id": 643,
+    "name": "place50",
+    "description": null
+  },
+  {
+    "id": 642,
+    "name": "place49",
+    "description": null
+  },
+  {
+    "id": 641,
+    "name": "place48",
+    "description": null
+  },
+  {
+    "id": 640,
+    "name": "place47",
+    "description": null
+  },
+  {
+    "id": 639,
+    "name": "place46",
+    "description": null
+  },
+  {
+    "id": 638,
+    "name": "place45",
+    "description": null
+  }
+]

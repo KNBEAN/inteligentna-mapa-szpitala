@@ -72,8 +72,6 @@ public class MapActivity extends AppCompatActivity
         InfoSheet infoSheet = new InfoSheet(this);
         quickAccessButtonInit();
         changeFloorButtonInit();
-
-
         if (savedInstanceState != null){
 
             if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
