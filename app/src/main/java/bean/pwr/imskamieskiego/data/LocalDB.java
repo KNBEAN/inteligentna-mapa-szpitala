@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
@@ -68,13 +67,13 @@ public abstract class LocalDB extends RoomDatabase {
                                             LocationDao locationDao = INSTANCE.getLocationDao();
 
 
-                                            ArrayList<MapPointEntity> mapPointArrayList = getEntityArrayList(context,"nodeList.json",MapPointEntity.class);
+                                            ArrayList<MapPointEntity> mapPointArrayList = getEntityArrayList(context,"nodeList.json",new TypeToken<ArrayList<MapPointEntity>>() {});
                                             mapPointDao.insertAllPoints(mapPointArrayList);
 
-                                            ArrayList<EdgeEntity> edgeArrayList = getEntityArrayList(context, "edgeList.json",EdgeEntity.class);
+                                            ArrayList<EdgeEntity> edgeArrayList = getEntityArrayList(context, "edgeList.json",new TypeToken<ArrayList<EdgeEntity>>() {});
                                             edgeDao.insertAllEdges(edgeArrayList);
 
-                                            ArrayList<LocationEntity> locationArrayList = getEntityArrayList(context,"locationList.json",LocationEntity.class);
+                                            ArrayList<LocationEntity> locationArrayList = getEntityArrayList(context,"locationList.json",new TypeToken<ArrayList<LocationEntity>>() {});
                                             locationDao.insertAllPoints(locationArrayList);
 
                                         }
@@ -87,18 +86,24 @@ public abstract class LocalDB extends RoomDatabase {
         }
         return INSTANCE;
     }
+    /**
+     *
+     * @param context
+     * @param jsonName json file name
+     * @param typeToken must be specify in entry of method, when it wil not be specify in compile-time,
+     *                  GSON can't specify what type of ArrayList will be and GSON creates a StringMap
+     * @param <T> it represents array type
+     * @return ArrayList of specify entity
+     */
 
-    private static <T> ArrayList<T> getEntityArrayList(Context context, String jsonName, final Class<T> typeOfList) {
+    private static <T> ArrayList<T> getEntityArrayList(Context context, String jsonName, TypeToken<ArrayList<T>> typeToken) {
 
         ArrayList<T> arrayList = null;
 
         try (InputStream inputStream = context.getAssets().open(jsonName)) {
             Gson gson = new Gson();
             Reader reader = new InputStreamReader(inputStream);
-            Type typeToken = new TypeToken<ArrayList<T>>() {}.getType();
-
-            arrayList = gson.fromJson(reader, typeToken);
-
+            arrayList = gson.fromJson(reader, typeToken.getType());
         } catch (IOException e) {
             e.printStackTrace();
         }
