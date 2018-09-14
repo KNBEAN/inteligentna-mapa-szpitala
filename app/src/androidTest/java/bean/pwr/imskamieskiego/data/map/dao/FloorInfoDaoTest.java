@@ -50,7 +50,7 @@ public class FloorInfoDaoTest {
                 new FloorInfoEntity(1, "1st floor"),
                 new FloorInfoEntity(2, "2nd floor")
         );
-        floorInfoDao.insertAllPoints(floorsList);
+        floorInfoDao.insertAllFloors(floorsList);
     }
 
     @After
@@ -63,7 +63,7 @@ public class FloorInfoDaoTest {
         List<FloorInfoEntity> floorList = Collections.singletonList(
                 new FloorInfoEntity(4, null)
         );
-        floorInfoDao.insertAllPoints(floorList);
+        floorInfoDao.insertAllFloors(floorList);
     }
 
     @Test

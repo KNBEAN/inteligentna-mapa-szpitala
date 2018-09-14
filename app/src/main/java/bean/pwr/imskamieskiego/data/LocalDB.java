@@ -7,6 +7,7 @@ import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.Room;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -15,7 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 
 import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
@@ -41,6 +42,12 @@ import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
 @TypeConverters({IntegerConverter.class})
 public abstract class LocalDB extends RoomDatabase {
 
+    private static final String NODE_LIST_FILE = "nodeList.json";
+    private static final String EDGE_LIST_FILE = "edgeList.json";
+    private static final String LOCATION_LIST_FILE = "locationList.json";
+    private static final String TAG_LIST_FILE = "tagList.json";
+    private static final String FLOOR_LIST_FILE = "floorList.json";
+
     public abstract MapPointDao getMapPointDao();
     public abstract LocationDao getLocationDao();
     public abstract EdgeDao getEdgeDao();
@@ -54,63 +61,62 @@ public abstract class LocalDB extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (LocalDB.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            LocalDB.class, DB_NAME)
-                            .addCallback(new Callback() {
-                                @Override
-                                public void onCreate(@NonNull SupportSQLiteDatabase db) {
-                                    super.onCreate(db);
-                                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-
-                                            MapPointDao mapPointDao = INSTANCE.getMapPointDao();
-                                            EdgeDao edgeDao = INSTANCE.getEdgeDao();
-                                            LocationDao locationDao = INSTANCE.getLocationDao();
-
-
-                                            ArrayList<MapPointEntity> mapPointArrayList = getEntityArrayList(context,"nodeList.json",new TypeToken<ArrayList<MapPointEntity>>() {});
-                                            mapPointDao.insertAllPoints(mapPointArrayList);
-
-                                            ArrayList<EdgeEntity> edgeArrayList = getEntityArrayList(context, "edgeList.json",new TypeToken<ArrayList<EdgeEntity>>() {});
-                                            edgeDao.insertAllEdges(edgeArrayList);
-
-                                            ArrayList<LocationEntity> locationArrayList = getEntityArrayList(context,"locationList.json",new TypeToken<ArrayList<LocationEntity>>() {});
-                                            locationDao.insertAllLocations(locationArrayList);
-
-                                        }
-                                    });
-                                }
-                            })
-                            .build();
+                    INSTANCE = createDatabaseInstance(context);
                 }
             }
         }
         return INSTANCE;
     }
-    /**
-     *
-     * @param context
-     * @param jsonName json file name
-     * @param typeToken must be specify in entry of method, when it wil not be specify in compile-time,
-     *                  GSON can't specify what type of ArrayList will be and GSON creates a StringMap
-     * @param <T> it represents array type
-     * @return ArrayList of specify entity
-     */
 
-    private static <T> ArrayList<T> getEntityArrayList(Context context, String jsonName, TypeToken<ArrayList<T>> typeToken) {
+    private static LocalDB createDatabaseInstance(Context context){
+        return Room.databaseBuilder(context.getApplicationContext(), LocalDB.class, DB_NAME)
+                .addCallback(new Callback() {
+                    @Override
+                    public void onCreate(@NonNull SupportSQLiteDatabase db) {
+                        super.onCreate(db);
+                        Executors.newSingleThreadExecutor().execute(() -> {
 
-        ArrayList<T> arrayList = null;
+                            MapPointDao mapPointDao = INSTANCE.getMapPointDao();
+                            EdgeDao edgeDao = INSTANCE.getEdgeDao();
+                            LocationDao locationDao = INSTANCE.getLocationDao();
+                            FloorInfoDao floorInfoDao = INSTANCE.getFloorInfoDao();
+
+
+                            List<MapPointEntity> mapPointArrayList = getEntityListFromJsonFile(context, NODE_LIST_FILE, new TypeToken<List<MapPointEntity>>() {});
+                            mapPointDao.insertAllPoints(mapPointArrayList);
+
+                            List<EdgeEntity> edgeList = getEntityListFromJsonFile(context, EDGE_LIST_FILE, new TypeToken<List<EdgeEntity>>() {});
+                            edgeDao.insertAllEdges(edgeList);
+
+                            List<LocationEntity> locationList = getEntityListFromJsonFile(context, LOCATION_LIST_FILE, new TypeToken<List<LocationEntity>>() {});
+                            locationDao.insertAllLocations(locationList);
+
+                            List<LocationTagEntity> locationTagList = getEntityListFromJsonFile(context, TAG_LIST_FILE, new TypeToken<List<LocationTagEntity>>() {});
+                            locationDao.insertAllTags(locationTagList);
+
+                            List<FloorInfoEntity> floorInfoList = getEntityListFromJsonFile(context, FLOOR_LIST_FILE, new TypeToken<List<FloorInfoEntity>>() {});
+                            floorInfoDao.insertAllFloors(floorInfoList);
+
+                        });
+                    }
+                })
+                .build();
+    }
+
+    private static <T> List<T> getEntityListFromJsonFile(Context context, String jsonName,TypeToken<List<T>> typeToken) {
+
+        List<T> list = null;
 
         try (InputStream inputStream = context.getAssets().open(jsonName)) {
             Gson gson = new Gson();
             Reader reader = new InputStreamReader(inputStream);
-            arrayList = gson.fromJson(reader, typeToken.getType());
+            list = gson.fromJson(reader, typeToken.getType());
         } catch (IOException e) {
             e.printStackTrace();
+            Log.e("LocalDB", "Can't load data from file: " + jsonName, e);
         }
 
-        return arrayList;
+        return list;
     }
 
 }
