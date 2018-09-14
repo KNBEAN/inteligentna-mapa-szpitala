@@ -1,8 +1,5 @@
 package bean.pwr.imskamieskiego.repository;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,11 +16,14 @@ import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 import bean.pwr.imskamieskiego.model.map.Edge;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyList;
+import static org.mockito.Mockito.when;
 
-public class MapRepositoryTest {
+public class MapGraphRepositoryTest {
 
-
-    private MapRepository mapRepository;
+    private MapGraphRepository graphRepository;
     @Mock private LocalDB localDB;
     @Mock private EdgeDao edgeDao;
 
@@ -54,8 +54,8 @@ public class MapRepositoryTest {
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
 
-        mapRepository = new MapRepository(localDB);
-        Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyList());
+        graphRepository = new MapGraphRepository(localDB);
+        Map<Integer, List<Edge>> result = graphRepository.getOutgoingEdges(anyList());
 
         assertEquals(expected, result);
     }
@@ -65,8 +65,8 @@ public class MapRepositoryTest {
         when(edgeDao.getOutgoingEdges(anyList())).thenReturn(new ArrayList<>());
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
-        mapRepository = new MapRepository(localDB);
-        Map<Integer, List<Edge>> result = mapRepository.getOutgoingEdges(anyList());
+        graphRepository = new MapGraphRepository(localDB);
+        Map<Integer, List<Edge>> result = graphRepository.getOutgoingEdges(anyList());
         assertTrue(result.isEmpty());
     }
 
@@ -75,8 +75,8 @@ public class MapRepositoryTest {
 
         when(localDB.getEdgeDao()).thenReturn(edgeDao);
 
-        mapRepository = new MapRepository(localDB);
-        mapRepository.getOutgoingEdges(null);
+        graphRepository = new MapGraphRepository(localDB);
+        graphRepository.getOutgoingEdges(null);
 
     }
 }

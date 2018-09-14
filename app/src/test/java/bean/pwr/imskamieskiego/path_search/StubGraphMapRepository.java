@@ -16,14 +16,14 @@ import bean.pwr.imskamieskiego.model.map.EdgeFactory;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.model.map.MapPointFactory;
-import bean.pwr.imskamieskiego.repository.IMapRepository;
+import bean.pwr.imskamieskiego.repository.IMapGraphRepository;
 
-public class StaubGraphMapRepository implements IMapRepository {
+public class StubGraphMapRepository implements IMapGraphRepository {
 
     private List<MapPoint> nodes;
     private List<Edge> edges;
 
-    public StaubGraphMapRepository() {
+    public StubGraphMapRepository() {
         this.nodes = createNodes();
         this.edges = createEdges();
     }
@@ -115,32 +115,5 @@ public class StaubGraphMapRepository implements IMapRepository {
             }
         }
         return result;
-    }
-
-
-
-    @Override
-    public MapPoint getNearestPoint(int x, int y, int floor) {
-        return null;
-    }
-
-    @Override
-    public List<MapPoint> getPointsByLocationID(int id) {
-        return null;
-    }
-
-    @Override
-    public Location getLocationByID(int id) {
-        return null;
-    }
-
-    @Override
-    public LiveData<List<Location>> getLocationsListByName(String name, int limit) {
-        return null;
-    }
-
-    @Override
-    public Cursor getLocationsCursorByName(String name, int limit) {
-        return null;
     }
 }

@@ -76,7 +76,7 @@ public abstract class LocalDB extends RoomDatabase {
                                             edgeDao.insertAllEdges(edgeArrayList);
 
                                             ArrayList<LocationEntity> locationArrayList = getEntityArrayList(context,"locationList.json",new TypeToken<ArrayList<LocationEntity>>() {});
-                                            locationDao.insertAllPoints(locationArrayList);
+                                            locationDao.insertAllLocations(locationArrayList);
 
                                         }
                                     });

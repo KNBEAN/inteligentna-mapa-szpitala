@@ -23,29 +23,16 @@ import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 /**
  * This class is implementation of IMapRepository. It should be used to get access to data related
- * to map and navigation graph. Methods of this class must be call from thread other
- * than main thread.
+ * to map location ect. Methods of this class must be call from thread other than main thread.
  */
 public class MapRepository implements IMapRepository {
 
     private MapPointDao mapPointDao;
     private LocationDao locationDao;
-    private EdgeDao edgeDao;
 
     public MapRepository(LocalDB dataBase) {
         mapPointDao = dataBase.getMapPointDao();
         locationDao = dataBase.getLocationDao();
-        edgeDao = dataBase.getEdgeDao();
-    }
-
-    @Override
-    public MapPoint getPointByID(int id) {
-        return mapPointDao.getByID(id);
-    }
-
-    @Override
-    public List<MapPoint> getPointByID(@NonNull List<Integer> id) {
-        return new ArrayList<MapPoint>(mapPointDao.getByID(id));
     }
 
     @Override
@@ -61,31 +48,6 @@ public class MapRepository implements IMapRepository {
     @Override
     public Location getLocationByID(int id) {
         return locationDao.getByID(id);
-    }
-
-    @Override
-    public List<Edge> getOutgoingEdges(int pointID) {
-        return  new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
-    }
-
-    @Override
-    public Map<Integer, List<Edge>> getOutgoingEdges(@NonNull List<Integer> pointID) {
-        if (pointID == null) throw new NullPointerException();
-
-        List<Edge> edges = new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
-
-        Map<Integer, List<Edge>> map = new Hashtable<>();
-        for (Edge edge:edges) {
-            if (map.containsKey(edge.getFrom())){
-                map.get(edge.getFrom()).add(edge);
-            }else {
-                ArrayList<Edge> edgeList = new ArrayList<>();
-                edgeList.add(edge);
-                map.put(edge.getFrom(), edgeList);
-            }
-        }
-
-        return map;
     }
 
     @Override
