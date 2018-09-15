@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 
 import javax.annotation.Nullable;
@@ -34,7 +35,7 @@ public class NavWindowFragment extends Fragment {
     private Fragment searchFragment;
     private NavWindowListener navWindowListener;
     private ImageView exampleLocation;
-    private AppBarLayout navigationBar;
+    private android.support.v7.widget.Toolbar navToolbar;
     private int resumeCounter;
 
 
@@ -59,7 +60,7 @@ public class NavWindowFragment extends Fragment {
         checkStairs = view.findViewById(R.id.checkStairs);
         startButton = view.findViewById(R.id.startButton);
         exampleLocation = view.findViewById(R.id.example_location);
-        navigationBar = view.findViewById(R.id.navigationBar);
+        navToolbar = view.findViewById(R.id.navToolbar);
 
         sendChangeFloorButtonCoords();
 
@@ -85,12 +86,13 @@ public class NavWindowFragment extends Fragment {
     }
 
     public void sendChangeFloorButtonCoords(){
-        ViewTreeObserver viewTreeObserver = navigationBar.getViewTreeObserver();
+        ViewTreeObserver viewTreeObserver = navToolbar.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                navigationBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                navWindowListener.setChangeFloorButtonCoords(navigationBar.getHeight(), resumeCounter);
+                navToolbar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                navWindowListener.setChangeFloorButtonCoords(navToolbar.getHeight(), resumeCounter);
+
             }
         });
     }

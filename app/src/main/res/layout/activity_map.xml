@@ -15,7 +15,11 @@
         android:layout_height="match_parent"
         tools:context=".MapActivity">
 
-        <include layout="@layout/content_map" />
+        <include
+            layout="@layout/content_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <include layout="@layout/info_sheet"/>
 
         <FrameLayout
@@ -23,7 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_weight="0">
 
 
             <android.support.v7.widget.Toolbar
@@ -46,6 +51,8 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/drawer_header"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu" >
+
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

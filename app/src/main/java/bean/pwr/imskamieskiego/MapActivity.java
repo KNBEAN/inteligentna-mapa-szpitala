@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
+
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
@@ -65,7 +66,7 @@ public class MapActivity extends AppCompatActivity
         getChangeFloorButtonCoords();
 
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
 
             if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
                 quickAccessButton.setVisibility(View.GONE);
@@ -130,24 +131,22 @@ public class MapActivity extends AppCompatActivity
         }
 
 
-        if (getSupportFragmentManager().findFragmentById(R.id.drawer_layout ) != null){
+        if (getSupportFragmentManager().findFragmentByTag("NavFragment") != null) {
 
-            if (getSupportFragmentManager().getBackStackEntryCount() >= 1){
+            if (getSupportFragmentManager().getBackStackEntryCount() >= 1) {
                 navFragmentIsAdd = true;
                 quickAccessButton.setVisibility(View.GONE);
                 toolbar.setVisibility(View.GONE);
                 quickAccessButton.setClickable(false);
                 toolbar.setClickable(false);
-            }
-            else{
+            } else {
                 navFragmentIsAdd = false;
                 quickAccessButton.setVisibility(View.VISIBLE);
                 toolbar.setVisibility(View.VISIBLE);
                 quickAccessButton.setClickable(true);
                 toolbar.setClickable(true);
             }
-        }
-        else {
+        } else {
             navFragmentIsAdd = false;
             quickAccessButton.setVisibility(View.VISIBLE);
             translateAnimation(changeFloorButton, changeFloorButtonOldY, changeFloorButtonNewY, true);
@@ -155,7 +154,7 @@ public class MapActivity extends AppCompatActivity
             quickAccessButton.setClickable(true);
             toolbar.setClickable(true);
         }
-        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
+        Log.i("navFragIsAdd", String.valueOf(navFragmentIsAdd));
     }
 
     @Override
@@ -176,7 +175,7 @@ public class MapActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_authors) {
 
-            Intent intent = new Intent(this,AuthorsActivity.class);
+            Intent intent = new Intent(this, AuthorsActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_help) {
@@ -198,8 +197,8 @@ public class MapActivity extends AppCompatActivity
 
     public void hideQuickAccessButtons() {
 
-        AnimationAdapter animationRotateHide = new AnimationAdapter(MapActivity.this,R.anim.rotate_hide);
-        animationRotateHide.startAnimation(quickAccessButton,null);
+        AnimationAdapter animationRotateHide = new AnimationAdapter(MapActivity.this, R.anim.rotate_hide);
+        animationRotateHide.startAnimation(quickAccessButton, null);
 
         wcButton.setVisibility(View.GONE);
         foodButton.setVisibility(View.GONE);
@@ -218,8 +217,8 @@ public class MapActivity extends AppCompatActivity
 
     public void showQuickAccessButtons() {
 
-        AnimationAdapter animationRotateShow = new AnimationAdapter(MapActivity.this,R.anim.rotate_show);
-        animationRotateShow.startAnimation(quickAccessButton,null);
+        AnimationAdapter animationRotateShow = new AnimationAdapter(MapActivity.this, R.anim.rotate_show);
+        animationRotateShow.startAnimation(quickAccessButton, null);
 
         wcButton.setVisibility(View.VISIBLE);
         foodButton.setVisibility(View.VISIBLE);
@@ -279,25 +278,25 @@ public class MapActivity extends AppCompatActivity
 
     }
 
-    public void setNewNavWindowFragment(){
+    public void setNewNavWindowFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        navWindowFragment = fragmentManager.findFragmentById(R.id.drawer_layout);
+        navWindowFragment = fragmentManager.findFragmentByTag("NavFragment");
 
 
-        if (navWindowFragment == null){
+        if (navWindowFragment == null) {
             navWindowFragment = new NavWindowFragment();
 
             fragmentTransaction
-                    .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
+                    .setCustomAnimations(R.anim.slide_in_from_left, android.R.anim.slide_out_right,
                             R.anim.slide_in_from_left, android.R.anim.slide_out_right)
-                    .add(R.id.drawer_layout,navWindowFragment)
+                    .add(R.id.drawer_layout, navWindowFragment, "NavFragment")
                     .addToBackStack(null)
                     .commit();
             navFragmentIsAdd = true;
         }
-    }
 
+    }
 
 
     @Override
@@ -307,10 +306,10 @@ public class MapActivity extends AppCompatActivity
 
         navFragmentIsAdd = true;
 
-        translateAnimation(changeFloorButton,changeFloorButtonNewY,changeFloorButtonOldY,true);
+        translateAnimation(changeFloorButton, changeFloorButtonNewY, changeFloorButtonOldY, true);
 
-        animationShow.startAnimation(toolbar,animationEndListener);
-        animationShow.startAnimation(quickAccessButton,animationEndListener);
+        animationShow.startAnimation(toolbar, animationEndListener);
+        animationShow.startAnimation(quickAccessButton, animationEndListener);
 
     }
 
@@ -329,7 +328,7 @@ public class MapActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
+        Log.i("navFragIsAdd", String.valueOf(navFragmentIsAdd));
         outState.putBoolean("navFragIsAdd", navFragmentIsAdd);
     }
 
@@ -356,9 +355,9 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
-    public void setChangeFloorButtonCoords(int barHeight, int resumeCounter) {
+    public void setChangeFloorButtonCoords(int toolbarHeight, int resumeCounter) {
         float margin = 20;
-        float translationY = barHeight;
+        float translationY = toolbarHeight;
         changeFloorButtonNewY = translationY + margin;
 
         if (resumeCounter > 1)
@@ -368,7 +367,7 @@ public class MapActivity extends AppCompatActivity
 
     }
 
-    public void getChangeFloorButtonCoords(){
+    public void getChangeFloorButtonCoords() {
         ViewTreeObserver viewTreeObserver = changeFloorButton.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -379,14 +378,14 @@ public class MapActivity extends AppCompatActivity
         });
     }
 
-    public void translateAnimation(View view, float startY, float endY, boolean backToActivity){
-        if (backToActivity){
+    public void translateAnimation(View view, float startY, float endY, boolean backToActivity) {
+        if (backToActivity) {
             ObjectAnimator translateAnim = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, 0);
 
             translateAnim.setDuration(500);
             translateAnim.start();
-        }else {
-            ObjectAnimator translateAnim = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, endY-startY);
+        } else {
+            ObjectAnimator translateAnim = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, endY - startY);
 
             translateAnim.setDuration(500);
             translateAnim.start();
