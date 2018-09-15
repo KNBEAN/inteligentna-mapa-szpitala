@@ -1,23 +1,15 @@
 package bean.pwr.imskamieskiego.repository;
 
-import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
-import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
 import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
-import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
-import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
@@ -36,18 +28,27 @@ public class MapRepository implements IMapRepository {
     }
 
     @Override
-    public MapPoint getNearestPoint(int x, int y, int floor) {
-        return mapPointDao.getNearest(x, y, floor);
+    public LiveData<MapPoint> getNearestPoint(int x, int y, int floor) {
+        return Transformations.map(
+                mapPointDao.getNearestLiveData(x, y, floor),
+                point -> point
+                );
     }
 
     @Override
-    public List<MapPoint> getPointsByLocationID(int id) {
-        return new ArrayList<MapPoint>(mapPointDao.getByLocationID(id));
+    public LiveData<List<MapPoint>> getPointsByLocationID(int id) {
+        return Transformations.map(
+                mapPointDao.getByLocationIDLiveData(id),
+                list-> new ArrayList<MapPoint>(list)
+        );
     }
 
     @Override
-    public Location getLocationByID(int id) {
-        return locationDao.getByID(id);
+    public LiveData<Location> getLocationByID(int id) {
+        return Transformations.map(
+                locationDao.getByID(id),
+                locationEntity-> locationEntity
+        );
     }
 
     @Override

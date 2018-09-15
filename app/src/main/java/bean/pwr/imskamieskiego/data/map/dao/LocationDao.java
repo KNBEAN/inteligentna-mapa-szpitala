@@ -6,7 +6,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 import android.database.Cursor;
-import android.location.Location;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public interface LocationDao {
     void insertAllTags(List<LocationTagEntity> locationTags);
 
     @Query("SELECT * FROM locations WHERE id = :ID")
-    LocationEntity getByID(int ID);
+    LiveData<LocationEntity> getByID(int ID);
 
     @Query("SELECT id, name, description FROM  locations JOIN location_tags ON id = location_id WHERE tag LIKE :tag LIMIT :limit")
     LiveData<List<LocationEntity>> getListByTag(String tag, int limit);

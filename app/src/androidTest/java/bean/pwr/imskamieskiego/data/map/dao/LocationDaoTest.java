@@ -23,6 +23,7 @@ import java.util.List;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
+import bean.pwr.imskamieskiego.model.map.Location;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -66,9 +67,10 @@ public class LocationDaoTest {
 
         locationDao.insertAllLocations(locations);
 
-        LocationEntity result = locationDao.getByID(locations.get(0).getId());
+        LiveData<LocationEntity> result = locationDao.getByID(locations.get(0).getId());
+        result.observeForever(observer);
 
-        assertEquals(locations.get(0), result);
+        assertEquals(locations.get(0), result.getValue());
     }
 
     @Test
@@ -81,9 +83,10 @@ public class LocationDaoTest {
 
         locationDao.insertAllLocations(locations);
 
-        LocationEntity result = locationDao.getByID(locations.get(0).getId());
+        LiveData<LocationEntity> result = locationDao.getByID(locations.get(0).getId());
+        result.observeForever(observer);
 
-        assertEquals(locations.get(0), result);
+        assertEquals(locations.get(0), result.getValue());
     }
 
     @Test
@@ -96,9 +99,10 @@ public class LocationDaoTest {
 
         locationDao.insertAllLocations(locations);
 
-        LocationEntity result = locationDao.getByID(2);
+        LiveData<LocationEntity> result = locationDao.getByID(2);
+        result.observeForever(observer);
 
-        assertNull(result);
+        assertNull(result.getValue());
     }
 
 
