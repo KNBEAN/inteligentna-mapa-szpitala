@@ -3,6 +3,7 @@ package bean.pwr.imskamieskiego.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,15 +53,15 @@ public class MapRepository implements IMapRepository {
     }
 
     @Override
-    public LiveData<List<Location>> getLocationsListByName(String name, int limit) {
+    public LiveData<List<Location>> getLocationsListByName(@NonNull String name, int limit) {
         return Transformations.map(
-                locationDao.getListByTag(name.toLowerCase(), limit),
+                locationDao.getListByTag("%"+name.toLowerCase()+"%", limit),
                 list-> new ArrayList<>(list)
         );
     }
 
     @Override
     public Cursor getLocationsCursorByName(String name, int limit) {
-        return locationDao.getCursorByTag(name.toLowerCase(), limit);
+        return locationDao.getCursorByTag("%"+name.toLowerCase()+"%", limit);
     }
 }

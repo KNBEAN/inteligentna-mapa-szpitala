@@ -18,7 +18,7 @@ public interface MapPointDao {
 
     @Query("SELECT * FROM nodes WHERE id = :id")
     MapPointEntity getByID(int id);
-
+  
     @Query("SELECT * FROM nodes WHERE id IN (:id)")
     List<MapPointEntity> getByID(List<Integer> id);
 
