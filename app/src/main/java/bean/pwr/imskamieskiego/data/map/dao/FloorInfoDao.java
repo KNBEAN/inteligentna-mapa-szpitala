@@ -14,7 +14,7 @@ import bean.pwr.imskamieskiego.data.map.entity.FloorInfoEntity;
 public interface FloorInfoDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAllPoints(List<FloorInfoEntity> mapPoints);
+    void insertAllFloors(List<FloorInfoEntity> floors);
 
     @Query("SELECT floorName FROM floors ORDER BY floorNumber ASC")
     LiveData<String[]> getFloorNames();

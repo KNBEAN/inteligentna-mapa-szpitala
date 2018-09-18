@@ -1,0 +1,295 @@
+[
+  {
+    "location_id": 51,
+    "tag": "entry0_2"
+  },
+  {
+    "location_id": 50,
+    "tag": "entry0_1"
+  },
+  {
+    "location_id": 49,
+    "tag": "hall0_1"
+  },
+  {
+    "location_id": 48,
+    "tag": "stairs0_3"
+  },
+  {
+    "location_id": 47,
+    "tag": "stairs0_2"
+  },
+  {
+    "location_id": 46,
+    "tag": "stairs0_1"
+  },
+  {
+    "location_id": 45,
+    "tag": "lifts01_0"
+  },
+  {
+    "location_id": 42,
+    "tag": "lifts0_1"
+  },
+  {
+    "location_id": 43,
+    "tag": "lifts0_2"
+  },
+  {
+    "location_id": 44,
+    "tag": "lifts0_3"
+  },
+  {
+    "location_id": 40,
+    "tag": "place39"
+  },
+  {
+    "location_id": 39,
+    "tag": "place38"
+  },
+  {
+    "location_id": 38,
+    "tag": "place37"
+  },
+  {
+    "location_id": 37,
+    "tag": "place36"
+  },
+  {
+    "location_id": 36,
+    "tag": "place35"
+  },
+  {
+    "location_id": 35,
+    "tag": "place34"
+  },
+  {
+    "location_id": 34,
+    "tag": "place33"
+  },
+  {
+    "location_id": 33,
+    "tag": "place32"
+  },
+  {
+    "location_id": 32,
+    "tag": "place31"
+  },
+  {
+    "location_id": 31,
+    "tag": "place30"
+  },
+  {
+    "location_id": 30,
+    "tag": "place29"
+  },
+  {
+    "location_id": 29,
+    "tag": "place28"
+  },
+  {
+    "location_id": 28,
+    "tag": "place27"
+  },
+  {
+    "location_id": 27,
+    "tag": "place26"
+  },
+  {
+    "location_id": 26,
+    "tag": "place25"
+  },
+  {
+    "location_id": 25,
+    "tag": "place24"
+  },
+  {
+    "location_id": 24,
+    "tag": "place23"
+  },
+  {
+    "location_id": 23,
+    "tag": "place22"
+  },
+  {
+    "location_id": 22,
+    "tag": "place21"
+  },
+  {
+    "location_id": 21,
+    "tag": "place20"
+  },
+  {
+    "location_id": 20,
+    "tag": "place19"
+  },
+  {
+    "location_id": 19,
+    "tag": "place18"
+  },
+  {
+    "location_id": 18,
+    "tag": "place17"
+  },
+  {
+    "location_id": 17,
+    "tag": "place16"
+  },
+  {
+    "location_id": 16,
+    "tag": "place15"
+  },
+  {
+    "location_id": 15,
+    "tag": "place14"
+  },
+  {
+    "location_id": 14,
+    "tag": "place13"
+  },
+  {
+    "location_id": 13,
+    "tag": "place12"
+  },
+  {
+    "location_id": 12,
+    "tag": "place11"
+  },
+  {
+    "location_id": 11,
+    "tag": "place10"
+  },
+  {
+    "location_id": 10,
+    "tag": "place9"
+  },
+  {
+    "location_id": 9,
+    "tag": "place8"
+  },
+  {
+    "location_id": 8,
+    "tag": "place7"
+  },
+  {
+    "location_id": 7,
+    "tag": "place6"
+  },
+  {
+    "location_id": 6,
+    "tag": "place5"
+  },
+  {
+    "location_id": 5,
+    "tag": "place4"
+  },
+  {
+    "location_id": 4,
+    "tag": "place3"
+  },
+  {
+    "location_id": 3,
+    "tag": "place2"
+  },
+  {
+    "location_id": 2,
+    "tag": "place1"
+  },
+  {
+    "location_id": 41,
+    "tag": "bufet"
+  },
+  {
+    "location_id": 504,
+    "tag": "stairs1_1"
+  },
+  {
+    "location_id": 1,
+    "tag": "toilets"
+  },
+  {
+    "location_id": 505,
+    "tag": "stairs1_2"
+  },
+  {
+    "location_id": 506,
+    "tag": "stairs1_3"
+  },
+  {
+    "location_id": 507,
+    "tag": "lifts1_1"
+  },
+  {
+    "location_id": 508,
+    "tag": "lifts1_2"
+  },
+  {
+    "location_id": 509,
+    "tag": "lifts1_3"
+  },
+  {
+    "location_id": 510,
+    "tag": "lifts01_1"
+  },
+  {
+    "location_id": 511,
+    "tag": "place40"
+  },
+  {
+    "location_id": 512,
+    "tag": "place41"
+  },
+  {
+    "location_id": 513,
+    "tag": "place42"
+  },
+  {
+    "location_id": 514,
+    "tag": "place43"
+  },
+  {
+    "location_id": 515,
+    "tag": "place44"
+  },
+  {
+    "location_id": 647,
+    "tag": "stairs2_1"
+  },
+  {
+    "location_id": 646,
+    "tag": "lift2_3"
+  },
+  {
+    "location_id": 645,
+    "tag": "lift2_2"
+  },
+  {
+    "location_id": 644,
+    "tag": "lift2_1"
+  },
+  {
+    "location_id": 643,
+    "tag": "place50"
+  },
+  {
+    "location_id": 642,
+    "tag": "place49"
+  },
+  {
+    "location_id": 641,
+    "tag": "place48"
+  },
+  {
+    "location_id": 640,
+    "tag": "place47"
+  },
+  {
+    "location_id": 639,
+    "tag": "place46"
+  },
+  {
+    "location_id": 638,
+    "tag": "place45"
+  }
+]
+

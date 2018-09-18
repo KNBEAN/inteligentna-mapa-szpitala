@@ -1,84 +1,67 @@
 package bean.pwr.imskamieskiego.repository;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Transformations;
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
-import bean.pwr.imskamieskiego.data.map.dao.EdgeDao;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
 import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
-import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 /**
  * This class is implementation of IMapRepository. It should be used to get access to data related
- * to map and navigation graph. Methods of this class must be call from thread other
- * than main thread.
+ * to map location ect. Methods of this class must be call from thread other than main thread.
  */
 public class MapRepository implements IMapRepository {
 
     private MapPointDao mapPointDao;
     private LocationDao locationDao;
-    private EdgeDao edgeDao;
 
     public MapRepository(LocalDB dataBase) {
         mapPointDao = dataBase.getMapPointDao();
         locationDao = dataBase.getLocationDao();
-        edgeDao = dataBase.getEdgeDao();
     }
 
     @Override
-    public MapPoint getPointByID(int id) {
-        return mapPointDao.getByID(id);
+    public LiveData<MapPoint> getNearestPoint(int x, int y, int floor) {
+        return Transformations.map(
+                mapPointDao.getNearestLiveData(x, y, floor),
+                point -> point
+                );
     }
 
     @Override
-    public List<MapPoint> getPointByID(@NonNull List<Integer> id) {
-        return new ArrayList<MapPoint>(mapPointDao.getByID(id));
+    public LiveData<List<MapPoint>> getPointsByLocationID(int id) {
+        return Transformations.map(
+                mapPointDao.getByLocationIDLiveData(id),
+                list-> new ArrayList<MapPoint>(list)
+        );
     }
 
     @Override
-    public MapPoint getNearestPoint(int x, int y, int floor) {
-        return mapPointDao.getNearest(x, y, floor);
+    public LiveData<Location> getLocationByID(int id) {
+        return Transformations.map(
+                locationDao.getByID(id),
+                locationEntity-> locationEntity
+        );
     }
 
     @Override
-    public List<MapPoint> getPointsByLocationID(int id) {
-        return new ArrayList<MapPoint>(mapPointDao.getByLocationID(id));
+    public LiveData<List<Location>> getLocationsListByName(@NonNull String name, int limit) {
+        return Transformations.map(
+                locationDao.getListByTag("%"+name.toLowerCase()+"%", limit),
+                list-> new ArrayList<>(list)
+        );
     }
 
     @Override
-    public Location getLocationByID(int id) {
-        return locationDao.getByID(id);
-    }
-
-    @Override
-    public List<Edge> getOutgoingEdges(int pointID) {
-        return  new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
-    }
-
-    @Override
-    public Map<Integer, List<Edge>> getOutgoingEdges(@NonNull List<Integer> pointID) {
-        if (pointID == null) throw new NullPointerException();
-
-        List<Edge> edges = new ArrayList<Edge>(edgeDao.getOutgoingEdges(pointID));
-
-        Map<Integer, List<Edge>> map = new Hashtable<>();
-        for (Edge edge:edges) {
-            if (map.containsKey(edge.getFrom())){
-                map.get(edge.getFrom()).add(edge);
-            }else {
-                ArrayList<Edge> edgeList = new ArrayList<>();
-                edgeList.add(edge);
-                map.put(edge.getFrom(), edgeList);
-            }
-        }
-
-        return map;
+    public Cursor getLocationsCursorByName(String name, int limit) {
+        return locationDao.getCursorByTag("%"+name.toLowerCase()+"%", limit);
     }
 }
