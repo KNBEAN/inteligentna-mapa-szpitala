@@ -24,7 +24,7 @@ public interface LocationDao {
     @Query("SELECT * FROM locations WHERE id = :ID")
     LiveData<LocationEntity> getByID(int ID);
 
-    @Query("SELECT id, name, description FROM  locations JOIN location_tags ON id = location_id WHERE tag LIKE :tag LIMIT :limit")
+    @Query("SELECT id, name, description FROM  locations JOIN location_tags ON id = location_id WHERE tag LIKE :tag ORDER BY name ASC LIMIT :limit ")
     LiveData<List<LocationEntity>> getListByTag(String tag, int limit);
 
     @Query("SELECT id, name, description FROM  locations JOIN location_tags ON id = location_id WHERE tag LIKE :tag LIMIT :limit")

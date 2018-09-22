@@ -5,6 +5,7 @@
 
     <item
         android:id="@+id/search_item"
+        android:icon="@android:drawable/btn_dialog"
         android:title="@string/search_view_hint"
         android:visible="true"
         app:actionViewClass="android.support.v7.widget.SearchView"
