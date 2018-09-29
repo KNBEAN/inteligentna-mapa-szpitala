@@ -24,7 +24,7 @@
     <string name="navigation_drawer_ap">Asystent Pacjenta</string>
     <string name="navigation_drawer_info">O szpitalu</string>
     <string name="navigation_drawer_help">Pomoc</string>
-    <string name="search_view_hint">Czego szukasz?</string>
+    <string name="search_view_hint">Szukanie miejsca</string>
     <string name="floor_number">Piętro</string>
     <string name="floor_change_button_description">Przycisk zmiany piętra</string>
     <string name="map_view_description">Obraz mapy szpitala</string>
@@ -47,5 +47,6 @@
     <string name="short_description">Głównym celem aplikacji jest pomoc pacjentom,
         osobom odwiedzającym oraz pracownikom szpitala w
         odnajdywaniu się w budynku.</string>
+    <string name="place">Miejsce</string>
 
 </resources>

@@ -1,25 +1,23 @@
 package bean.pwr.imskamieskiego;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
-import android.support.annotation.RequiresApi;
+import android.database.MatrixCursor;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
+import bean.pwr.imskamieskiego.GUI.LocationSuggestionAdapter;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
-import android.support.design.widget.FloatingActionButton;
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,21 +25,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
+import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.model.map.Location;
+import bean.pwr.imskamieskiego.repository.IMapRepository;
+import bean.pwr.imskamieskiego.repository.MapRepository;
 
-import static bean.pwr.imskamieskiego.GUI.InfoSheet.COLLAPSED;
-
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NavWindowListener {
@@ -59,8 +56,20 @@ public class MapActivity extends AppCompatActivity
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
 
+    private SearchView.OnQueryTextListener onQueryTextListener;
+
+    private IMapRepository mapRepository;
+
+    MenuItem menuSearchItem;
+    private SearchView searchView;
+
+    private String lastQuery = null;
+
 
     private static final String TAG = "MapActivity";
+
+    private static final String LAST_SEARCH_QUERY = "LAST_SEARCH_QUERY";
+    private static final String NAV_FRAG_FLAG = "navFragIsAdd";
 
 
     @Override
@@ -74,13 +83,17 @@ public class MapActivity extends AppCompatActivity
         changeFloorButtonInit();
         if (savedInstanceState != null){
 
-            if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
+            if (savedInstanceState.getBoolean(NAV_FRAG_FLAG, false)) {
                 quickAccessButton.setVisibility(View.GONE);
                 changeFloorButton.setVisibility(View.GONE);
                 toolbar.setVisibility(View.GONE);
             }
 
+            lastQuery = savedInstanceState.getString(LAST_SEARCH_QUERY);
         }
+
+        //TODO It's for test. You should remove this when view model will be ready!
+        mapRepository = new MapRepository(LocalDB.getDatabase(this));
 
 
         infoSheet.setListener(new InfoSheet.InfoSheetListener() {
@@ -121,8 +134,41 @@ public class MapActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-    }
+        onQueryTextListener = new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String query) {
+                        //TODO in this place should be called method of viewModel
 
+                        //for test
+                        mapRepository.getLocationsListByName(query, 1)
+                                .observe(MapActivity.this, locations -> {
+                                    if (locations != null){
+                                        for (Location location:locations) {
+                                            Toast.makeText(MapActivity.this, "Searched place "+location.getName(),
+                                                    Toast.LENGTH_LONG).show();
+                                            Log.i(TAG, "Searched location name: "+location.getName());
+                                        }
+                                    }
+                                });
+                        //end for test
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onQueryTextChange(String newText) {
+                        newText = "%"+newText+"%";
+
+                        //TODO in this place should be called method of viewModel
+                        //for test
+                        mapRepository.getLocationsListByName(newText, 5)
+                                .observe(MapActivity.this, MapActivity.this::createSuggestions);
+                        //end for test
+
+                        return false;
+                    }
+                };
+    }
 
     @Override
     public void onBackPressed() {
@@ -156,14 +202,40 @@ public class MapActivity extends AppCompatActivity
             toolbar.setVisibility(View.VISIBLE);
         }
 
-        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
+        Log.i(NAV_FRAG_FLAG, String.valueOf(navFragmentIsAdd));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        menuSearchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) menuSearchItem.getActionView();
+
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setOnQueryTextListener(onQueryTextListener);
+        searchView.setQueryHint(getString(R.string.search_view_hint));
+
+        if(lastQuery != null && !lastQuery.isEmpty()) {
+            Log.i(TAG, "Search query restoring: "+lastQuery);
+            searchView.setIconified(true);
+            menuSearchItem.expandActionView();
+            searchView.setQuery(lastQuery, false);
+            lastQuery = null;
+            searchView.clearFocus();
+        }
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void createSuggestions(List<Location> locations){
+        searchView.setSuggestionsAdapter(new LocationSuggestionAdapter(this, locations, view -> {
+                //take next action based user selected item
+                TextView nameText = view.findViewById(R.id.locationName);
+                Toast.makeText(MapActivity.this, "Selected suggestion "+nameText.getText(),
+                        Toast.LENGTH_LONG).show();
+                searchView.setQuery(nameText.getText(), true);
+        }));
     }
 
 
@@ -247,18 +319,15 @@ public class MapActivity extends AppCompatActivity
         foodButtonDescription = findViewById(R.id.food_button_description);
         wcButtonDescription = findViewById(R.id.wc_button_description);
 
-        quickAccessButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (foodButton.getVisibility() == View.VISIBLE
-                        && (wcButton.getVisibility() == View.VISIBLE)
-                        && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
-                    hideQuickAccessButtons();
+        quickAccessButton.setOnClickListener(view -> {
+            if (foodButton.getVisibility() == View.VISIBLE
+                    && (wcButton.getVisibility() == View.VISIBLE)
+                    && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
+                hideQuickAccessButtons();
 
-                } else {
-                    showQuickAccessButtons();
+            } else {
+                showQuickAccessButtons();
 
-                }
             }
         });
         AnimationAdapter animationHide = new AnimationAdapter(MapActivity.this, R.anim.hide_anim);
@@ -325,31 +394,26 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Log.i(NAV_FRAG_FLAG,String.valueOf(navFragmentIsAdd));
 
-        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
-        outState.putBoolean("navFragIsAdd", navFragmentIsAdd);
+        outState.putBoolean(NAV_FRAG_FLAG, navFragmentIsAdd);
+
+        outState.putString(LAST_SEARCH_QUERY,menuSearchItem.isActionViewExpanded() ? searchView.getQuery().toString() : null);
+
+        super.onSaveInstanceState(outState);
     }
 
     private void changeFloorButtonInit() {
         changeFloorButton = findViewById(R.id.floors_button);
-        changeFloorButton.setOnClickListener(new View.OnClickListener() {
+        changeFloorButton.setOnClickListener(v -> {
 
-
-            @Override
-            public void onClick(View v) {
-
-                PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-                floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
-                floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                });
-                floorSelect.show();
-            }
+            PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+            floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+            floorSelect.setOnMenuItemClickListener(item -> {
+                Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
+                return false;
+            });
+            floorSelect.show();
         });
     }
 

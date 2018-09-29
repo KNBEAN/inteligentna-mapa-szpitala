@@ -69,7 +69,7 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 
-        MenuItem item = menu.findItem(R.id.search_item);
+        MenuItem item = menu.findItem(R.id.action_search);
 
         SearchView searchView = (SearchView) item.getActionView();
 
