@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,7 +17,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
+
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchHandler;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SuggestionProvider;
 import bean.pwr.imskamieskiego.R;
+import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.repository.IMapRepository;
+import bean.pwr.imskamieskiego.repository.MapRepository;
 
 
 public class SearchFragment extends Fragment {
@@ -26,6 +33,7 @@ public class SearchFragment extends Fragment {
     private String listViewPlace;
     private Boolean isDestination;
     private String hintText;
+    private SearchView searchView;
 
 
     @Override
@@ -44,13 +52,13 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
+//        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar2);
         listView = (ListView) view.findViewById(R.id.destinations_list);
 
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+//        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
         setPlacesArray(view);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -62,6 +70,16 @@ public class SearchFragment extends Fragment {
 
             }
         });
+        searchView = view.findViewById(R.id.searchView2);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setQueryHint(getString(R.string.search_view_hint));
+
+        IMapRepository mapRepository = new MapRepository(LocalDB.getDatabase(view.getContext()));
+
+        new SearchHandler(searchView, new SuggestionProvider(mapRepository), query -> {
+            Log.i("Kod Pijanusea", "Searched: "+query);
+        });
+
         return view;
     }
 

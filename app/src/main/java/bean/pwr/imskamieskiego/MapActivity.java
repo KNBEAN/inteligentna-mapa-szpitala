@@ -1,12 +1,12 @@
 package bean.pwr.imskamieskiego;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.content.Intent;
-import android.database.MatrixCursor;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -14,7 +14,9 @@ import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
-import bean.pwr.imskamieskiego.GUI.LocationSuggestionAdapter;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchHandler;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchSuggestionProvider;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SuggestionProvider;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
 
@@ -28,7 +30,6 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -56,11 +57,11 @@ public class MapActivity extends AppCompatActivity
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
 
-    private SearchView.OnQueryTextListener onQueryTextListener;
-
     private IMapRepository mapRepository;
 
     MenuItem menuSearchItem;
+
+    private SearchHandler searchHandler;
     private SearchView searchView;
 
     private String lastQuery = null;
@@ -134,40 +135,6 @@ public class MapActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        onQueryTextListener = new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String query) {
-                        //TODO in this place should be called method of viewModel
-
-                        //for test
-                        mapRepository.getLocationsListByName(query, 1)
-                                .observe(MapActivity.this, locations -> {
-                                    if (locations != null){
-                                        for (Location location:locations) {
-                                            Toast.makeText(MapActivity.this, "Searched place "+location.getName(),
-                                                    Toast.LENGTH_LONG).show();
-                                            Log.i(TAG, "Searched location name: "+location.getName());
-                                        }
-                                    }
-                                });
-                        //end for test
-
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onQueryTextChange(String newText) {
-                        newText = "%"+newText+"%";
-
-                        //TODO in this place should be called method of viewModel
-                        //for test
-                        mapRepository.getLocationsListByName(newText, 5)
-                                .observe(MapActivity.this, MapActivity.this::createSuggestions);
-                        //end for test
-
-                        return false;
-                    }
-                };
     }
 
     @Override
@@ -213,29 +180,36 @@ public class MapActivity extends AppCompatActivity
         searchView = (SearchView) menuSearchItem.getActionView();
 
         searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setOnQueryTextListener(onQueryTextListener);
         searchView.setQueryHint(getString(R.string.search_view_hint));
+
+        SuggestionProvider suggestionProvider = new SuggestionProvider(mapRepository);
+
+        searchHandler = new SearchHandler(searchView, suggestionProvider, query -> {
+
+            //TODO in this place should be called method of viewModel
+            //for test
+            mapRepository.getLocationsListByName(query, 1)
+                    .observe(MapActivity.this, locations -> {
+                        if (locations != null){
+                            for (Location location:locations) {
+                                Toast.makeText(MapActivity.this, "Searched place "+location.getName(),
+                                        Toast.LENGTH_LONG).show();
+                                Log.i(TAG, "Searched location name: "+location.getName());
+                            }
+                        }
+                    });
+            //end for test
+        });
 
         if(lastQuery != null && !lastQuery.isEmpty()) {
             Log.i(TAG, "Search query restoring: "+lastQuery);
-            searchView.setIconified(true);
+            searchView.setIconified(false);
             menuSearchItem.expandActionView();
             searchView.setQuery(lastQuery, false);
-            lastQuery = null;
             searchView.clearFocus();
         }
 
         return super.onCreateOptionsMenu(menu);
-    }
-
-    private void createSuggestions(List<Location> locations){
-        searchView.setSuggestionsAdapter(new LocationSuggestionAdapter(this, locations, view -> {
-                //take next action based user selected item
-                TextView nameText = view.findViewById(R.id.locationName);
-                Toast.makeText(MapActivity.this, "Selected suggestion "+nameText.getText(),
-                        Toast.LENGTH_LONG).show();
-                searchView.setQuery(nameText.getText(), true);
-        }));
     }
 
 
@@ -398,7 +372,7 @@ public class MapActivity extends AppCompatActivity
 
         outState.putBoolean(NAV_FRAG_FLAG, navFragmentIsAdd);
 
-        outState.putString(LAST_SEARCH_QUERY,menuSearchItem.isActionViewExpanded() ? searchView.getQuery().toString() : null);
+        outState.putString(LAST_SEARCH_QUERY, menuSearchItem.isActionViewExpanded() ? searchHandler.getLastQuery() : null);
 
         super.onSaveInstanceState(outState);
     }
@@ -416,6 +390,5 @@ public class MapActivity extends AppCompatActivity
             floorSelect.show();
         });
     }
-
 
 }

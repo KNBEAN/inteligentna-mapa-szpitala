@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.GUI;
+package bean.pwr.imskamieskiego.GUI.locationSearch;
 
 import android.content.Context;
 import android.database.Cursor;
