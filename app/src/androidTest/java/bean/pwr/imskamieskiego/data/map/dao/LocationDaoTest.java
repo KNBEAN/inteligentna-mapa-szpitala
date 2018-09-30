@@ -25,8 +25,11 @@ import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
 import bean.pwr.imskamieskiego.model.map.Location;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class LocationDaoTest {
@@ -129,7 +132,6 @@ public class LocationDaoTest {
 
         LiveData<List<LocationEntity>> locations = locationDao.getListByTag("%koń%", 5);
         locations.observeForever(observer);
-
-        assertEquals(similarLocations, locations.getValue());
+        assertTrue(locations.getValue().containsAll(similarLocations));
     }
 }

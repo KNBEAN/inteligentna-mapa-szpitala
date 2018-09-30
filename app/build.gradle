@@ -39,7 +39,7 @@ android {
 
 
         testImplementation 'org.junit.jupiter:junit-jupiter-api:5.3.0-M1'
-        testImplementation 'org.mockito:mockito-core:2.21.0'
+        testImplementation 'org.mockito:mockito-core:2.22.0'
 
         androidTestImplementation 'org.mockito:mockito-android:2.21.0'
 
