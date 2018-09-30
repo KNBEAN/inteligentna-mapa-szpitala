@@ -9,20 +9,14 @@
     tools:layout_editor_absoluteY="25dp"
     >
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="384dp"
-        android:layout_height="567dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:contentDescription="@string/map_view_description"
+    <bean.pwr.imskamieskiego.MapDrawer.MapDrawer
+        android:id="@+id/mapdrawer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/samplemap"
-        android:rotation="270"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/floors_button"

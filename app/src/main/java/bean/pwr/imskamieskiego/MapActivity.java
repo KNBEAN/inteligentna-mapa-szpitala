@@ -1,5 +1,7 @@
 package bean.pwr.imskamieskiego;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
@@ -15,8 +17,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
 import android.support.design.widget.FloatingActionButton;
@@ -39,8 +44,13 @@ import android.widget.Toast;
 
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
+import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.repository.FloorDataRepository;
+import bean.pwr.imskamieskiego.view_models.LocationViewModel;
 
 import static bean.pwr.imskamieskiego.GUI.InfoSheet.COLLAPSED;
+import static bean.pwr.imskamieskiego.GUI.InfoSheet.EXPANDED;
 
 
 public class MapActivity extends AppCompatActivity
@@ -58,6 +68,11 @@ public class MapActivity extends AppCompatActivity
     private Fragment navWindowFragment;
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
+    private LocationViewModel locationViewModel;
+    private InfoSheet infoSheet;
+    private MapDrawer mapDrawer;
+    private FloorDataRepository floorDataRepository;
+
 
 
     private static final String TAG = "MapActivity";
@@ -69,10 +84,31 @@ public class MapActivity extends AppCompatActivity
         setContentView(R.layout.activity_map);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        InfoSheet infoSheet = new InfoSheet(this);
+        infoSheet = new InfoSheet(this);
+        mapDrawer = new MapDrawer(this);
+
+        viewModelInit();
         quickAccessButtonInit();
         changeFloorButtonInit();
 
+
+
+        mapDrawer = findViewById(R.id.mapdrawer);
+        mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
+            @Override
+            public void onLongPress(MapPoint mapPoint) {
+              // Toast.makeText(MapActivity.this,mapPoint.getX()+" "+mapPoint.getY(),Toast.LENGTH_LONG).show();
+                locationViewModel.setTargetMapPointLiveData(mapPoint);
+               locationViewModel.getLocationLiveData().observe(MapActivity.this, location ->
+               {
+                   Toast.makeText(MapActivity.this,"mienso",Toast.LENGTH_LONG).show();
+                   infoSheet.showInfoSheet(location, EXPANDED);
+                   Toast.makeText(MapActivity.this,location.getName(),Toast.LENGTH_LONG).show();
+               });
+
+
+            }
+        });
 
         if (savedInstanceState != null){
 
@@ -124,6 +160,8 @@ public class MapActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+
+
 
 
     @Override
@@ -356,4 +394,21 @@ public class MapActivity extends AppCompatActivity
     }
 
 
+    private void viewModelInit() {
+       locationViewModel =  ViewModelProviders.of(this).get(LocationViewModel.class);
+
+
+
+    }
+
+
+
+    //    @Override
+//    public void onLongPress(MapPoint mapPoint) {
+//        Toast.makeText(this,"click"+mapPoint.getFloor(),Toast.LENGTH_LONG).show();
+//        locationViewModel.setTargetMapPointLiveData(mapPoint);
+//        locationViewModel.getLocationLiveData().observe(this, location ->
+//                infoSheet.showInfoSheet(location));
+//
+//    }
 }
