@@ -3,28 +3,19 @@ package bean.pwr.imskamieskiego;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -32,19 +23,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
-import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.FloorDataRepository;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
@@ -98,8 +83,8 @@ public class MapActivity extends AppCompatActivity
             @Override
             public void onLongPress(MapPoint mapPoint) {
               // Toast.makeText(MapActivity.this,mapPoint.getX()+" "+mapPoint.getY(),Toast.LENGTH_LONG).show();
-                locationViewModel.setTargetMapPointLiveData(mapPoint);
-               locationViewModel.getLocationLiveData().observe(MapActivity.this, location ->
+
+               locationViewModel.getLocationLiveData(mapPoint).observe(MapActivity.this, location ->
                {
                    Toast.makeText(MapActivity.this,"mienso",Toast.LENGTH_LONG).show();
                    infoSheet.showInfoSheet(location, EXPANDED);

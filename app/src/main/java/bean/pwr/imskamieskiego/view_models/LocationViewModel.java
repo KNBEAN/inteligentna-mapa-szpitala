@@ -8,9 +8,13 @@ import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import java.util.List;
+
+import bean.pwr.imskamieskiego.MapActivity;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.repository.IMapRepository;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 
 /**
@@ -20,46 +24,39 @@ import bean.pwr.imskamieskiego.repository.MapRepository;
 public class LocationViewModel extends AndroidViewModel {
 
     private  MapRepository repository;
-    //The MapPoint choosen by a user on the map
-    private MutableLiveData<MapPoint> targetMapPointLiveData = new MutableLiveData<>();
-    //Target location
-    private MutableLiveData<Location> locationLiveData = new MutableLiveData<>();
+
+    private MutableLiveData<MapPoint> targetMapPoint = new MutableLiveData<>();
+
+    private LocalDB dataBase;
 
 
 
-    public void setTargetMapPointLiveData(MutableLiveData<MapPoint> targetMapPointLiveData) {
-        this.targetMapPointLiveData = targetMapPointLiveData;
+    private LiveData<Location> currentLocation = Transformations.switchMap(targetMapPoint, mapPoint ->
+        getLocationLiveData(mapPoint));
+
+
+
+
+    public LiveData<Location> getLocationLiveData(MapPoint mapPoint) {
+
+            MapPoint nearestPoint = repository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor());
+            Location location = repository.getLocationByID(nearestPoint.getId());
+
+            };
+
     }
-
-
-    public MutableLiveData<Location> getLocationLiveData() {
-        return locationLiveData;
-    }
-
-
 
     //Target location
     public LocationViewModel(@NonNull Application application) {
         super(application);
-        LiveData locationLiveData = Transformations.switchMap(targetMapPointLiveData, mapPoint ->
-               setLocationLiveData(mapPoint));
+        dataBase = LocalDB.getDatabase(application);
+        repository = new MapRepository(dataBase);
+
+//        LiveData locationLiveData = Transformations.switchMap(targetMapPointLiveData, mapPoint ->
+//               setLocationLiveData(mapPoint));
 
     }
 
 
-
-    public MutableLiveData<Location> setLocationLiveData(MapPoint mapPoint) {
-        MapPoint nearestPoint = repository.getNearestPoint(mapPoint.getX(),mapPoint.getY(),mapPoint.getFloor());
-        // Returns a LiveData object directly from the database.
-        locationLiveData.postValue(repository.getLocationByID(nearestPoint.getId()));
-        return locationLiveData;
-    }
-
-
-    public void setTargetMapPointLiveData(MapPoint mapPoint) {
-        if (mapPoint!=null){
-        targetMapPointLiveData.setValue(mapPoint);
-
-    }}
 
 }
