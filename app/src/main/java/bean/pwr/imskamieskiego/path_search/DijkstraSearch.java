@@ -10,7 +10,7 @@ import java.util.PriorityQueue;
 
 import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
-import bean.pwr.imskamieskiego.repository.IMapRepository;
+import bean.pwr.imskamieskiego.repository.IMapGraphRepository;
 
 /**
  * Implementation of Dijkstra algorithm.
@@ -20,26 +20,26 @@ public class DijkstraSearch implements PathSearchAlgorithm {
 
     private int startPointID;
     private int[] endPointIDs;
-    private IMapRepository mapRepository;
+    private IMapGraphRepository graphRepository;
     private List<MapPoint> trace;
 
     /**
      * Create instance of Dijkstra algorithm to search path between given points. Points can't have
      * the same ID (be the same node on graph)
      * @see PathSearcher
-     * @param mapRepository repository with graph data
+     * @param graphRepository repository with graph data
      * @param startPoint point from which the algorithm should start searching for the path
      * @param endPoint target point
      * @throws IllegalArgumentException throws when start and end point are the same node
      */
-    public DijkstraSearch(IMapRepository mapRepository, MapPoint startPoint, MapPoint endPoint) throws IllegalArgumentException {
+    public DijkstraSearch(IMapGraphRepository graphRepository, MapPoint startPoint, MapPoint endPoint) throws IllegalArgumentException {
         if (startPoint.getId()==endPoint.getId()){
             throw new IllegalArgumentException("End point and start point are the same points!");
         }
         this.startPointID = startPoint.getId();
         this.endPointIDs = new int[1];
         this.endPointIDs[0] = endPoint.getId();
-        this.mapRepository = mapRepository;
+        this.graphRepository = graphRepository;
         this.trace = new ArrayList<>();
     }
 
@@ -47,13 +47,13 @@ public class DijkstraSearch implements PathSearchAlgorithm {
      * Create instance of Dijkstra algorithm to search path between given points. Any point on
      * targets list can't have the same ID (be the same node on graph) as startPoint.
      * @see PathSearcher
-     * @param mapRepository repository with graph data
+     * @param graphRepository repository with graph data
      * @param startPoint point from which the algorithm should start searching for the path
      * @param endPoints list of target points
      * @throws IllegalArgumentException throws when start point and any of end points are the same
      * node. Throws this exception also, when targets list is empty.
      */
-    public DijkstraSearch(IMapRepository mapRepository, MapPoint startPoint, List<MapPoint> endPoints) throws IllegalArgumentException {
+    public DijkstraSearch(IMapGraphRepository graphRepository, MapPoint startPoint, List<MapPoint> endPoints) throws IllegalArgumentException {
         for (MapPoint point:endPoints) {
             if (startPoint.getId()==point.getId()){
                 throw new IllegalArgumentException("End point and start point are the same points!");
@@ -69,7 +69,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
             endPointIDs[i] = endPoints.get(i).getId();
         }
 
-        this.mapRepository = mapRepository;
+        this.graphRepository = graphRepository;
         this.trace = new ArrayList<>();
     }
 
@@ -172,7 +172,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         Map<Integer, List<Edge>> fetchedEdges;
 
         toFetchList.add(nodeID);
-        tmpFetchedEdges = mapRepository.getOutgoingEdges(toFetchList);
+        tmpFetchedEdges = graphRepository.getOutgoingEdges(toFetchList);
         fetchedEdges = tmpFetchedEdges;
 
         for (int i = 0; i < depth; i++) {
@@ -185,7 +185,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
                     }
                 }
             }
-            tmpFetchedEdges = mapRepository.getOutgoingEdges(toFetchList);
+            tmpFetchedEdges = graphRepository.getOutgoingEdges(toFetchList);
             fetchedEdges.putAll(tmpFetchedEdges);
 
             if(tmpFetchedEdges.isEmpty()) break;
@@ -208,7 +208,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
             previousID = nodeVisitHistory.get(previousID);
         }
 
-        List<MapPoint> unsortedMapPointList = mapRepository.getPointByID(listOfVisits);
+        List<MapPoint> unsortedMapPointList = graphRepository.getPointByID(listOfVisits);
 
         for (int i = listOfVisits.size()-1; i >= 0; i--) {
             int id = listOfVisits.get(i);

@@ -76,8 +76,6 @@ public class MapActivity extends AppCompatActivity
         quickAccessButtonInit();
         changeFloorButtonInit();
 
-
-
         mapDrawer = findViewById(R.id.mapdrawer);
         mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
             @Override
