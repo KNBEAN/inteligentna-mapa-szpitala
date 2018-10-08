@@ -1,8 +1,10 @@
 package bean.pwr.imskamieskiego;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
+import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.FloorDataRepository;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
@@ -59,7 +62,6 @@ public class MapActivity extends AppCompatActivity
     private FloorDataRepository floorDataRepository;
 
 
-
     private static final String TAG = "MapActivity";
 
 
@@ -80,20 +82,12 @@ public class MapActivity extends AppCompatActivity
         mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
             @Override
             public void onLongPress(MapPoint mapPoint) {
-              // Toast.makeText(MapActivity.this,mapPoint.getX()+" "+mapPoint.getY(),Toast.LENGTH_LONG).show();
-
-               locationViewModel.getLocationLiveData(mapPoint).observe(MapActivity.this, location ->
-               {
-                   Toast.makeText(MapActivity.this,"mienso",Toast.LENGTH_LONG).show();
-                   infoSheet.showInfoSheet(location, EXPANDED);
-                   Toast.makeText(MapActivity.this,location.getName(),Toast.LENGTH_LONG).show();
-               });
-
+              locationViewModel.setMapPoint(mapPoint);
 
             }
         });
 
-        if (savedInstanceState != null){
+        if (savedInstanceState != null) {
 
             if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
                 quickAccessButton.setVisibility(View.GONE);
@@ -145,8 +139,6 @@ public class MapActivity extends AppCompatActivity
     }
 
 
-
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -157,29 +149,27 @@ public class MapActivity extends AppCompatActivity
         }
 
 
-        if (getSupportFragmentManager().findFragmentById(R.id.drawer_layout ) != null){
+        if (getSupportFragmentManager().findFragmentById(R.id.drawer_layout) != null) {
 
-            if (getSupportFragmentManager().getBackStackEntryCount() >= 1){
+            if (getSupportFragmentManager().getBackStackEntryCount() >= 1) {
                 navFragmentIsAdd = true;
                 quickAccessButton.setVisibility(View.GONE);
                 changeFloorButton.setVisibility(View.GONE);
                 toolbar.setVisibility(View.GONE);
-            }
-            else{
+            } else {
                 navFragmentIsAdd = false;
                 quickAccessButton.setVisibility(View.VISIBLE);
                 changeFloorButton.setVisibility(View.VISIBLE);
                 toolbar.setVisibility(View.VISIBLE);
             }
-        }
-        else {
+        } else {
             navFragmentIsAdd = false;
             quickAccessButton.setVisibility(View.VISIBLE);
             changeFloorButton.setVisibility(View.VISIBLE);
             toolbar.setVisibility(View.VISIBLE);
         }
 
-        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
+        Log.i("navFragIsAdd", String.valueOf(navFragmentIsAdd));
     }
 
     @Override
@@ -200,7 +190,7 @@ public class MapActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_authors) {
 
-            Intent intent = new Intent(this,AuthorsActivity.class);
+            Intent intent = new Intent(this, AuthorsActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_help) {
@@ -222,8 +212,8 @@ public class MapActivity extends AppCompatActivity
 
     public void hideQuickAccessButtons() {
 
-        AnimationAdapter animationRotateHide = new AnimationAdapter(MapActivity.this,R.anim.rotate_hide);
-        animationRotateHide.startAnimation(quickAccessButton,null);
+        AnimationAdapter animationRotateHide = new AnimationAdapter(MapActivity.this, R.anim.rotate_hide);
+        animationRotateHide.startAnimation(quickAccessButton, null);
 
         wcButton.setVisibility(View.GONE);
         foodButton.setVisibility(View.GONE);
@@ -242,8 +232,8 @@ public class MapActivity extends AppCompatActivity
 
     public void showQuickAccessButtons() {
 
-        AnimationAdapter animationRotateShow = new AnimationAdapter(MapActivity.this,R.anim.rotate_show);
-        animationRotateShow.startAnimation(quickAccessButton,null);
+        AnimationAdapter animationRotateShow = new AnimationAdapter(MapActivity.this, R.anim.rotate_show);
+        animationRotateShow.startAnimation(quickAccessButton, null);
 
         wcButton.setVisibility(View.VISIBLE);
         foodButton.setVisibility(View.VISIBLE);
@@ -301,25 +291,24 @@ public class MapActivity extends AppCompatActivity
 
     }
 
-    public void setNewNavWindowFragment(){
+    public void setNewNavWindowFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         navWindowFragment = fragmentManager.findFragmentById(R.id.drawer_layout);
 
 
-        if (navWindowFragment == null){
+        if (navWindowFragment == null) {
             navWindowFragment = new NavWindowFragment();
 
             fragmentTransaction
-                    .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
+                    .setCustomAnimations(R.anim.slide_in_from_left, android.R.anim.slide_out_right,
                             R.anim.slide_in_from_left, android.R.anim.slide_out_right)
-                    .add(R.id.drawer_layout,navWindowFragment)
+                    .add(R.id.drawer_layout, navWindowFragment)
                     .addToBackStack(null)
                     .commit();
             navFragmentIsAdd = true;
         }
     }
-
 
 
     @Override
@@ -329,9 +318,9 @@ public class MapActivity extends AppCompatActivity
 
         navFragmentIsAdd = true;
 
-        animationShow.startAnimation(changeFloorButton,animationEndListener);
-        animationShow.startAnimation(toolbar,animationEndListener);
-        animationShow.startAnimation(quickAccessButton,animationEndListener);
+        animationShow.startAnimation(changeFloorButton, animationEndListener);
+        animationShow.startAnimation(toolbar, animationEndListener);
+        animationShow.startAnimation(quickAccessButton, animationEndListener);
 
     }
 
@@ -350,7 +339,7 @@ public class MapActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        Log.i("navFragIsAdd",String.valueOf(navFragmentIsAdd));
+        Log.i("navFragIsAdd", String.valueOf(navFragmentIsAdd));
         outState.putBoolean("navFragIsAdd", navFragmentIsAdd);
     }
 
@@ -378,20 +367,15 @@ public class MapActivity extends AppCompatActivity
 
 
     private void viewModelInit() {
-       locationViewModel =  ViewModelProviders.of(this).get(LocationViewModel.class);
-
-
+        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
+         final Observer<Location> locationObserver = new Observer<Location>() {
+             @Override
+             public void onChanged(@Nullable Location location) {
+                 infoSheet.showInfoSheet(location,EXPANDED);
+             }
+         };
+         locationViewModel.getCurrentLocation().observe(this,locationObserver);
 
     }
-
-
-
-    //    @Override
-//    public void onLongPress(MapPoint mapPoint) {
-//        Toast.makeText(this,"click"+mapPoint.getFloor(),Toast.LENGTH_LONG).show();
-//        locationViewModel.setTargetMapPointLiveData(mapPoint);
-//        locationViewModel.getLocationLiveData().observe(this, location ->
-//                infoSheet.showInfoSheet(location));
-//
-//    }
 }
+

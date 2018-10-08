@@ -25,35 +25,37 @@ public class LocationViewModel extends AndroidViewModel {
 
     private  MapRepository repository;
 
+
+
     private MutableLiveData<MapPoint> targetMapPoint = new MutableLiveData<>();
 
     private LocalDB dataBase;
 
 
+    private LiveData <MapPoint> nearestMapPoint = Transformations.switchMap(targetMapPoint,
+            (mapPoint) -> {
+             return repository.getNearestPoint(mapPoint.getX(),mapPoint.getY(),mapPoint.getFloor());
+            });
 
-    private LiveData<Location> currentLocation = Transformations.switchMap(targetMapPoint, mapPoint ->
-        getLocationLiveData(mapPoint));
+
+    private LiveData<Location> currentLocation = Transformations.switchMap(nearestMapPoint, mapPoint ->
+     repository.getLocationByID(mapPoint.getId()));
 
 
-
-
-    public LiveData<Location> getLocationLiveData(MapPoint mapPoint) {
-
-            MapPoint nearestPoint = repository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor());
-            Location location = repository.getLocationByID(nearestPoint.getId());
-
-            };
-
+    public LiveData<Location> getCurrentLocation() {
+         return currentLocation;
     }
+
+    public void setMapPoint(MapPoint mapPoint) {
+        targetMapPoint.postValue(mapPoint);
+    }
+
 
     //Target location
     public LocationViewModel(@NonNull Application application) {
         super(application);
         dataBase = LocalDB.getDatabase(application);
         repository = new MapRepository(dataBase);
-
-//        LiveData locationLiveData = Transformations.switchMap(targetMapPointLiveData, mapPoint ->
-//               setLocationLiveData(mapPoint));
 
     }
 
