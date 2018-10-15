@@ -1,8 +1,5 @@
 package bean.pwr.imskamieskiego;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,22 +7,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
-import bean.pwr.imskamieskiego.GUI.locationSearch.SearchHandler;
-import bean.pwr.imskamieskiego.GUI.locationSearch.SearchSuggestionProvider;
-import bean.pwr.imskamieskiego.GUI.locationSearch.SuggestionProvider;
-import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
-import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
+import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavWindowListener;
+import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavWindowFragment;
 
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -34,16 +27,16 @@ import android.widget.Toast;
 
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.data.LocalDB;
-import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.repository.IMapRepository;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 
-import java.util.List;
 
 public class MapActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, NavWindowListener {
 
+    private FragmentManager fragmentManager;
 
     private FloatingActionButton wcButton;
     private FloatingActionButton patientAssistantButton;
@@ -57,19 +50,14 @@ public class MapActivity extends AppCompatActivity
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
 
+
+    private SearchFragment searchFragment;
+
     private IMapRepository mapRepository;
-
-    MenuItem menuSearchItem;
-
-    private SearchHandler searchHandler;
-    private SearchView searchView;
-
-    private String lastQuery = null;
 
 
     private static final String TAG = "MapActivity";
 
-    private static final String LAST_SEARCH_QUERY = "LAST_SEARCH_QUERY";
     private static final String NAV_FRAG_FLAG = "navFragIsAdd";
 
 
@@ -79,9 +67,14 @@ public class MapActivity extends AppCompatActivity
         setContentView(R.layout.activity_map);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        fragmentManager = getSupportFragmentManager();
+        searchFragment = SearchFragment.newInstance();
+
         InfoSheet infoSheet = new InfoSheet(this);
         quickAccessButtonInit();
         changeFloorButtonInit();
+
         if (savedInstanceState != null){
 
             if (savedInstanceState.getBoolean(NAV_FRAG_FLAG, false)) {
@@ -89,8 +82,6 @@ public class MapActivity extends AppCompatActivity
                 changeFloorButton.setVisibility(View.GONE);
                 toolbar.setVisibility(View.GONE);
             }
-
-            lastQuery = savedInstanceState.getString(LAST_SEARCH_QUERY);
         }
 
         //TODO It's for test. You should remove this when view model will be ready!
@@ -100,7 +91,6 @@ public class MapActivity extends AppCompatActivity
         infoSheet.setListener(new InfoSheet.InfoSheetListener() {
             @Override
             public void guideTo() {
-
 
             }
 
@@ -126,11 +116,19 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
         ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(hamburgerButton);
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+
+        drawerLayout.addDrawerListener(hamburgerButton);
         hamburgerButton.syncState();
+
+
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -139,17 +137,16 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
 
+        if (fragmentManager.findFragmentById(R.id.mainDrawerLayout ) != null){
 
-        if (getSupportFragmentManager().findFragmentById(R.id.drawer_layout ) != null){
-
-            if (getSupportFragmentManager().getBackStackEntryCount() >= 1){
+            if (fragmentManager.getBackStackEntryCount() >= 1){
                 navFragmentIsAdd = true;
                 quickAccessButton.setVisibility(View.GONE);
                 changeFloorButton.setVisibility(View.GONE);
@@ -174,43 +171,60 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.search_menu, menu);
-        menuSearchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) menuSearchItem.getActionView();
-
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setQueryHint(getString(R.string.search_view_hint));
-
-        SuggestionProvider suggestionProvider = new SuggestionProvider(mapRepository);
-
-        searchHandler = new SearchHandler(searchView, suggestionProvider, query -> {
-
-            //TODO in this place should be called method of viewModel
-            //for test
-            mapRepository.getLocationsListByName(query, 1)
-                    .observe(MapActivity.this, locations -> {
-                        if (locations != null){
-                            for (Location location:locations) {
-                                Toast.makeText(MapActivity.this, "Searched place "+location.getName(),
-                                        Toast.LENGTH_LONG).show();
-                                Log.i(TAG, "Searched location name: "+location.getName());
-                            }
-                        }
-                    });
-            //end for test
-        });
-
-        if(lastQuery != null && !lastQuery.isEmpty()) {
-            Log.i(TAG, "Search query restoring: "+lastQuery);
-            searchView.setIconified(false);
-            menuSearchItem.expandActionView();
-            searchView.setQuery(lastQuery, false);
-            searchView.clearFocus();
-        }
-
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.searchMenuItem){
+            displaySearchFragment();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+//        menuSearchItem = menu.findItem(R.id.action_search);
+//        searchView = (SearchView) menuSearchItem.getActionView();
+//
+//        searchView.setMaxWidth(Integer.MAX_VALUE);
+//        searchView.setQueryHint(getString(R.string.search_view_hint));
+//
+//        SuggestionProvider suggestionProvider = new SuggestionProvider(mapRepository);
+//
+//        searchHandler = new SearchHandler(searchView, suggestionProvider, query -> {
+//
+//            //TODO in this place should be called method of viewModel
+//            //for test
+//            mapRepository.getLocationsListByName(query, 1)
+//                    .observe(MapActivity.this, locations -> {
+//                        if (locations != null){
+//                            for (Location location:locations) {
+//                                Toast.makeText(MapActivity.this, "Searched place "+location.getName(),
+//                                        Toast.LENGTH_LONG).show();
+//                                Log.i(TAG, "Searched location name: "+location.getName());
+//                            }
+//                        }
+//                    });
+//            //end for test
+//        });
+//
+//        if(lastQuery != null && !lastQuery.isEmpty()) {
+//            Log.i(TAG, "Search query restoring: "+lastQuery);
+//            searchView.setIconified(false);
+//            menuSearchItem.expandActionView();
+//            searchView.setQuery(lastQuery, false);
+//            searchView.clearFocus();
+//        }
+//
+//        return super.onCreateOptionsMenu(menu);
+//    }
+
+
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -237,11 +251,46 @@ public class MapActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
     }
+
+    private void changeFloorButtonInit() {
+        changeFloorButton = findViewById(R.id.floors_button);
+        changeFloorButton.setOnClickListener(v -> {
+
+            PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+            floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+            floorSelect.setOnMenuItemClickListener(item -> {
+                Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
+                return false;
+            });
+            floorSelect.show();
+        });
+    }
+
+    private void displaySearchFragment(){
+
+        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+        if(searchFragment.isAdded()){
+            fTransaction.show(searchFragment);
+        }else {
+            fTransaction.add(R.id.mainDrawerLayout, searchFragment, "SearchFragment");
+        }
+
+        if(navWindowFragment != null && navWindowFragment.isAdded()){
+            fTransaction.hide(navWindowFragment);
+        }
+        fTransaction.addToBackStack(null);
+
+        hideQuickAccessButtons();
+
+        fTransaction.commit();
+    }
+
+
 
     public void hideQuickAccessButtons() {
 
@@ -322,9 +371,8 @@ public class MapActivity extends AppCompatActivity
     }
 
     public void setNewNavWindowFragment(){
-        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        navWindowFragment = fragmentManager.findFragmentById(R.id.drawer_layout);
+        navWindowFragment = fragmentManager.findFragmentById(R.id.mainDrawerLayout);
 
 
         if (navWindowFragment == null){
@@ -333,7 +381,7 @@ public class MapActivity extends AppCompatActivity
             fragmentTransaction
                     .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
                             R.anim.slide_in_from_left, android.R.anim.slide_out_right)
-                    .add(R.id.drawer_layout,navWindowFragment)
+                    .add(R.id.mainDrawerLayout,navWindowFragment)
                     .addToBackStack(null)
                     .commit();
             navFragmentIsAdd = true;
@@ -341,9 +389,31 @@ public class MapActivity extends AppCompatActivity
     }
 
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        Log.i(NAV_FRAG_FLAG,String.valueOf(navFragmentIsAdd));
+
+        outState.putBoolean(NAV_FRAG_FLAG, navFragmentIsAdd);
+
+        super.onSaveInstanceState(outState);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
-    public void onBack() {
+    public void onNavWindowBack() {
         AnimationAdapter animationShow = new AnimationAdapter(MapActivity.this, R.anim.show_anim);
         AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.VISIBLE);
 
@@ -364,31 +434,6 @@ public class MapActivity extends AppCompatActivity
     public void updateNavFragmentState() {
         navFragmentIsAdd = true;
 
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Log.i(NAV_FRAG_FLAG,String.valueOf(navFragmentIsAdd));
-
-        outState.putBoolean(NAV_FRAG_FLAG, navFragmentIsAdd);
-
-        outState.putString(LAST_SEARCH_QUERY, menuSearchItem.isActionViewExpanded() ? searchHandler.getLastQuery() : null);
-
-        super.onSaveInstanceState(outState);
-    }
-
-    private void changeFloorButtonInit() {
-        changeFloorButton = findViewById(R.id.floors_button);
-        changeFloorButton.setOnClickListener(v -> {
-
-            PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-            floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
-            floorSelect.setOnMenuItemClickListener(item -> {
-                Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
-                return false;
-            });
-            floorSelect.show();
-        });
     }
 
 }

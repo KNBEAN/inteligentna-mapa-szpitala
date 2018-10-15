@@ -24,7 +24,7 @@
     <string name="navigation_drawer_ap">Asystent Pacjenta</string>
     <string name="navigation_drawer_info">O szpitalu</string>
     <string name="navigation_drawer_help">Pomoc</string>
-    <string name="search_view_hint">Szukanie miejsca</string>
+    <string name="search_view_hint">Wyszukaj miejsce</string>
     <string name="floor_number">Piętro</string>
     <string name="floor_change_button_description">Przycisk zmiany piętra</string>
     <string name="map_view_description">Obraz mapy szpitala</string>

@@ -1,8 +1,8 @@
-package bean.pwr.imskamieskiego.NavigationWindow;
+package bean.pwr.imskamieskiego.GUI.NavigationWindow;
 
 
 public interface NavWindowListener {
-    void onBack();
+    void onNavWindowBack();
     void startNavigation();
     void updateNavFragmentState();
 

@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.NavigationWindow;
+package bean.pwr.imskamieskiego.GUI.NavigationWindow;
 
 
 import android.content.Context;
@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.R;
 
 
@@ -55,7 +56,7 @@ public class NavWindowFragment extends Fragment{
     @Override
     public void onPause() {
         super.onPause();
-        navWindowListener.onBack();
+        navWindowListener.onNavWindowBack();
 
     }
 
@@ -100,7 +101,7 @@ public class NavWindowFragment extends Fragment{
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction
 
-                .add(R.id.drawer_layout,nextFragment)
+                .add(R.id.mainDrawerLayout,nextFragment)
                 .addToBackStack(null)
                 .commit();
 
