@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    tools:context=".GUI.QuickAccessFragment">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/patient_assistant_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimaryLight"
+        app:elevation="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/food_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_accessibility_black_24dp"
+        tools:ignore="VectorDrawableCompat"
+        tools:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/food_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/wc_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_restaurant_black_24dp"
+        tools:ignore="VectorDrawableCompat"
+        tools:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/wc_button"
+        android:layout_width="48dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:elevation="4dp"
+        app:layout_constraintBottom_toTopOf="@+id/tools_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_wc_black_24dp"
+        tools:ignore="VectorDrawableCompat"
+        tools:visibility="visible" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/tools_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_weight="1"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible"
+        app:elevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_widgets_black_24dp"
+        tools:ignore="VectorDrawableCompat" />
+
+    <TextView
+        android:id="@+id/qa_asistant_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/colorButtonNormal"
+        android:padding="8dp"
+        android:text="@string/ap_quick_access_button"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/patient_assistant_button"
+        app:layout_constraintEnd_toStartOf="@+id/patient_assistant_button"
+        app:layout_constraintTop_toTopOf="@+id/patient_assistant_button"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/qa_food_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/colorButtonNormal"
+        android:padding="8dp"
+        android:text="@string/food_quick_access_button"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/food_button"
+        app:layout_constraintEnd_toStartOf="@+id/food_button"
+        app:layout_constraintTop_toTopOf="@+id/food_button"
+        tools:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/qa_wc_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/colorButtonNormal"
+        android:padding="8dp"
+        android:text="@string/wc_quick_access_button"
+        android:textAllCaps="false"
+        android:textAppearance="@style/TextAppearance.AppCompat.Widget.Button"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/wc_button"
+        app:layout_constraintEnd_toStartOf="@+id/wc_button"
+        app:layout_constraintTop_toTopOf="@+id/wc_button"
+        tools:visibility="visible"/>
+
+</android.support.constraint.ConstraintLayout>

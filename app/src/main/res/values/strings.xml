@@ -6,11 +6,6 @@
     <string name="nav_window_from">Z</string>
     <string name="nav_window_stairs">Schody</string>
     <string name="nav_window_button">Start</string>
-
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <string name="title_activity_map">MapActivity</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

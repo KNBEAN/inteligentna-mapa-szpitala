@@ -17,29 +17,9 @@
 
         <include layout="@layout/content_map" />
 
+        <include layout="@layout/map_control_layout" />
+
         <include layout="@layout/info_sheet" />
-
-        <android.support.v7.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="0dp"
-            app:cardElevation="4dp"
-            app:cardPreventCornerOverlap="false"
-            app:cardUseCompatPadding="false"
-            app:contentPadding="0dp">
-
-            <android.support.v7.widget.Toolbar
-
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorPrimary"
-                app:contentInsetLeft="0dp"
-                app:contentInsetStart="0dp"
-                app:contentInsetStartWithNavigation="0dp"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-        </android.support.v7.widget.CardView>
 
 
     </android.support.design.widget.CoordinatorLayout>
