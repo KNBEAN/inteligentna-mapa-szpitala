@@ -23,27 +23,31 @@ import bean.pwr.imskamieskiego.repository.MapRepository;
 
 public class LocationViewModel extends AndroidViewModel {
 
-    private  MapRepository repository;
-
-
+    private MapRepository repository;
+    private LocalDB dataBase;
 
     private MutableLiveData<MapPoint> targetMapPoint = new MutableLiveData<>();
 
-    private LocalDB dataBase;
 
-
-    private LiveData <MapPoint> nearestMapPoint = Transformations.switchMap(targetMapPoint,
+    private LiveData<MapPoint> nearestMapPoint = Transformations.switchMap(targetMapPoint,
             (mapPoint) -> {
-             return repository.getNearestPoint(mapPoint.getX(),mapPoint.getY(),mapPoint.getFloor());
+
+                return repository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor());
+
             });
 
 
-    private LiveData<Location> currentLocation = Transformations.switchMap(nearestMapPoint, mapPoint ->
-     repository.getLocationByID(mapPoint.getId()));
+    private LiveData<Location> currentLocation = Transformations.switchMap(nearestMapPoint, mapPoint -> {
 
+
+        if (mapPoint != null) {
+            return repository.getLocationByID(mapPoint.getLocationID());
+        }
+        return null;
+    });
 
     public LiveData<Location> getCurrentLocation() {
-         return currentLocation;
+        return currentLocation;
     }
 
     public void setMapPoint(MapPoint mapPoint) {
@@ -54,11 +58,11 @@ public class LocationViewModel extends AndroidViewModel {
     //Target location
     public LocationViewModel(@NonNull Application application) {
         super(application);
-        dataBase = LocalDB.getDatabase(application);
+        dataBase = LocalDB.getDatabase(application.getApplicationContext());
         repository = new MapRepository(dataBase);
 
-    }
 
+    }
 
 
 }

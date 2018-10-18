@@ -42,25 +42,25 @@ public class LocationViewModelTest {
 
     }
 
-    @Test()
-    public void getLocationLiveDataByMapPoint_withMapPoint() {
-        mViewModel = new LocationViewModel((Application) InstrumentationRegistry.getTargetContext().getApplicationContext());
-        MutableLiveData<Location> locationLoc= new MutableLiveData<>();
-
-        LocationFactory locationFactory = new LocationFactory();
-        MapPointFactory mapPointFactory = new MapPointFactory();
-        MapPoint clickedMapPoint = mapPointFactory.create(1, 2, 3, 4, 5);
-        MapPoint nearestMapPoint = mapPointFactory.create(1, 2, 3, 4, 2);
-        Location location = locationFactory.create(2, "SOR", "super-place");
-
-
-        when(mapRepository.getNearestPoint(anyInt(), anyInt(), anyInt())).thenReturn(nearestMapPoint);
-        when(mapRepository.getLocationByID(anyInt())).thenReturn(location);
-        locationLoc.observeForever(observer);
-        locationLoc = mViewModel.getLocationLiveData(clickedMapPoint);
-        Location output = locationLoc.getValue();
-        Assert.assertEquals(location, output);
-
-
-    }
+//    @Test()
+//    public void getLocationLiveDataByMapPoint_withMapPoint() {
+//        mViewModel = new LocationViewModel((Application) InstrumentationRegistry.getTargetContext().getApplicationContext());
+//        MutableLiveData<Location> locationLoc= new MutableLiveData<>();
+//
+//        LocationFactory locationFactory = new LocationFactory();
+//        MapPointFactory mapPointFactory = new MapPointFactory();
+//        MapPoint clickedMapPoint = mapPointFactory.create(1, 2, 3, 4, 5);
+//        MapPoint nearestMapPoint = mapPointFactory.create(1, 2, 3, 4, 2);
+//        Location location = locationFactory.create(2, "SOR", "super-place");
+//
+//
+//        when(mapRepository.getNearestPoint(anyInt(), anyInt(), anyInt())).thenReturn(nearestMapPoint);
+//        when(mapRepository.getLocationByID(anyInt())).thenReturn(location);
+//        locationLoc.observeForever(observer);
+//        locationLoc = mViewModel.getLocationLiveData(clickedMapPoint);
+//        Location output = locationLoc.getValue();
+//        Assert.assertEquals(location, output);
+//
+//
+//    }
 }

@@ -13,11 +13,13 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.View;
+
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -82,7 +84,7 @@ public class MapActivity extends AppCompatActivity
         mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
             @Override
             public void onLongPress(MapPoint mapPoint) {
-              locationViewModel.setMapPoint(mapPoint);
+                locationViewModel.setMapPoint(mapPoint);
 
             }
         });
@@ -368,13 +370,12 @@ public class MapActivity extends AppCompatActivity
 
     private void viewModelInit() {
         locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
-         final Observer<Location> locationObserver = new Observer<Location>() {
-             @Override
-             public void onChanged(@Nullable Location location) {
-                 infoSheet.showInfoSheet(location,EXPANDED);
-             }
-         };
-         locationViewModel.getCurrentLocation().observe(this,locationObserver);
+        locationViewModel.getCurrentLocation().observe(this, location -> {
+                if (location != null) {
+                        infoSheet.showInfoSheet(location, EXPANDED);
+                    }
+                }
+        );
 
     }
 }
