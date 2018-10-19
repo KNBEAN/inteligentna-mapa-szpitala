@@ -42,6 +42,8 @@ import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
 @TypeConverters({IntegerConverter.class})
 public abstract class LocalDB extends RoomDatabase {
 
+    private static final String TAG = "LocalDB";
+
     private static final String NODE_LIST_FILE = "nodeList.json";
     private static final String EDGE_LIST_FILE = "edgeList.json";
     private static final String LOCATION_LIST_FILE = "locationList.json";
@@ -98,12 +100,19 @@ public abstract class LocalDB extends RoomDatabase {
                             floorInfoDao.insertAllFloors(floorInfoList);
 
                         });
+                        Log.d(TAG, "onCreate: data loaded into database");
+                    }
+
+                    @Override
+                    public void onOpen(@NonNull SupportSQLiteDatabase db) {
+                        super.onOpen(db);
+                        Log.d(TAG, "onOpen: database open");
                     }
                 })
                 .build();
     }
 
-    private static <T> List<T> getEntityListFromJsonFile(Context context, String jsonName,TypeToken<List<T>> typeToken) {
+    private static <T> List<T> getEntityListFromJsonFile(Context context, String jsonName, TypeToken<List<T>> typeToken) {
 
         List<T> list = null;
 

@@ -1,6 +1,8 @@
 package bean.pwr.imskamieskiego.GUI.locationSearch;
 
 import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,14 +16,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import java.util.ArrayList;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.R;
-import bean.pwr.imskamieskiego.data.LocalDB;
-import bean.pwr.imskamieskiego.model.map.Location;
-import bean.pwr.imskamieskiego.repository.IMapRepository;
-import bean.pwr.imskamieskiego.repository.MapRepository;
 
 
 
@@ -29,14 +26,10 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
     private final String TAG = "Search Fragment";
 
-    private static final String LAST_SEARCH_QUERY = "LAST_SEARCH_QUERY";
+    private SearchViewModel searchViewModel;
 
     private ListView suggestionsListView;
     private SearchView searchView;
-
-    private String lastQuery = null;
-
-    private IMapRepository mapRepository;
 
     // Creates a new fragment
     public static SearchFragment newInstance() {
@@ -45,13 +38,21 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
+        searchViewModel.getSuggestionsList().observe(this, this::createSuggestions);
+        searchViewModel.getSubmitQueryResult().observe(this, location -> {
+            if (location == null) return;
+            Toast.makeText(SearchFragment.this.getContext(), "Searched place "+location.getName(),
+                    Toast.LENGTH_LONG).show();
+            Log.i(TAG, "Searched location name: "+location.getName());
+        });
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null){
-            lastQuery = savedInstanceState.getString(LAST_SEARCH_QUERY);
-        }
-
     }
 
     @Override
@@ -60,54 +61,28 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-//        listView = (ListView) view.findViewById(R.id.suggestion_list);
-
-
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                setListViewPlace(listView.getItemAtPosition(i).toString());
-//                Toast.makeText(getContext(),getListViewPlace(),Toast.LENGTH_LONG).show();
-//                getFragmentManager().popBackStack();
-//
-//            }
-//        });
         suggestionsListView = view.findViewById(R.id.suggestionList);
         searchView = view.findViewById(R.id.searchField);
 
         searchView.setQueryHint(getString(R.string.search_view_hint));
         searchView.setOnQueryTextListener(this);
 
-        mapRepository = new MapRepository(LocalDB.getDatabase(view.getContext()));
-
-        if(lastQuery != null && !lastQuery.isEmpty()) {
-            Log.i(TAG, "Search query restoring: "+lastQuery);
-            searchView.setQuery(lastQuery, false);
-            searchView.clearFocus();
-        }
-
         return view;
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString(LAST_SEARCH_QUERY, lastQuery);
         super.onSaveInstanceState(outState);
     }
 
-    private void createSuggestions(List<Location> locations){
+    private void createSuggestions(List<String> locationNames){
         Log.d(TAG, "Create suggestions.");
-        ArrayList<String> names = new ArrayList<>();
 
-        for (Location location : locations){
-            names.add(location.getName());
-        }
-
-        ArrayAdapter adapter = new ArrayAdapter<String>(this.getContext(), R.layout.suggestion_item, names){
+        ArrayAdapter adapter = new ArrayAdapter<String>(this.getContext(), R.layout.suggestion_item, locationNames){
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                String name = names.get(position);
+                String name = locationNames.get(position);
                 View row = getLayoutInflater().inflate(R.layout.suggestion_item, parent, false);
                 ((TextView)row.findViewById(R.id.locationName)).setText(name);
 
@@ -119,7 +94,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                     searchView.setQuery(selectedLocation, true);
                 });
 
-                return row;//super.getView(position, convertView, parent);
+                return row;
             }
         };
 
@@ -129,29 +104,16 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        //TODO in this place should be called method of viewModel
-        //for test
-        mapRepository.getLocationsListByName(query, 1)
-                .observe(SearchFragment.this, locations -> {
-                    if (locations != null){
-                        for (Location location:locations) {
-                            Toast.makeText(SearchFragment.this.getContext(), "Searched place "+location.getName(),
-                                    Toast.LENGTH_LONG).show();
-                            Log.i(TAG, "Searched location name: "+location.getName());
-                        }
-                    }
-                });
+        searchViewModel.submitQuery(query);
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
         if (newText.length() >= 2) {
-            mapRepository.getLocationsListByName("%" + newText + "%", 5).observe(
-                    (LifecycleOwner) searchView.getContext(),
-                    this::createSuggestions);
+            searchViewModel.suggestionsQuery(newText);
         }else {
-            this.createSuggestions(new ArrayList<Location>());
+            searchViewModel.suggestionsQuery(null);
         }
         return true;
     }
