@@ -19,47 +19,53 @@ public class SearchViewModel extends AndroidViewModel {
 
     private IMapRepository mapRepository;
 
-    private MutableLiveData<String> suggestionQuery = new MutableLiveData<>();
-    private MutableLiveData<String> submitQuery = new MutableLiveData<>();
+    private MutableLiveData<String> suggestionQuery;
+    private MutableLiveData<String> submitQuery;
 
-
-    private LiveData<List<Location>> locationsList = Transformations.switchMap(suggestionQuery,
-            input -> mapRepository.getLocationsListByName("%"+input+"%", 5));
-
-    private LiveData<List<String>> suggestionsList = Transformations.map(locationsList,
-            locations -> {
-                List<String> locationNames = new ArrayList<>();
-                for (Location location: locations) {
-                    locationNames.add(location.getName());
-                }
-                return locationNames;
-            });
-
-    private LiveData<List<Location>> rawSubmitQuery = Transformations.switchMap(submitQuery,
-            input -> mapRepository.getLocationsListByName(input, 1));
-
-    private LiveData<Location> queryResult = Transformations.map(rawSubmitQuery,
-            locationsList -> locationsList != null && locationsList.size() != 0 ? locationsList.get(0) : null);
+    private LiveData<List<String>> suggestionsList;
+    private LiveData<Location> queryResult;
 
     public SearchViewModel(@NonNull Application application) {
         super(application);
         LocalDB db = LocalDB.getDatabase(application.getApplicationContext());
         mapRepository = new MapRepository(db);
+
+        suggestionQuery = new MutableLiveData<>();
+        submitQuery = new MutableLiveData<>();
+
+        LiveData<List<Location>> suggestedLocationsList = Transformations.switchMap(suggestionQuery,
+                input -> mapRepository.getLocationsListByName("%"+input+"%", 5));
+
+        suggestionsList = Transformations.map(suggestedLocationsList,
+                locations -> {
+                    List<String> locationNames = new ArrayList<>();
+                    for (Location location: locations) {
+                        locationNames.add(location.getName());
+                    }
+                    return locationNames;
+                });
+
+        LiveData<List<Location>> rawSubmitQueryResult = Transformations.switchMap(submitQuery,
+                input -> mapRepository.getLocationsListByName(input, 1));
+
+        queryResult = Transformations.map(rawSubmitQueryResult,
+                locationsList -> locationsList != null && locationsList.size() != 0 ? locationsList.get(0) : null);
+
     }
 
-    public void suggestionsQuery(String queryString){
+    void suggestionsQuery(String queryString){
         suggestionQuery.postValue(queryString);
     }
 
-    public LiveData<List<String>> getSuggestionsList(){
+    LiveData<List<String>> getSuggestionsList(){
         return suggestionsList;
     }
 
-    public void submitQuery(String query){
+    void submitQuery(String query){
         submitQuery.postValue(query);
     }
 
-    public LiveData<Location> getSubmitQueryResult(){
+    LiveData<Location> getSubmitQueryResult(){
         return queryResult;
     }
 

@@ -1,6 +1,7 @@
 package bean.pwr.imskamieskiego;
 
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -28,12 +29,14 @@ import android.widget.Toast;
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.repository.IMapRepository;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 
 
 public class MapActivity extends AppCompatActivity
         implements QuickAccessFragment.QuickAccessListener,
+        SearchFragment.SearchListener,
         NavigationView.OnNavigationItemSelectedListener,
         NavWindowListener {
 
@@ -49,8 +52,6 @@ public class MapActivity extends AppCompatActivity
 
     private SearchFragment searchFragment;
     private QuickAccessFragment quickAccessFragment;
-
-    private IMapRepository mapRepository;
 
 
     private static final String TAG = "MapActivity";
@@ -93,9 +94,6 @@ public class MapActivity extends AppCompatActivity
                 toolbar.setVisibility(View.GONE);
             }
         }
-
-        //TODO It's for test. You should remove this when view model will be ready!
-        mapRepository = new MapRepository(LocalDB.getDatabase(this));
 
 
         infoSheet.setListener(new InfoSheet.InfoSheetListener() {
@@ -193,48 +191,6 @@ public class MapActivity extends AppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
-
-    //    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-//        menuSearchItem = menu.findItem(R.id.action_search);
-//        searchView = (SearchView) menuSearchItem.getActionView();
-//
-//        searchView.setMaxWidth(Integer.MAX_VALUE);
-//        searchView.setQueryHint(getString(R.string.search_view_hint));
-//
-//        SuggestionProvider suggestionProvider = new SuggestionProvider(mapRepository);
-//
-//        searchHandler = new SearchHandler(searchView, suggestionProvider, query -> {
-//
-//            //TODO in this place should be called method of viewModel
-//            //for test
-//            mapRepository.getLocationsListByName(query, 1)
-//                    .observe(MapActivity.this, locations -> {
-//                        if (locations != null){
-//                            for (Location location:locations) {
-//                                Toast.makeText(MapActivity.this, "Searched place "+location.getName(),
-//                                        Toast.LENGTH_LONG).show();
-//                                Log.i(TAG, "Searched location name: "+location.getName());
-//                            }
-//                        }
-//                    });
-//            //end for test
-//        });
-//
-//        if(lastQuery != null && !lastQuery.isEmpty()) {
-//            Log.i(TAG, "Search query restoring: "+lastQuery);
-//            searchView.setIconified(false);
-//            menuSearchItem.expandActionView();
-//            searchView.setQuery(lastQuery, false);
-//            searchView.clearFocus();
-//        }
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
-
-
 
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -379,5 +335,10 @@ public class MapActivity extends AppCompatActivity
             default:
                 Log.d(TAG, "Quick access undefined");
         }
+    }
+
+    @Override
+    public void onLocationSearched(Location location) {
+        Snackbar.make(changeFloorButton, "SelectedLocation: "+location.getName(), Snackbar.LENGTH_SHORT).show();
     }
 }

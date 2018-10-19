@@ -1,8 +1,7 @@
 package bean.pwr.imskamieskiego.GUI.locationSearch;
 
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +18,7 @@ import android.widget.Toast;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.R;
-
+import bean.pwr.imskamieskiego.model.map.Location;
 
 
 public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener {
@@ -27,11 +26,10 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private final String TAG = "Search Fragment";
 
     private SearchViewModel searchViewModel;
-
     private ListView suggestionsListView;
     private SearchView searchView;
+    private SearchListener listener;
 
-    // Creates a new fragment
     public static SearchFragment newInstance() {
         SearchFragment searchFragment = new SearchFragment();
         return searchFragment;
@@ -42,12 +40,18 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         super.onActivityCreated(savedInstanceState);
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         searchViewModel.getSuggestionsList().observe(this, this::createSuggestions);
-        searchViewModel.getSubmitQueryResult().observe(this, location -> {
-            if (location == null) return;
-            Toast.makeText(SearchFragment.this.getContext(), "Searched place "+location.getName(),
-                    Toast.LENGTH_LONG).show();
-            Log.i(TAG, "Searched location name: "+location.getName());
-        });
+        searchViewModel.getSubmitQueryResult().observe(this, this::processSearchResult);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SearchListener) {
+            listener = (SearchListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement SearchListener");
+        }
     }
 
     @Override
@@ -56,8 +60,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
@@ -85,22 +88,30 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                 String name = locationNames.get(position);
                 View row = getLayoutInflater().inflate(R.layout.suggestion_item, parent, false);
                 ((TextView)row.findViewById(R.id.locationName)).setText(name);
-
-                row.setOnClickListener(view -> {
-                    //take next action based user selected item
-                    String selectedLocation = ((TextView)view.findViewById(R.id.locationName)).getText().toString();
-                    Toast.makeText(this.getContext(), "Selected suggestion "+selectedLocation,
-                            Toast.LENGTH_LONG).show();
-                    searchView.setQuery(selectedLocation, true);
-                });
-
+                row.setOnClickListener(SearchFragment.this::selectSuggestionItem);
                 return row;
             }
-        };
 
+        };
         suggestionsListView.setAdapter(adapter);
     }
 
+    private void selectSuggestionItem(View view){
+        String selectedLocation = ((TextView)view.findViewById(R.id.locationName)).getText().toString();
+        Log.d(TAG, "selectSuggestionItem: Selected suggestion: " + selectedLocation);
+
+        Toast.makeText(this.getContext(), "Selected suggestion "+selectedLocation, Toast.LENGTH_LONG).show();
+
+        searchView.setQuery(selectedLocation, true);
+    }
+
+    private void processSearchResult(Location location){
+        if (location != null){
+            Log.d(TAG, String.format("processSearchResult: %d, %s", location.getId(), location.getName()));
+            if (listener != null)
+            listener.onLocationSearched(location);
+        }
+    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -110,11 +121,18 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        if (newText.length() >= 2) {
+        int minQueryLength = 2;
+        Log.d(TAG, "onQueryTextChange: "+newText);
+        if (newText.length() >= minQueryLength) {
             searchViewModel.suggestionsQuery(newText);
         }else {
             searchViewModel.suggestionsQuery(null);
         }
         return true;
+    }
+
+
+    public interface SearchListener {
+        void onLocationSearched(Location location);
     }
 }
