@@ -4,6 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 
 import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
+import bean.pwr.imskamieskiego.MapDrawer.BitmapDecoder;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
@@ -34,9 +37,11 @@ import android.widget.Toast;
 
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
+import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.FloorDataRepository;
+import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
 
 import static bean.pwr.imskamieskiego.GUI.InfoSheet.COLLAPSED;
@@ -59,12 +64,14 @@ public class MapActivity extends AppCompatActivity
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
     private LocationViewModel locationViewModel;
+    private FloorViewModel floorViewModel;
     private InfoSheet infoSheet;
     private MapDrawer mapDrawer;
-    private FloorDataRepository floorDataRepository;
+
 
 
     private static final String TAG = "MapActivity";
+    private int currentFloor = 1;
 
 
     @Override
@@ -76,11 +83,16 @@ public class MapActivity extends AppCompatActivity
         infoSheet = new InfoSheet(this);
         mapDrawer = new MapDrawer(this);
 
+
+
         viewModelInit();
+        floorViewModelInit();
         quickAccessButtonInit();
         changeFloorButtonInit();
 
         mapDrawer = findViewById(R.id.mapdrawer);
+
+
         mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
             @Override
             public void onLongPress(MapPoint mapPoint) {
@@ -265,6 +277,7 @@ public class MapActivity extends AppCompatActivity
         quickAccessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                floorViewModel.setSelectedFloor(currentFloor);
                 if (foodButton.getVisibility() == View.VISIBLE
                         && (wcButton.getVisibility() == View.VISIBLE)
                         && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
@@ -280,6 +293,7 @@ public class MapActivity extends AppCompatActivity
         AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.GONE);
 
         View.OnClickListener quickButtonsOnClick = view -> {
+
             animationHide.startAnimation(changeFloorButton, animationEndListener);
             animationHide.startAnimation(toolbar, animationEndListener);
             setNewNavWindowFragment();
@@ -358,6 +372,7 @@ public class MapActivity extends AppCompatActivity
                 floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
+
                         Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
                         return false;
                     }
@@ -373,6 +388,16 @@ public class MapActivity extends AppCompatActivity
         locationViewModel.getCurrentLocation().observe(this, location -> {
                 if (location != null) {
                         infoSheet.showInfoSheet(location, EXPANDED);
+                    }
+                }
+        );
+
+    }
+    private void floorViewModelInit() {
+        floorViewModel = ViewModelProviders.of(this).get(FloorViewModel.class);
+        floorViewModel.getFloorBitmap().observe(this, bitmap -> {
+                    if (bitmap != null) {
+                        mapDrawer.showFloor(currentFloor,bitmap);
                     }
                 }
         );
