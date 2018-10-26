@@ -1,196 +1,115 @@
 package bean.pwr.imskamieskiego.GUI;
 
-import android.app.Activity;
+import android.content.Context;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetBehavior;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.time.chrono.HijrahChronology;
 
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.Location;
-import bean.pwr.imskamieskiego.model.map.LocationFactory;
 
-public class InfoSheet {
-    private ConstraintLayout layoutInfoSheet;
-    private Button guideToButton;
-    private TextView placeName;
-    private TextView placeInfo;
-    private BottomSheetBehavior sheetBehavior;
+public class InfoSheet extends Fragment {
+
+    private static final String TAG = "InfoSheet";
+    private static final String LOCATION_NAME = "location_name";
+    private static final String LOCATION_DESC = "location_desc";
+
     private ImageButton expandSheetButton;
-    private ImageView pinButton;
-    private Activity parent;
     private InfoSheetListener listener;
-    public static int COLLAPSED = BottomSheetBehavior.STATE_COLLAPSED;
-    public static int EXPANDED = BottomSheetBehavior.STATE_EXPANDED;
-    public static int HIDDEN = BottomSheetBehavior.STATE_HIDDEN;
+
+    private String locationName;
+    private String locationDesc;
+
+    private TextView placeInfo;
+    private boolean descriptionIsVisible = false;
 
 
 
-
-
-    public void setListener(InfoSheetListener listener) {
-        this.listener = listener;
+    public InfoSheet() {
+        // Required empty public constructor
     }
 
-    public InfoSheet(Activity parent) {
-        this.listener = null;
-        this.parent = parent;
-
-        infoSheetComponentsInit();
-
-
-        sheetBehavior = BottomSheetBehavior.from(layoutInfoSheet);
-        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        sheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-
-
-            @Override
-            public void onStateChanged(@NonNull View infoSheet, int newState) {
-                switch (newState) {
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        layoutInfoSheet.setVisibility(View.GONE);
-                        Log.i("Bottom sheet", "hidden");
-                        if (listener!=null){
-                            listener.onSheetHidden();
-                        }
-
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED: {
-                        Log.i("Bottom sheet", "expanded");
-                        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
-                        if (listener!=null){
-                            listener.onSheetExpanded();
-                        }
-
-
-
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_COLLAPSED: {
-
-                        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
-                        layoutInfoSheet.setVisibility(View.VISIBLE);
-                        if (listener!=null){
-                            listener.onSheetCollapsed();
-                        }
-
-
-
-
-                    }
-                    break;
-                    case BottomSheetBehavior.STATE_DRAGGING:
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        break;
-                }
-            }
-
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
-
+    /**
+     * Use this factory method to create a new instance of
+     * this fragment using the provided parameters.
+     *
+     * @param location
+     * @return A new instance of fragment InfoSheet.
+     */
+    public static InfoSheet newInstance(Location location) {
+        InfoSheet fragment = new InfoSheet();
+        Bundle args = new Bundle();
+        args.putString(LOCATION_NAME, location.getName());
+        args.putString(LOCATION_DESC, location.getDescription());
+        fragment.setArguments(args);
+        return fragment;
     }
 
-
-    private void toggleBottomSheet() {
-        if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-
-        } else {
-            sheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
-
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            locationName = getArguments().getString(LOCATION_NAME);
+            locationDesc = getArguments().getString(LOCATION_DESC);
         }
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof InfoSheetListener) {
+            listener = (InfoSheetListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement InfoSheetListener");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.info_sheet, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        ConstraintLayout layoutInfoSheet = view.findViewById(R.id.info_sheet_layout);
+        Button guideToButton = view.findViewById(R.id.guide_to_button);
+        expandSheetButton = view.findViewById(R.id.info_button);
+        TextView placeName = view.findViewById(R.id.place_name);
+        placeInfo = view.findViewById(R.id.place_info);
+
+        placeName.setText(locationName);
+        placeInfo.setText(locationDesc != null ? locationDesc : "");
+
+
+        guideToButton.setOnClickListener(v -> listener.infoSheetClose(true));
+        expandSheetButton.setOnClickListener(v -> toggleBottomSheet());
+    }
+
+    private void toggleBottomSheet() {
+        if (!descriptionIsVisible) {
+            placeInfo.setVisibility(View.VISIBLE);
+            descriptionIsVisible = true;
+        } else {
+            placeInfo.setVisibility(View.GONE);
+            descriptionIsVisible = false;
+        }
+    }
 
     public interface InfoSheetListener {
-        void guideTo();
-
-        void onSheetCollapsed();
-
-        void onSheetExpanded();
-
-        void onSheetHidden();
-
-
+        void infoSheetClose(boolean actionClicked);
     }
-
-    public int getBottomSheetState() {
-        return sheetBehavior.getState();
-    }
-
-    public void setBottomSheetState(int bottomSheetState) {
-        sheetBehavior.setState(bottomSheetState);
-    }
-    public void showInfoSheet(Location location, int state){
-        String name = location.getName();
-        String description = location.getDescription();
-        placeName.setText(name);
-        placeInfo.setText(description);
-        sheetBehavior.setState(state);
-
-
-    }
-    public void showInfoSheet(Location location){
-        String name = location.getName();
-        String description = location.getDescription();
-        placeName.setText(name);
-        placeInfo.setText(description);
-        sheetBehavior.setState(COLLAPSED);
-
-
-    }
-    private void infoSheetComponentsInit () {
-        layoutInfoSheet = parent.findViewById(R.id.info_sheet_layout);
-        guideToButton = parent.findViewById(R.id.guide_to_button);
-        expandSheetButton = parent.findViewById(R.id.info_button);
-        placeName = parent.findViewById(R.id.place_name);
-        placeInfo = parent.findViewById(R.id.place_info);
-
-
-        guideToButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (listener!=null){
-                listener.guideTo();
-                }
-
-            }
-        });
-        pinButton = parent.findViewById(R.id.pin_button);
-        pinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Location location = LocationFactory.create("SOR", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ");
-                showInfoSheet(location);
-            }
-        });
-
-
-        expandSheetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleBottomSheet();
-            }
-        });
-
-    }
-
-
 
 }

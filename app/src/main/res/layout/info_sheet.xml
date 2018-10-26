@@ -1,66 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/info_sheet_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#fff"
-    android:paddingBottom="4dp"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp"
-    app:behavior_hideable="true"
-    app:behavior_peekHeight="60dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
-    tools:layout_editor_absoluteY="81dp">
+    app:cardElevation="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardUseCompatPadding="false">
 
-    <Button
-        android:id="@+id/guide_to_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="4dp"
-        android:background="@android:color/transparent"
-        android:text="@string/guide_to"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <LinearLayout
 
-    <ImageButton
-        android:id="@+id/info_button"
-        android:layout_width="wrap_content"
-        android:layout_height="42dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:background="@android:color/transparent"
-        android:clickable="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_arrow_drop_up_black_24dp" />
-
-    <TextView
-        android:id="@+id/place_name"
-        android:layout_width="wrap_content"
-        android:layout_height="25dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/place_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="?android:attr/colorBackground"
+        android:orientation="vertical"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        tools:layout_editor_absoluteY="81dp">
 
-</android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/colorBackground"
+            android:orientation="vertical"
+            tools:layout_editor_absoluteX="4dp">
+
+            <Button
+                android:id="@+id/guide_to_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@android:color/transparent"
+                android:text="@string/guide_to"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="@+id/place_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toEndOf="@+id/info_button"
+                app:layout_constraintTop_toTopOf="@+id/place_name" />
+
+            <ImageButton
+                android:id="@+id/info_button"
+                android:layout_width="wrap_content"
+                android:layout_height="42dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:contentDescription="@string/more_info"
+                android:focusable="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_arrow_drop_up_black_24dp"
+                tools:ignore="VectorDrawableCompat" />
+
+            <TextView
+                android:id="@+id/place_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/info_button"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Location Name" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/place_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:paddingBottom="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/place_name"
+            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            tools:visibility="visible" />
+
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

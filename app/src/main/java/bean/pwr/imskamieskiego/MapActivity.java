@@ -28,35 +28,32 @@ import android.widget.Toast;
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
-import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.Location;
-import bean.pwr.imskamieskiego.repository.IMapRepository;
-import bean.pwr.imskamieskiego.repository.MapRepository;
 
 
 public class MapActivity extends AppCompatActivity
         implements QuickAccessFragment.QuickAccessListener,
         SearchFragment.SearchListener,
+        InfoSheet.InfoSheetListener,
         NavigationView.OnNavigationItemSelectedListener,
         NavWindowListener {
 
+    private static final String TAG = "MapActivity";
+    private static final String NAV_FRAG_FLAG = "navFragIsAdd";
+
+
+    //Fragments
     private FragmentManager fragmentManager;
+    private SearchFragment searchFragment;
+    private QuickAccessFragment quickAccessFragment;
+
 
     private Fragment navWindowFragment;
     private Toolbar toolbar;
     private Boolean navFragmentIsAdd = false;
 
-
     private ImageButton changeFloorButton;
 
-
-    private SearchFragment searchFragment;
-    private QuickAccessFragment quickAccessFragment;
-
-
-    private static final String TAG = "MapActivity";
-
-    private static final String NAV_FRAG_FLAG = "navFragIsAdd";
 
 
     @Override
@@ -83,46 +80,12 @@ public class MapActivity extends AppCompatActivity
             floorSelect.show();
         });
 
-
-        InfoSheet infoSheet = new InfoSheet(this);
-//        changeFloorButtonInit();
-
         if (savedInstanceState != null){
 
             if (savedInstanceState.getBoolean(NAV_FRAG_FLAG, false)) {
-//                changeFloorButton.setVisibility(View.GONE);
                 toolbar.setVisibility(View.GONE);
             }
         }
-
-
-        infoSheet.setListener(new InfoSheet.InfoSheetListener() {
-            @Override
-            public void guideTo() {
-
-            }
-
-
-            @Override
-            public void onSheetCollapsed() {
-//                hideQuickAccessButtons();
-//                quickAccessButton.setVisibility(View.GONE);
-//                quickAccessButton.setClickable(false);
-            }
-
-            @Override
-            public void onSheetExpanded() {
-//                hideQuickAccessButtons();
-//                quickAccessButton.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onSheetHidden() {
-//                quickAccessButton.setVisibility(View.VISIBLE);
-//                quickAccessButton.setClickable(true);
-            }
-        });
 
 
         DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
@@ -241,6 +204,7 @@ public class MapActivity extends AppCompatActivity
         if (quickAccessFragment != null && quickAccessFragment.isAdded()){
             fTransaction.hide(quickAccessFragment);
         }
+
         fTransaction.addToBackStack(null);
 
 //        hideQuickAccessButtons();
@@ -248,6 +212,18 @@ public class MapActivity extends AppCompatActivity
         fTransaction.commit();
     }
 
+    private void displayInfoSheet(Location location){
+        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+
+        fTransaction.replace(R.id.infoSheetStub, InfoSheet.newInstance(location));
+
+        if (quickAccessFragment != null && quickAccessFragment.isAdded()){
+            fTransaction.hide(quickAccessFragment);
+        }
+
+        fTransaction.addToBackStack(null);
+        fTransaction.commit();
+    }
 
 
 
@@ -339,6 +315,18 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void onLocationSearched(Location location) {
-        Snackbar.make(changeFloorButton, "SelectedLocation: "+location.getName(), Snackbar.LENGTH_SHORT).show();
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+        }
+        displayInfoSheet(location);
+    }
+
+    @Override
+    public void infoSheetClose(boolean actionSelected) {
+        if(actionSelected){
+            Log.i(TAG, "infoSheetClose: SELECTED");
+        }else {
+            Log.i(TAG, "infoSheetClose: Close");
+        }
     }
 }

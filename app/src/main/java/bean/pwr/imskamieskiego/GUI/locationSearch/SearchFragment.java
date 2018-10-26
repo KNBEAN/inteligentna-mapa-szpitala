@@ -108,7 +108,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private void processSearchResult(Location location){
         if (location != null){
             Log.d(TAG, String.format("processSearchResult: %d, %s", location.getId(), location.getName()));
-            if (listener != null)
+            searchView.clearFocus();
             listener.onLocationSearched(location);
         }
     }
