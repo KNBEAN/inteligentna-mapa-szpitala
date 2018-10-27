@@ -88,15 +88,15 @@ public class QuickAccessFragment extends Fragment {
 
 
         wcButton.setOnClickListener(view1 -> {
-            listener.onButtonClick(QuickAccessButtons.WC);
+            listener.onQAButtonClick(QuickAccessButtons.WC);
             hideQuickAccessButtons();
         });
         patientAssistantButton.setOnClickListener(view1 -> {
-            listener.onButtonClick(QuickAccessButtons.ASSISTANT);
+            listener.onQAButtonClick(QuickAccessButtons.ASSISTANT);
             hideQuickAccessButtons();
         });
         foodButton.setOnClickListener(view1 -> {
-            listener.onButtonClick(QuickAccessButtons.FOOD);
+            listener.onQAButtonClick(QuickAccessButtons.FOOD);
             hideQuickAccessButtons();
         });
 
@@ -177,8 +177,11 @@ public class QuickAccessFragment extends Fragment {
         isExpanded = true;
     }
 
+    public boolean isExpanded() {
+        return isExpanded;
+    }
 
     public interface QuickAccessListener {
-        void onButtonClick(QuickAccessButtons button);
+        void onQAButtonClick(QuickAccessButtons button);
     }
 }

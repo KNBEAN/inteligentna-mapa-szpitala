@@ -21,6 +21,9 @@ public class InfoSheet extends Fragment {
     private static final String TAG = "InfoSheet";
     private static final String LOCATION_NAME = "location_name";
     private static final String LOCATION_DESC = "location_desc";
+    private static final String AS_START_POINT = "start_point";
+
+    private boolean asStartPoint = false;
 
     private ImageButton expandSheetButton;
     private InfoSheetListener listener;
@@ -42,13 +45,15 @@ public class InfoSheet extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param location
+     * @param asStartPoint
      * @return A new instance of fragment InfoSheet.
      */
-    public static InfoSheet newInstance(Location location) {
+    public static InfoSheet newInstance(Location location, boolean asStartPoint) {
         InfoSheet fragment = new InfoSheet();
         Bundle args = new Bundle();
         args.putString(LOCATION_NAME, location.getName());
         args.putString(LOCATION_DESC, location.getDescription());
+        args.putBoolean(AS_START_POINT, asStartPoint);
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,6 +64,7 @@ public class InfoSheet extends Fragment {
         if (getArguments() != null) {
             locationName = getArguments().getString(LOCATION_NAME);
             locationDesc = getArguments().getString(LOCATION_DESC);
+            asStartPoint = getArguments().getBoolean(AS_START_POINT);
         }
     }
 
@@ -90,26 +96,34 @@ public class InfoSheet extends Fragment {
         TextView placeName = view.findViewById(R.id.place_name);
         placeInfo = view.findViewById(R.id.place_info);
 
+        if (asStartPoint){
+            guideToButton.setText(R.string.guide_from);
+        } else {
+            guideToButton.setText(R.string.guide_to);
+        }
+
         placeName.setText(locationName);
         placeInfo.setText(locationDesc != null ? locationDesc : "");
 
 
-        guideToButton.setOnClickListener(v -> listener.infoSheetClose(true));
-        expandSheetButton.setOnClickListener(v -> toggleBottomSheet());
+        guideToButton.setOnClickListener(v -> listener.infoSheetAction(asStartPoint));
+        expandSheetButton.setOnClickListener(v -> toggleDescriptionShow());
     }
 
-    private void toggleBottomSheet() {
-        if (!descriptionIsVisible) {
+    private void toggleDescriptionShow() {
+        if (!descriptionIsVisible && locationDesc != null) {
             placeInfo.setVisibility(View.VISIBLE);
+            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
             descriptionIsVisible = true;
         } else {
             placeInfo.setVisibility(View.GONE);
+            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
             descriptionIsVisible = false;
         }
     }
 
     public interface InfoSheetListener {
-        void infoSheetClose(boolean actionClicked);
+        void infoSheetAction(boolean asStartPoint);
     }
 
 }

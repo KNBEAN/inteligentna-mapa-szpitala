@@ -1,7 +1,7 @@
 package bean.pwr.imskamieskiego;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -9,11 +9,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
-import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
+
+import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavigationSetupFragment;
 import bean.pwr.imskamieskiego.GUI.QuickAccessFragment;
-import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavWindowListener;
-import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavWindowFragment;
 
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,22 +34,22 @@ public class MapActivity extends AppCompatActivity
         SearchFragment.SearchListener,
         InfoSheet.InfoSheetListener,
         NavigationView.OnNavigationItemSelectedListener,
-        NavWindowListener {
+        NavigationSetupFragment.NavigationSetupListener {
 
     private static final String TAG = "MapActivity";
-    private static final String NAV_FRAG_FLAG = "navFragIsAdd";
-
 
     //Fragments
     private FragmentManager fragmentManager;
     private SearchFragment searchFragment;
     private QuickAccessFragment quickAccessFragment;
 
+    //Fragment tags
+    private final String infoSheetTag = "InfoSheet";
+    private final String searchFragmentTag = "SearchFragment";
+    private final String navigationSetupTag = "NavigationSetupFragment";
 
-    private Fragment navWindowFragment;
+
     private Toolbar toolbar;
-    private Boolean navFragmentIsAdd = false;
-
     private ImageButton changeFloorButton;
 
 
@@ -70,7 +68,6 @@ public class MapActivity extends AppCompatActivity
 
         changeFloorButton = findViewById(R.id.floors_button);
         changeFloorButton.setOnClickListener(v -> {
-
             PopupMenu floorSelect = new PopupMenu(this, changeFloorButton);
             floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
             floorSelect.setOnMenuItemClickListener(item -> {
@@ -79,13 +76,6 @@ public class MapActivity extends AppCompatActivity
             });
             floorSelect.show();
         });
-
-        if (savedInstanceState != null){
-
-            if (savedInstanceState.getBoolean(NAV_FRAG_FLAG, false)) {
-                toolbar.setVisibility(View.GONE);
-            }
-        }
 
 
         DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
@@ -106,38 +96,19 @@ public class MapActivity extends AppCompatActivity
 
     }
 
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-
-        if (fragmentManager.findFragmentById(R.id.mainDrawerLayout ) != null){
-
-            if (fragmentManager.getBackStackEntryCount() >= 1){
-                navFragmentIsAdd = true;
-//                quickAccessButton.setVisibility(View.GONE);
-//                changeFloorButton.setVisibility(View.GONE);
-                toolbar.setVisibility(View.GONE);
-            }
-            else{
-                navFragmentIsAdd = false;
-//                quickAccessButton.setVisibility(View.VISIBLE);
-//                changeFloorButton.setVisibility(View.VISIBLE);
-                toolbar.setVisibility(View.VISIBLE);
-            }
+        } else if (quickAccessFragment.isExpanded()){
+            quickAccessFragment.hideQuickAccessButtons();
         }
         else {
-            navFragmentIsAdd = false;
-//            quickAccessButton.setVisibility(View.VISIBLE);
-//            changeFloorButton.setVisibility(View.VISIBLE);
-            toolbar.setVisibility(View.VISIBLE);
+            super.onBackPressed();
         }
-
-        Log.i(NAV_FRAG_FLAG, String.valueOf(navFragmentIsAdd));
     }
 
     @Override
@@ -155,10 +126,8 @@ public class MapActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -186,6 +155,11 @@ public class MapActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
 
 
     private void displaySearchFragment(){
@@ -194,113 +168,54 @@ public class MapActivity extends AppCompatActivity
         if(searchFragment.isAdded()){
             fTransaction.show(searchFragment);
         }else {
-            fTransaction.add(R.id.mainDrawerLayout, searchFragment, "SearchFragment");
+            fTransaction.add(R.id.mainDrawerLayout, searchFragment, searchFragmentTag);
         }
 
-        if(navWindowFragment != null && navWindowFragment.isAdded()){
-            fTransaction.hide(navWindowFragment);
+        Fragment navigationSetupFragment = fragmentManager.findFragmentByTag(navigationSetupTag);
+        if(navigationSetupFragment != null && navigationSetupFragment.isAdded())
+        {
+            fTransaction.hide(navigationSetupFragment);
         }
 
-        if (quickAccessFragment != null && quickAccessFragment.isAdded()){
-            fTransaction.hide(quickAccessFragment);
-        }
-
-        fTransaction.addToBackStack(null);
-
-//        hideQuickAccessButtons();
-
-        fTransaction.commit();
+        fTransaction.addToBackStack(null).commit();
     }
 
-    private void displayInfoSheet(Location location){
+    private void displayInfoSheet(Location location, boolean asStartPoint){
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
 
-        fTransaction.replace(R.id.infoSheetStub, InfoSheet.newInstance(location));
+        fTransaction.replace(R.id.infoSheetStub, InfoSheet.newInstance(location, asStartPoint), infoSheetTag);
 
-        if (quickAccessFragment != null && quickAccessFragment.isAdded()){
-            fTransaction.hide(quickAccessFragment);
+        if (quickAccessFragment.isAdded()){fTransaction.hide(quickAccessFragment);}
+
+        fTransaction.addToBackStack(null).commit();
+    }
+
+    private void displayNavigationSetup(String destinationLocationName){
+        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+
+        fTransaction.setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
+                R.anim.slide_in_from_left, android.R.anim.slide_out_right);
+
+        fTransaction.replace(R.id.toolbarContent, NavigationSetupFragment.newInstance(destinationLocationName), navigationSetupTag);
+
+        if (quickAccessFragment.isAdded()){fTransaction.hide(quickAccessFragment);}
+
+        Fragment infoSheetFragment = fragmentManager.findFragmentByTag(infoSheetTag);
+        if (infoSheetFragment != null){
+            fTransaction.hide(infoSheetFragment);
         }
-
-        fTransaction.addToBackStack(null);
-        fTransaction.commit();
+        fTransaction.addToBackStack(null).commit();
     }
-
-
-
-
-
-
-    public void setNewNavWindowFragment(){
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        navWindowFragment = fragmentManager.findFragmentById(R.id.mainDrawerLayout);
-
-
-        if (navWindowFragment == null){
-            navWindowFragment = new NavWindowFragment();
-
-            fragmentTransaction
-                    .setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
-                            R.anim.slide_in_from_left, android.R.anim.slide_out_right)
-                    .add(R.id.mainDrawerLayout,navWindowFragment)
-                    .addToBackStack(null)
-                    .commit();
-            navFragmentIsAdd = true;
-        }
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        Log.i(NAV_FRAG_FLAG,String.valueOf(navFragmentIsAdd));
-
-        outState.putBoolean(NAV_FRAG_FLAG, navFragmentIsAdd);
-
-        super.onSaveInstanceState(outState);
-    }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 
     @Override
-    public void onNavWindowBack() {
-        AnimationAdapter animationShow = new AnimationAdapter(MapActivity.this, R.anim.show_anim);
-        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.VISIBLE);
-
-        navFragmentIsAdd = true;
-
-//        animationShow.startAnimation(changeFloorButton,animationEndListener);
-        animationShow.startAnimation(toolbar,animationEndListener);
-//        animationShow.startAnimation(quickAccessButton,animationEndListener);
-
-    }
-
-    @Override
-    public void startNavigation() {
-
-    }
-
-    @Override
-    public void updateNavFragmentState() {
-        navFragmentIsAdd = true;
-
-    }
-
-    @Override
-    public void onButtonClick(QuickAccessFragment.QuickAccessButtons button) {
+    public void onQAButtonClick(QuickAccessFragment.QuickAccessButtons button) {
         switch (button){
             case WC:
                 Log.d(TAG, "Quick access WC");
+                displayNavigationSetup("potato");
                 break;
             case FOOD:
                 Log.d(TAG, "Quick access FOOD");
@@ -313,20 +228,37 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
+
+
+
     @Override
     public void onLocationSearched(Location location) {
         if (fragmentManager.getBackStackEntryCount() > 0) {
             fragmentManager.popBackStack();
         }
-        displayInfoSheet(location);
+        displayInfoSheet(location, true);
+    }
+
+
+
+
+    @Override
+    public void infoSheetAction(boolean asStartPoint) {
+        if(asStartPoint){
+            Log.i(TAG, "infoSheetAction: SELECTED");
+            displayNavigationSetup("Tomato");
+        }
+    }
+
+
+    @Override
+    public void startPointSearchRequest() {
+        Log.i(TAG, "startPointSearchRequest: search start point");
+        displaySearchFragment();
     }
 
     @Override
-    public void infoSheetClose(boolean actionSelected) {
-        if(actionSelected){
-            Log.i(TAG, "infoSheetClose: SELECTED");
-        }else {
-            Log.i(TAG, "infoSheetClose: Close");
-        }
+    public void startNavigation(boolean avoidStairs) {
+        Log.i(TAG, "startNavigation: start navigation");
     }
 }

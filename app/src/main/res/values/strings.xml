@@ -6,7 +6,7 @@
     <string name="nav_window_from">Z</string>
     <string name="nav_window_stairs">Schody</string>
     <string name="nav_window_button">Start</string>
-    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_map">Mapa szpitala</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Wojewódzki Szpital Specjalistyczny</string>
@@ -27,6 +27,7 @@
     <string name="food_quick_access_button">Jedzenie</string>
     <string name="wc_quick_access_button">Toaleta</string>
     <string name="guide_to">Prowadź do</string>
+    <string name="guide_from">Prowadź z</string>
     <string name="place_name">Place name</string>
 
     <string name="authors_window_title_authors">Autorzy</string>
@@ -44,5 +45,6 @@
         odnajdywaniu się w budynku.</string>
     <string name="place">Miejsce</string>
     <string name="more_info">more info</string>
+    <string name="navigation_setup_snackbar_hint">Wybierz miejsce, z którego chcesz rozpocząć nawigację.</string>
 
 </resources>
