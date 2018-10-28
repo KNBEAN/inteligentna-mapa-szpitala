@@ -3,6 +3,7 @@ package bean.pwr.imskamieskiego;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ClipData;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -36,10 +37,13 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 
+import java.util.Arrays;
+
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.model.map.MapPointFactory;
 import bean.pwr.imskamieskiego.repository.FloorDataRepository;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
@@ -81,22 +85,23 @@ public class MapActivity extends AppCompatActivity
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         infoSheet = new InfoSheet(this);
-        mapDrawer = new MapDrawer(this);
-
 
 
         viewModelInit();
         floorViewModelInit();
+
+        currentFloor = floorViewModel.getCurrentFloor();
         quickAccessButtonInit();
         changeFloorButtonInit();
-
+        floorViewModel.setSelectedFloor(currentFloor);
         mapDrawer = findViewById(R.id.mapdrawer);
-
 
         mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
             @Override
             public void onLongPress(MapPoint mapPoint) {
+                mapDrawer.removeAllMapPoints();
                 locationViewModel.setMapPoint(mapPoint);
+
 
             }
         });
@@ -277,7 +282,7 @@ public class MapActivity extends AppCompatActivity
         quickAccessButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                floorViewModel.setSelectedFloor(currentFloor);
+
                 if (foodButton.getVisibility() == View.VISIBLE
                         && (wcButton.getVisibility() == View.VISIBLE)
                         && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
@@ -366,18 +371,38 @@ public class MapActivity extends AppCompatActivity
 
             @Override
             public void onClick(View v) {
+                 PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+             //   floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+                floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
+                    int idOfElement=0;
+                            if (floorList != null) {
+                                for (String floor: floorList) {
+                                    floorSelect.getMenu().add(1,idOfElement,idOfElement,floor);
+                                    idOfElement++;
 
-                PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-                floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+                                }
+                                floorSelect.show();
+                             }
+
+                             }
+
+                );
+
                 floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-
+                        if (currentFloor != item.getItemId()) {
+                            mapDrawer.removeAllMapPoints();
+                            currentFloor = item.getItemId();
+                            floorViewModel.setCurrentFloor(currentFloor);
+                            floorViewModel.setSelectedFloor(currentFloor);
+                        }
+                        else
                         Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
                         return false;
                     }
                 });
-                floorSelect.show();
+
             }
         });
     }
@@ -388,6 +413,19 @@ public class MapActivity extends AppCompatActivity
         locationViewModel.getCurrentLocation().observe(this, location -> {
                 if (location != null) {
                         infoSheet.showInfoSheet(location, EXPANDED);
+
+                    }
+                }
+        );
+        locationViewModel.getNearestMapPoint().observe(this, mapPoint -> {
+                    if (mapPoint != null) {
+                        mapDrawer.zoomOnPoint(mapPoint);
+                        Log.i(TAG,"x= "+mapPoint.getX()+"y: "+mapPoint.getY()+"floor: "+mapPoint.getFloor());
+                        mapDrawer.addMapPoint(mapPoint,1);
+
+
+
+
                     }
                 }
         );
@@ -398,10 +436,12 @@ public class MapActivity extends AppCompatActivity
         floorViewModel.getFloorBitmap().observe(this, bitmap -> {
                     if (bitmap != null) {
                         mapDrawer.showFloor(currentFloor,bitmap);
+
                     }
                 }
         );
 
     }
+
 }
 

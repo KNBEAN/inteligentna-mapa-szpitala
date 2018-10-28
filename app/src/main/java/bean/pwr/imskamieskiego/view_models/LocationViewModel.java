@@ -36,6 +36,9 @@ public class LocationViewModel extends AndroidViewModel {
 
             });
 
+    public LiveData<MapPoint> getNearestMapPoint() {
+        return nearestMapPoint;
+    }
 
     private LiveData<Location> currentLocation = Transformations.switchMap(nearestMapPoint, mapPoint -> {
 

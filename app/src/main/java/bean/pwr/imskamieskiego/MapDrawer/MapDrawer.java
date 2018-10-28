@@ -1,6 +1,7 @@
 package bean.pwr.imskamieskiego.MapDrawer;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -358,7 +359,8 @@ public class MapDrawer extends View {
         tackTextures = new ArrayList<>();
         try {
             for (int resourceName : resourceTacksId) {
-                texture = BitmapDecoder.decodeSampledBitmapFromResource(context.getResources()
+                Resources res = context.getResources();
+                texture = BitmapDecoder.decodeSampledBitmapFromResource(res
                         , resourceName
                         , tackWidth
                         , tackHeight);
@@ -368,8 +370,10 @@ public class MapDrawer extends View {
                         false));
             }
         } catch (Exception o) {
+
             Log.i(TAG, "loadTackTextures: No info about resources in .xml file. Use addTackResources() to" +
                     " avoid problems with rendering map");
+
         }
     }
 

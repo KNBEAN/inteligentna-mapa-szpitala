@@ -24,7 +24,6 @@ public class InfoSheet {
     private TextView placeInfo;
     private BottomSheetBehavior sheetBehavior;
     private ImageButton expandSheetButton;
-    private ImageView pinButton;
     private Activity parent;
     private InfoSheetListener listener;
     public static int COLLAPSED = BottomSheetBehavior.STATE_COLLAPSED;
@@ -170,14 +169,6 @@ public class InfoSheet {
                 listener.guideTo();
                 }
 
-            }
-        });
-        pinButton = parent.findViewById(R.id.pin_button);
-        pinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Location location = LocationFactory.create("SOR", "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ");
-                showInfoSheet(location);
             }
         });
 
