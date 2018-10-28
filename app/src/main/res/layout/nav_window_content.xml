@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:showIn="@layout/nav_window">
 
 
@@ -12,13 +12,11 @@
         style="@style/Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
         android:gravity="center_vertical|center_horizontal"
         android:text="@string/nav_window_button"
-        android:textColor="#fff"
-        android:textSize="18sp"
+        android:textColor="@color/fontColorWhite"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
@@ -27,7 +25,6 @@
         android:id="@+id/linearLayout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="vertical"
@@ -42,6 +39,7 @@
             android:layout_marginBottom="15dp"
             android:text="@string/nav_window_from"
             android:textAllCaps="false"
+            android:textColor="@color/fontColorBlack"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,6 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/nav_window_to"
+            android:textColor="@color/fontColorBlack"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -63,9 +62,9 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -81,10 +80,11 @@
             android:clickable="true"
             android:gravity="start"
             android:hint="@string/nav_window_start"
-            android:paddingBottom="2dp"
-            android:paddingLeft="4dp"
+            android:paddingStart="16dp"
             android:paddingTop="2dp"
+            android:paddingBottom="2dp"
             android:textAllCaps="false"
+            android:textColor="@color/fontColorBlack"
             android:textSize="18sp" />
 
         <TextView
@@ -95,9 +95,11 @@
             android:clickable="true"
             android:gravity="start"
             android:hint="@string/nav_window_destination"
-            android:paddingBottom="2dp"
-            android:paddingLeft="4dp"
+            android:paddingStart="16dp"
             android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:textColor="@color/fontColorBlack"
             android:textSize="18sp" />
 
 
@@ -107,7 +109,6 @@
         android:id="@+id/checkStairs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:enabled="false"
         android:text="@string/nav_window_stairs"

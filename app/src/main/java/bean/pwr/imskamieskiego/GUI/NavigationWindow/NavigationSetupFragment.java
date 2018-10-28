@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 
 import bean.pwr.imskamieskiego.R;
@@ -22,12 +23,15 @@ public class NavigationSetupFragment extends Fragment{
 
     private static final String TAG = "NavigationSetupFragment";
     private static final String DESTINATION_NAME = "destinationName";
+
+    private Toolbar toolbar;
     private TextView textViewStart;
     private TextView textViewDestination;
     private CheckBox checkStairs;
     private Button startButton;
     private NavigationSetupListener listener;
 
+    private View.OnClickListener navigateOnClickListener;
 
     public NavigationSetupFragment() {
         // Required empty public constructor
@@ -37,7 +41,7 @@ public class NavigationSetupFragment extends Fragment{
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @return A new instance of fragment InfoSheet.
+     * @return A new instance of fragment NavigationSetupFragment.
      */
     public static NavigationSetupFragment newInstance(String destination_name) {
         NavigationSetupFragment fragment = new NavigationSetupFragment();
@@ -46,7 +50,6 @@ public class NavigationSetupFragment extends Fragment{
         fragment.setArguments(args);
         return fragment;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -62,8 +65,8 @@ public class NavigationSetupFragment extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.nav_window, container, false);
+        toolbar = (Toolbar) view.findViewById(R.id.navi_setup_toolbar);
         textViewStart = (TextView) view.findViewById(R.id.textViewStart);
         textViewDestination = (TextView) view.findViewById(R.id.textViewDestination);
         checkStairs = (CheckBox) view.findViewById(R.id.checkStairs);
@@ -76,6 +79,7 @@ public class NavigationSetupFragment extends Fragment{
 
         startButton.setOnClickListener(view1 -> listener.startNavigation(checkStairs.isSelected()));
         textViewStart.setOnClickListener(view1 -> listener.startPointSearchRequest());
+        toolbar.setNavigationOnClickListener(navigateOnClickListener);
 
         return view;
     }
@@ -92,6 +96,13 @@ public class NavigationSetupFragment extends Fragment{
 
     public void setDestinationLocationName(String locationName){
         textViewDestination.setText(locationName);
+    }
+
+    public void setNavigationOnClickListener(View.OnClickListener listener){
+        navigateOnClickListener = listener;
+        if (toolbar != null){
+            toolbar.setNavigationOnClickListener(navigateOnClickListener);
+        }
     }
 
     public interface NavigationSetupListener {

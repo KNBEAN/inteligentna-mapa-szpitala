@@ -6,4 +6,5 @@
     <color name="colorAccent">#01579b</color>
     <color name="fontColorWhite">#ffffff</color>
     <color name="fontColorBlack">#000000</color>
+    <color name="shadow_background">#64000000</color>
 </resources>

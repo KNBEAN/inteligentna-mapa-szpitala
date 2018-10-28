@@ -89,8 +89,6 @@ public class MapActivity extends AppCompatActivity
         drawerLayout.addDrawerListener(hamburgerButton);
         hamburgerButton.syncState();
 
-
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
@@ -103,7 +101,7 @@ public class MapActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (quickAccessFragment.isExpanded()){
+        } else if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
             quickAccessFragment.hideQuickAccessButtons();
         }
         else {
@@ -171,11 +169,11 @@ public class MapActivity extends AppCompatActivity
             fTransaction.add(R.id.mainDrawerLayout, searchFragment, searchFragmentTag);
         }
 
-        Fragment navigationSetupFragment = fragmentManager.findFragmentByTag(navigationSetupTag);
-        if(navigationSetupFragment != null && navigationSetupFragment.isAdded())
-        {
-            fTransaction.hide(navigationSetupFragment);
-        }
+//        Fragment navigationSetupFragment = fragmentManager.findFragmentByTag(navigationSetupTag);
+//        if(navigationSetupFragment != null && navigationSetupFragment.isAdded())
+//        {
+//            fTransaction.hide(navigationSetupFragment);
+//        }
 
         fTransaction.addToBackStack(null).commit();
     }
@@ -185,7 +183,7 @@ public class MapActivity extends AppCompatActivity
 
         fTransaction.replace(R.id.infoSheetStub, InfoSheet.newInstance(location, asStartPoint), infoSheetTag);
 
-        if (quickAccessFragment.isAdded()){fTransaction.hide(quickAccessFragment);}
+        if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()){fTransaction.hide(quickAccessFragment);}
 
         fTransaction.addToBackStack(null).commit();
     }
@@ -195,16 +193,23 @@ public class MapActivity extends AppCompatActivity
 
         fTransaction.setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
                 R.anim.slide_in_from_left, android.R.anim.slide_out_right);
+        NavigationSetupFragment navigationSetupFragment = NavigationSetupFragment.newInstance(destinationLocationName);
+        fTransaction.replace(R.id.toolBarHolder, navigationSetupFragment, navigationSetupTag);
 
-        fTransaction.replace(R.id.toolbarContent, NavigationSetupFragment.newInstance(destinationLocationName), navigationSetupTag);
-
-        if (quickAccessFragment.isAdded()){fTransaction.hide(quickAccessFragment);}
+        if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()){fTransaction.hide(quickAccessFragment);}
 
         Fragment infoSheetFragment = fragmentManager.findFragmentByTag(infoSheetTag);
         if (infoSheetFragment != null){
             fTransaction.hide(infoSheetFragment);
         }
-        fTransaction.addToBackStack(null).commit();
+
+        navigationSetupFragment.setNavigationOnClickListener(view -> {
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                fragmentManager.popBackStack(navigationSetupTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        });
+
+        fTransaction.addToBackStack(navigationSetupTag).commit();
     }
 
 
@@ -229,8 +234,6 @@ public class MapActivity extends AppCompatActivity
     }
 
 
-
-
     @Override
     public void onLocationSearched(Location location) {
         if (fragmentManager.getBackStackEntryCount() > 0) {
@@ -238,8 +241,6 @@ public class MapActivity extends AppCompatActivity
         }
         displayInfoSheet(location, true);
     }
-
-
 
 
     @Override
