@@ -25,7 +25,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
-    buildToolsVersion '27.0.3'
+
+    buildToolsVersion '28.0.3'
 
 
     dependencies {
@@ -35,6 +36,8 @@ android {
 
         implementation 'com.android.support:support-v4:27.1.1'
         testImplementation 'junit:junit:4.12'
+        testImplementation "com.google.truth:truth:0.36"
+        testImplementation "android.arch.core:core-testing:1.1.1"
         testImplementation 'org.mockito:mockito-all:1.10.19'
 
 
@@ -42,7 +45,6 @@ android {
         testImplementation 'org.mockito:mockito-core:2.21.0'
 
         androidTestImplementation 'org.mockito:mockito-android:2.21.0'
-
         androidTestImplementation 'com.android.support.test:runner:1.0.2'
         androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
         androidTestImplementation "android.arch.core:core-testing:1.1.1"

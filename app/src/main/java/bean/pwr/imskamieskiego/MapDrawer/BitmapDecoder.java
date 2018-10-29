@@ -32,6 +32,7 @@ public abstract class BitmapDecoder {
         BitmapFactory.decodeResource(res, resId, options);
         options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
         options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeResource(res, resId, options);
+        Bitmap bmp =  BitmapFactory.decodeResource(res, resId, options);
+        return bmp;
     }
 }

@@ -1,5 +1,7 @@
 package bean.pwr.imskamieskiego.model.map;
 
+import java.util.Objects;
+
 import javax.annotation.Nullable;
 
 /**
@@ -53,6 +55,22 @@ public class LocationFactory {
         @Override
         public String getDescription() {
             return description;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            locationImpl location = (locationImpl) o;
+            return id == location.id &&
+                    Objects.equals(name, location.name) &&
+                    Objects.equals(description, location.description);
+        }
+
+        @Override
+        public int hashCode() {
+
+            return Objects.hash(id, name, description);
         }
     }
 

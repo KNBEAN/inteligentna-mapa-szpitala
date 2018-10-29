@@ -33,7 +33,7 @@ public class MapRepository implements IMapRepository {
         return Transformations.map(
                 mapPointDao.getNearestLiveData(x, y, floor),
                 point -> point
-                );
+        );
     }
 
     @Override
