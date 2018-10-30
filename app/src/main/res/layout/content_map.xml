@@ -8,35 +8,19 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".MapActivity"
     tools:layout_editor_absoluteY="25dp"
-  >
+    >
 
-    <ImageView
-        android:id="@+id/fakeMap"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/map_view_description"
-        android:scaleType="matrix"
+
+    <bean.pwr.imskamieskiego.MapDrawer.MapDrawer
+        android:id="@+id/mapdrawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:defaultTackDrawable="@mipmap/ic_launcher"
+        app:endTackDrawable="@mipmap/ic_launcher"
+        app:startTackDrawable="@mipmap/ic_launcher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/samplemap" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-
-    <ImageView
-        android:id="@+id/pin_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.273"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499"
-        app:srcCompat="@android:drawable/btn_star_big_on" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,5 +1,6 @@
 package bean.pwr.imskamieskiego;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -26,7 +28,12 @@ import android.widget.Toast;
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.model.map.Location;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.view_models.FloorViewModel;
+import bean.pwr.imskamieskiego.view_models.LocationViewModel;
 
 
 public class MapActivity extends AppCompatActivity
@@ -52,6 +59,13 @@ public class MapActivity extends AppCompatActivity
     private Toolbar toolbar;
     private ImageButton changeFloorButton;
 
+    private LocationViewModel locationViewModel;
+    private FloorViewModel floorViewModel;
+    private MapDrawer mapDrawer;
+
+
+    private int currentFloor = 1;
+
 
 
     @Override
@@ -66,15 +80,58 @@ public class MapActivity extends AppCompatActivity
         quickAccessFragment = (QuickAccessFragment) fragmentManager.findFragmentById(R.id.quickAccessFragment);
 
 
+        viewModelInit();
+        floorViewModelInit();
+
+        currentFloor = floorViewModel.getCurrentFloor();
+
+
+        floorViewModel.setSelectedFloor(currentFloor);
+        mapDrawer = findViewById(R.id.mapdrawer);
+
+        mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
+            @Override
+            public void onLongPress(MapPoint mapPoint) {
+                mapDrawer.removeAllMapPoints();
+                locationViewModel.setMapPoint(mapPoint);
+
+
+            }
+        });
+
+
+
         changeFloorButton = findViewById(R.id.floors_button);
         changeFloorButton.setOnClickListener(v -> {
-            PopupMenu floorSelect = new PopupMenu(this, changeFloorButton);
-            floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+            PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+            //   floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
+            floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
+                        int idOfElement=0;
+                        if (floorList != null) {
+                            for (String floor: floorList) {
+                                floorSelect.getMenu().add(1,idOfElement,idOfElement,floor);
+                                idOfElement++;
+
+                            }
+                            floorSelect.show();
+                        }
+
+                    }
+
+            );
+
             floorSelect.setOnMenuItemClickListener(item -> {
-                Toast.makeText(this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
+                if (currentFloor != item.getItemId()) {
+                    mapDrawer.removeAllMapPoints();
+                    currentFloor = item.getItemId();
+                    floorViewModel.setCurrentFloor(currentFloor);
+                    floorViewModel.setSelectedFloor(currentFloor);
+                }
+                else
+                    Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
                 return false;
             });
-            floorSelect.show();
+
         });
 
 
@@ -157,6 +214,43 @@ public class MapActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
+
+
+
+    private void viewModelInit() {
+        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
+        locationViewModel.getCurrentLocation().observe(this, location -> {
+                    if (location != null) {
+                        displayInfoSheet(location, false);
+                    }
+                }
+        );
+        locationViewModel.getNearestMapPoint().observe(this, mapPoint -> {
+                    if (mapPoint != null) {
+                        mapDrawer.zoomOnPoint(mapPoint);
+                        Log.i(TAG,"x= "+mapPoint.getX()+"y: "+mapPoint.getY()+"floor: "+mapPoint.getFloor());
+                        mapDrawer.addMapPoint(mapPoint,1);
+
+
+
+
+                    }
+                }
+        );
+
+    }
+    private void floorViewModelInit() {
+        floorViewModel = ViewModelProviders.of(this).get(FloorViewModel.class);
+        floorViewModel.getFloorBitmap().observe(this, bitmap -> {
+                    if (bitmap != null) {
+                        mapDrawer.showFloor(currentFloor,bitmap);
+
+                    }
+                }
+        );
+
+    }
+
 
 
 
