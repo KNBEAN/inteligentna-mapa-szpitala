@@ -20,7 +20,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -89,49 +88,33 @@ public class MapActivity extends AppCompatActivity
         floorViewModel.setSelectedFloor(currentFloor);
         mapDrawer = findViewById(R.id.mapdrawer);
 
-        mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
-            @Override
-            public void onLongPress(MapPoint mapPoint) {
-                mapDrawer.removeAllMapPoints();
-                locationViewModel.setMapPoint(mapPoint);
+        mapDrawer.setOnLongPressListener(mapPoint -> {
+            mapDrawer.removeAllMapPoints();
+            locationViewModel.setMapPoint(mapPoint);
+        });
 
+        changeFloorButton = findViewById(R.id.floors_button);
 
+        PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+        floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
+            if (floorList != null) {
+                for (int i = 0; i < floorList.length; i++) {
+                    floorSelect.getMenu().add(1,i,i,floorList[i]);
+                }
             }
         });
 
+        changeFloorButton.setOnClickListener(v -> floorSelect.show());
 
-
-        changeFloorButton = findViewById(R.id.floors_button);
-        changeFloorButton.setOnClickListener(v -> {
-            PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-            //   floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
-            floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
-                        int idOfElement=0;
-                        if (floorList != null) {
-                            for (String floor: floorList) {
-                                floorSelect.getMenu().add(1,idOfElement,idOfElement,floor);
-                                idOfElement++;
-
-                            }
-                            floorSelect.show();
-                        }
-
-                    }
-
-            );
-
-            floorSelect.setOnMenuItemClickListener(item -> {
-                if (currentFloor != item.getItemId()) {
-                    mapDrawer.removeAllMapPoints();
-                    currentFloor = item.getItemId();
-                    floorViewModel.setCurrentFloor(currentFloor);
-                    floorViewModel.setSelectedFloor(currentFloor);
-                }
-                else
-                    Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
-                return false;
-            });
-
+        floorSelect.setOnMenuItemClickListener(item -> {
+            if (currentFloor != item.getItemId()) {
+                currentFloor = item.getItemId();
+                floorViewModel.setCurrentFloor(currentFloor);
+                floorViewModel.setSelectedFloor(currentFloor);
+            }
+            else
+                Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
+            return false;
         });
 
 
@@ -230,10 +213,6 @@ public class MapActivity extends AppCompatActivity
                         mapDrawer.zoomOnPoint(mapPoint);
                         Log.i(TAG,"x= "+mapPoint.getX()+"y: "+mapPoint.getY()+"floor: "+mapPoint.getFloor());
                         mapDrawer.addMapPoint(mapPoint,1);
-
-
-
-
                     }
                 }
         );
@@ -262,12 +241,6 @@ public class MapActivity extends AppCompatActivity
         }else {
             fTransaction.add(R.id.mainDrawerLayout, searchFragment, searchFragmentTag);
         }
-
-//        Fragment navigationSetupFragment = fragmentManager.findFragmentByTag(navigationSetupTag);
-//        if(navigationSetupFragment != null && navigationSetupFragment.isAdded())
-//        {
-//            fTransaction.hide(navigationSetupFragment);
-//        }
 
         fTransaction.addToBackStack(null).commit();
     }
@@ -305,9 +278,7 @@ public class MapActivity extends AppCompatActivity
 
         fTransaction.addToBackStack(navigationSetupTag).commit();
     }
-
-
-
+    
 
     @Override
     public void onQAButtonClick(QuickAccessFragment.QuickAccessButtons button) {
