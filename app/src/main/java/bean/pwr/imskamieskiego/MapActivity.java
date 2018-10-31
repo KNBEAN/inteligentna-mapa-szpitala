@@ -1,81 +1,70 @@
 package bean.pwr.imskamieskiego;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ClipData;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
-import android.view.View;
+import android.view.Menu;
 
-import bean.pwr.imskamieskiego.GUI.AnimationAdapter;
-import bean.pwr.imskamieskiego.MapDrawer.BitmapDecoder;
-import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
-import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
-import bean.pwr.imskamieskiego.NavigationWindow.NavWindowListener;
-import bean.pwr.imskamieskiego.NavigationWindow.NavWindowFragment;
+import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavigationSetupFragment;
+import bean.pwr.imskamieskiego.GUI.QuickAccessFragment;
 
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
 
-import java.util.Arrays;
-
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
-import bean.pwr.imskamieskiego.data.LocalDB;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
+import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
-import bean.pwr.imskamieskiego.model.map.MapPointFactory;
-import bean.pwr.imskamieskiego.repository.FloorDataRepository;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
 
-import static bean.pwr.imskamieskiego.GUI.InfoSheet.COLLAPSED;
-import static bean.pwr.imskamieskiego.GUI.InfoSheet.EXPANDED;
-
 
 public class MapActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, NavWindowListener {
+        implements QuickAccessFragment.QuickAccessListener,
+        SearchFragment.SearchListener,
+        InfoSheet.InfoSheetListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        NavigationSetupFragment.NavigationSetupListener {
+
+    private static final String TAG = "MapActivity";
+
+    //Fragments
+    private FragmentManager fragmentManager;
+    private SearchFragment searchFragment;
+    private QuickAccessFragment quickAccessFragment;
+
+    //Fragment tags
+    private final String infoSheetTag = "InfoSheet";
+    private final String searchFragmentTag = "SearchFragment";
+    private final String navigationSetupTag = "NavigationSetupFragment";
 
 
-    private FloatingActionButton wcButton;
-    private FloatingActionButton patientAssistantButton;
-    private FloatingActionButton foodButton;
-    private FloatingActionButton quickAccessButton;
-    private Button patientAssistantButtonDescription;
-    private Button foodButtonDescription;
-    private Button wcButtonDescription;
-    private ImageButton changeFloorButton;
-    private Fragment navWindowFragment;
     private Toolbar toolbar;
-    private Boolean navFragmentIsAdd = false;
+    private ImageButton changeFloorButton;
+
     private LocationViewModel locationViewModel;
     private FloorViewModel floorViewModel;
-    private InfoSheet infoSheet;
     private MapDrawer mapDrawer;
 
 
-
-    private static final String TAG = "MapActivity";
     private int currentFloor = 1;
+
 
 
     @Override
@@ -84,72 +73,60 @@ public class MapActivity extends AppCompatActivity
         setContentView(R.layout.activity_map);
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        infoSheet = new InfoSheet(this);
+
+        fragmentManager = getSupportFragmentManager();
+        searchFragment = SearchFragment.newInstance();
+        quickAccessFragment = (QuickAccessFragment) fragmentManager.findFragmentById(R.id.quickAccessFragment);
 
 
         viewModelInit();
         floorViewModelInit();
 
         currentFloor = floorViewModel.getCurrentFloor();
-        quickAccessButtonInit();
-        changeFloorButtonInit();
+
+
         floorViewModel.setSelectedFloor(currentFloor);
         mapDrawer = findViewById(R.id.mapdrawer);
 
-        mapDrawer.setOnLongPressListener(new MapDrawerGestureListener() {
-            @Override
-            public void onLongPress(MapPoint mapPoint) {
-                mapDrawer.removeAllMapPoints();
-                locationViewModel.setMapPoint(mapPoint);
+        mapDrawer.setOnLongPressListener(mapPoint -> {
+            mapDrawer.removeAllMapPoints();
+            locationViewModel.setMapPoint(mapPoint);
+        });
 
+        changeFloorButton = findViewById(R.id.floors_button);
 
+        PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+        floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
+            if (floorList != null) {
+                for (int i = 0; i < floorList.length; i++) {
+                    floorSelect.getMenu().add(1,i,i,floorList[i]);
+                }
             }
         });
 
-        if (savedInstanceState != null) {
+        changeFloorButton.setOnClickListener(v -> floorSelect.show());
 
-            if (savedInstanceState.getBoolean("navFragIsAdd", false)) {
-                quickAccessButton.setVisibility(View.GONE);
-                changeFloorButton.setVisibility(View.GONE);
-                toolbar.setVisibility(View.GONE);
+        floorSelect.setOnMenuItemClickListener(item -> {
+            if (currentFloor != item.getItemId()) {
+                currentFloor = item.getItemId();
+                floorViewModel.setCurrentFloor(currentFloor);
+                floorViewModel.setSelectedFloor(currentFloor);
             }
-
-        }
-
-
-        infoSheet.setListener(new InfoSheet.InfoSheetListener() {
-            @Override
-            public void guideTo() {
-
-
-            }
-
-
-            @Override
-            public void onSheetCollapsed() {
-                hideQuickAccessButtons();
-                quickAccessButton.setVisibility(View.GONE);
-                quickAccessButton.setClickable(false);
-            }
-
-            @Override
-            public void onSheetExpanded() {
-                hideQuickAccessButtons();
-                quickAccessButton.setVisibility(View.GONE);
-
-            }
-
-            @Override
-            public void onSheetHidden() {
-                quickAccessButton.setVisibility(View.VISIBLE);
-                quickAccessButton.setClickable(true);
-            }
+            else
+                Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
+            return false;
         });
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
+        DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
         ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(hamburgerButton);
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+
+        drawerLayout.addDrawerListener(hamburgerButton);
         hamburgerButton.syncState();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -158,50 +135,37 @@ public class MapActivity extends AppCompatActivity
     }
 
 
+
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
+            quickAccessFragment.hideQuickAccessButtons();
+        }
+        else {
             super.onBackPressed();
         }
-
-
-        if (getSupportFragmentManager().findFragmentById(R.id.drawer_layout) != null) {
-
-            if (getSupportFragmentManager().getBackStackEntryCount() >= 1) {
-                navFragmentIsAdd = true;
-                quickAccessButton.setVisibility(View.GONE);
-                changeFloorButton.setVisibility(View.GONE);
-                toolbar.setVisibility(View.GONE);
-            } else {
-                navFragmentIsAdd = false;
-                quickAccessButton.setVisibility(View.VISIBLE);
-                changeFloorButton.setVisibility(View.VISIBLE);
-                toolbar.setVisibility(View.VISIBLE);
-            }
-        } else {
-            navFragmentIsAdd = false;
-            quickAccessButton.setVisibility(View.VISIBLE);
-            changeFloorButton.setVisibility(View.VISIBLE);
-            toolbar.setVisibility(View.VISIBLE);
-        }
-
-        Log.i("navFragIsAdd", String.valueOf(navFragmentIsAdd));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.searchMenuItem){
+            displaySearchFragment();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
@@ -209,7 +173,7 @@ public class MapActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_authors) {
 
-            Intent intent = new Intent(this, AuthorsActivity.class);
+            Intent intent = new Intent(this,AuthorsActivity.class);
             startActivity(intent);
 
         } else if (id == R.id.nav_help) {
@@ -223,197 +187,24 @@ public class MapActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         drawer.closeDrawer(GravityCompat.START);
 
         return true;
     }
 
-    public void hideQuickAccessButtons() {
-
-        AnimationAdapter animationRotateHide = new AnimationAdapter(MapActivity.this, R.anim.rotate_hide);
-        animationRotateHide.startAnimation(quickAccessButton, null);
-
-        wcButton.setVisibility(View.GONE);
-        foodButton.setVisibility(View.GONE);
-        patientAssistantButton.setVisibility(View.GONE);
-        patientAssistantButtonDescription.setVisibility(View.GONE);
-        foodButtonDescription.setVisibility(View.GONE);
-        wcButtonDescription.setVisibility(View.GONE);
-
-
-        wcButton.setClickable(false);
-        foodButton.setClickable(false);
-        patientAssistantButton.setClickable(false);
-
-
-    }
-
-    public void showQuickAccessButtons() {
-
-        AnimationAdapter animationRotateShow = new AnimationAdapter(MapActivity.this, R.anim.rotate_show);
-        animationRotateShow.startAnimation(quickAccessButton, null);
-
-        wcButton.setVisibility(View.VISIBLE);
-        foodButton.setVisibility(View.VISIBLE);
-        patientAssistantButton.setVisibility(View.VISIBLE);
-        patientAssistantButtonDescription.setVisibility(View.VISIBLE);
-        foodButtonDescription.setVisibility(View.VISIBLE);
-        wcButtonDescription.setVisibility(View.VISIBLE);
-
-
-        wcButton.setClickable(true);
-        foodButton.setClickable(true);
-        patientAssistantButton.setClickable(true);
-
-
-    }
-
-    public void quickAccessButtonInit() {
-        wcButton = findViewById(R.id.wc_button);
-        patientAssistantButton = findViewById(R.id.patient_assistant_button);
-        foodButton = findViewById(R.id.food_button);
-        quickAccessButton = findViewById(R.id.tools_button);
-
-        patientAssistantButtonDescription = findViewById(R.id.ap_button_description);
-        foodButtonDescription = findViewById(R.id.food_button_description);
-        wcButtonDescription = findViewById(R.id.wc_button_description);
-
-        quickAccessButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (foodButton.getVisibility() == View.VISIBLE
-                        && (wcButton.getVisibility() == View.VISIBLE)
-                        && (patientAssistantButton.getVisibility() == View.VISIBLE)) {
-                    hideQuickAccessButtons();
-
-                } else {
-                    showQuickAccessButtons();
-
-                }
-            }
-        });
-        AnimationAdapter animationHide = new AnimationAdapter(MapActivity.this, R.anim.hide_anim);
-        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.GONE);
-
-        View.OnClickListener quickButtonsOnClick = view -> {
-
-            animationHide.startAnimation(changeFloorButton, animationEndListener);
-            animationHide.startAnimation(toolbar, animationEndListener);
-            setNewNavWindowFragment();
-            hideQuickAccessButtons();
-            animationHide.startAnimation(quickAccessButton, animationEndListener);
-        };
-
-        wcButton.setOnClickListener(quickButtonsOnClick);
-        foodButton.setOnClickListener(quickButtonsOnClick);
-        patientAssistantButton.setOnClickListener(quickButtonsOnClick);
-
-    }
-
-    public void setNewNavWindowFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        navWindowFragment = fragmentManager.findFragmentById(R.id.drawer_layout);
-
-
-        if (navWindowFragment == null) {
-            navWindowFragment = new NavWindowFragment();
-
-            fragmentTransaction
-                    .setCustomAnimations(R.anim.slide_in_from_left, android.R.anim.slide_out_right,
-                            R.anim.slide_in_from_left, android.R.anim.slide_out_right)
-                    .add(R.id.drawer_layout, navWindowFragment)
-                    .addToBackStack(null)
-                    .commit();
-            navFragmentIsAdd = true;
-        }
-    }
-
-
-    @Override
-    public void onBack() {
-        AnimationAdapter animationShow = new AnimationAdapter(MapActivity.this, R.anim.show_anim);
-        AnimationAdapter.AnimationEndListener animationEndListener = view -> view.setVisibility(View.VISIBLE);
-
-        navFragmentIsAdd = true;
-
-        animationShow.startAnimation(changeFloorButton, animationEndListener);
-        animationShow.startAnimation(toolbar, animationEndListener);
-        animationShow.startAnimation(quickAccessButton, animationEndListener);
-
-    }
-
-    @Override
-    public void startNavigation() {
-
-    }
-
-    @Override
-    public void updateNavFragmentState() {
-        navFragmentIsAdd = true;
-
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        Log.i("navFragIsAdd", String.valueOf(navFragmentIsAdd));
-        outState.putBoolean("navFragIsAdd", navFragmentIsAdd);
     }
 
-    private void changeFloorButtonInit() {
-        changeFloorButton = findViewById(R.id.floors_button);
-        changeFloorButton.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View v) {
-                 PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-             //   floorSelect.getMenuInflater().inflate(R.menu.select_floor_menu, floorSelect.getMenu());
-                floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
-                    int idOfElement=0;
-                            if (floorList != null) {
-                                for (String floor: floorList) {
-                                    floorSelect.getMenu().add(1,idOfElement,idOfElement,floor);
-                                    idOfElement++;
-
-                                }
-                                floorSelect.show();
-                             }
-
-                             }
-
-                );
-
-                floorSelect.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if (currentFloor != item.getItemId()) {
-                            mapDrawer.removeAllMapPoints();
-                            currentFloor = item.getItemId();
-                            floorViewModel.setCurrentFloor(currentFloor);
-                            floorViewModel.setSelectedFloor(currentFloor);
-                        }
-                        else
-                        Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                });
-
-            }
-        });
-    }
 
 
     private void viewModelInit() {
         locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
         locationViewModel.getCurrentLocation().observe(this, location -> {
-                if (location != null) {
-                        infoSheet.showInfoSheet(location, EXPANDED);
-
+                    if (location != null) {
+                        displayInfoSheet(location, false);
                     }
                 }
         );
@@ -422,10 +213,6 @@ public class MapActivity extends AppCompatActivity
                         mapDrawer.zoomOnPoint(mapPoint);
                         Log.i(TAG,"x= "+mapPoint.getX()+"y: "+mapPoint.getY()+"floor: "+mapPoint.getFloor());
                         mapDrawer.addMapPoint(mapPoint,1);
-
-
-
-
                     }
                 }
         );
@@ -443,5 +230,101 @@ public class MapActivity extends AppCompatActivity
 
     }
 
-}
 
+
+
+    private void displaySearchFragment(){
+
+        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+        if(searchFragment.isAdded()){
+            fTransaction.show(searchFragment);
+        }else {
+            fTransaction.add(R.id.mainDrawerLayout, searchFragment, searchFragmentTag);
+        }
+
+        fTransaction.addToBackStack(null).commit();
+    }
+
+    private void displayInfoSheet(Location location, boolean asStartPoint){
+        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+
+        fTransaction.replace(R.id.infoSheetStub, InfoSheet.newInstance(location, asStartPoint), infoSheetTag);
+
+        if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()){fTransaction.hide(quickAccessFragment);}
+
+        fTransaction.addToBackStack(null).commit();
+    }
+
+    private void displayNavigationSetup(String destinationLocationName){
+        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+
+        fTransaction.setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
+                R.anim.slide_in_from_left, android.R.anim.slide_out_right);
+        NavigationSetupFragment navigationSetupFragment = NavigationSetupFragment.newInstance(destinationLocationName);
+        fTransaction.replace(R.id.toolBarHolder, navigationSetupFragment, navigationSetupTag);
+
+        if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()){fTransaction.hide(quickAccessFragment);}
+
+        Fragment infoSheetFragment = fragmentManager.findFragmentByTag(infoSheetTag);
+        if (infoSheetFragment != null){
+            fTransaction.hide(infoSheetFragment);
+        }
+
+        navigationSetupFragment.setNavigationOnClickListener(view -> {
+            if (fragmentManager.getBackStackEntryCount() > 0) {
+                fragmentManager.popBackStack(navigationSetupTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        });
+
+        fTransaction.addToBackStack(navigationSetupTag).commit();
+    }
+    
+
+    @Override
+    public void onQAButtonClick(QuickAccessFragment.QuickAccessButtons button) {
+        switch (button){
+            case WC:
+                Log.d(TAG, "Quick access WC");
+                displayNavigationSetup("potato");
+                break;
+            case FOOD:
+                Log.d(TAG, "Quick access FOOD");
+                break;
+            case ASSISTANT:
+                Log.d(TAG, "Quick access ASSISTANT");
+                break;
+            default:
+                Log.d(TAG, "Quick access undefined");
+        }
+    }
+
+
+    @Override
+    public void onLocationSearched(Location location) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+        }
+        displayInfoSheet(location, true);
+    }
+
+
+    @Override
+    public void infoSheetAction(boolean asStartPoint) {
+        if(asStartPoint){
+            Log.i(TAG, "infoSheetAction: SELECTED");
+            displayNavigationSetup("Tomato");
+        }
+    }
+
+
+    @Override
+    public void startPointSearchRequest() {
+        Log.i(TAG, "startPointSearchRequest: search start point");
+        displaySearchFragment();
+    }
+
+    @Override
+    public void startNavigation(boolean avoidStairs) {
+        Log.i(TAG, "startNavigation: start navigation");
+    }
+}

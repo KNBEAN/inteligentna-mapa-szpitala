@@ -45,13 +45,4 @@ public interface IMapRepository {
      */
     LiveData<List<Location>> getLocationsListByName(String name, int limit);
 
-    /**
-     * Returns a list of locations as a Cursor, whose text given as an argument is a substring of the location
-     * names.
-     * @param name The search string in the location names.
-     * @param limit Max length of list
-     * @return Cursor with list of locations
-     */
-    Cursor getLocationsCursorByName(String name, int limit);
-
 }

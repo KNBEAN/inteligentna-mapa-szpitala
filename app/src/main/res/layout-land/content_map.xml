@@ -9,50 +9,6 @@
     tools:layout_editor_absoluteY="25dp"
     >
 
-
-    <Button
-        android:id="@+id/ap_button_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/navigation_drawer_ap"
-        android:textStyle="normal"
-        android:visibility="gone"
-        android:clickable="false"
-        app:layout_constraintBottom_toBottomOf="@+id/patient_assistant_button"
-        app:layout_constraintEnd_toStartOf="@+id/patient_assistant_button"
-        app:layout_constraintTop_toTopOf="@+id/patient_assistant_button"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/food_button_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/food_quick_access_button"
-        android:visibility="gone"
-        android:clickable="false"
-        app:layout_constraintBottom_toBottomOf="@+id/food_button"
-        app:layout_constraintEnd_toStartOf="@+id/food_button"
-        app:layout_constraintTop_toTopOf="@+id/food_button"
-        android:textAllCaps="false" />
-
-    <Button
-        android:id="@+id/wc_button_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/wc_quick_access_button"
-        android:visibility="gone"
-        android:clickable="false"
-        app:layout_constraintBottom_toBottomOf="@+id/wc_button"
-        app:layout_constraintEnd_toStartOf="@+id/wc_button"
-        app:layout_constraintTop_toTopOf="@+id/wc_button"
-        android:textAllCaps="false" />
-
     <bean.pwr.imskamieskiego.MapDrawer.MapDrawer
         android:id="@+id/mapdrawer"
         android:layout_width="match_parent"
@@ -60,98 +16,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tools_button"
+        app:layout_constraintTop_toTopOf="parent"
         app:startTackDrawable="@mipmap/ic_launcher"
         app:endTackDrawable="@mipmap/ic_launcher"
         app:defaultTackDrawable="@mipmap/ic_launcher"
 
-       />
+        />
 
-    <ImageButton
-        android:id="@+id/floors_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="80dp"
-        android:layout_marginEnd="8dp"
-        android:background="@drawable/button_round"
-        android:contentDescription="@string/floor_change_button_description"
-        android:src="@drawable/ic_layers_black_24dp"
-        android:text=""
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/tools_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ic_widgets_black_24dp"
-        tools:ignore="VectorDrawableCompat" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/patient_assistant_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:backgroundTint="@color/colorPrimaryLight"
-        app:layout_constraintBottom_toTopOf="@+id/food_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/tools_button"
-        app:srcCompat="@drawable/ic_accessibility_black_24dp"
-        tools:ignore="VectorDrawableCompat" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/food_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:backgroundTint="@color/colorPrimary"
-        app:layout_constraintBottom_toTopOf="@+id/wc_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/tools_button"
-        app:srcCompat="@drawable/ic_restaurant_black_24dp"
-        tools:ignore="VectorDrawableCompat" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/wc_button"
-        android:layout_width="48dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/tools_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/tools_button"
-        app:srcCompat="@drawable/ic_wc_black_24dp"
-        tools:ignore="VectorDrawableCompat" />
 </android.support.constraint.ConstraintLayout>

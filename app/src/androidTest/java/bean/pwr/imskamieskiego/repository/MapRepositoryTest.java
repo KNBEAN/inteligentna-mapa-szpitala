@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.when;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
@@ -84,22 +85,22 @@ public class MapRepositoryTest {
 
     @Test
     public void getLocationsByCaseInsensitiveName() {
-        repository.getLocationsListByName("koń", 5).observe(lifecycleOwner,
+        repository.getLocationsListByName("%koń%", 5).observe(lifecycleOwner,
                 locations -> resultForLowerCase = locations);
 
-        repository.getLocationsListByName("KOŃ", 5).observe(lifecycleOwner,
+        repository.getLocationsListByName("%KOŃ%", 5).observe(lifecycleOwner,
                 locations -> resultForUpperCase = locations);
 
-        assertEquals(locationEntities, resultForLowerCase);
-        assertEquals(locationEntities, resultForUpperCase);
+        assertTrue(resultForLowerCase.containsAll(locationEntities));
+        assertTrue(resultForUpperCase.containsAll(locationEntities));
     }
 
     @Test
     public void getLocationsByEmptyName() {
-        LiveData<List<Location>> result = repository.getLocationsListByName("", 5);
+        LiveData<List<Location>> result = repository.getLocationsListByName("%%", 5);
         result.observe(lifecycleOwner, observer);
 
-        assertEquals(locationEntities, result.getValue());
+        assertTrue(result.getValue().containsAll(locationEntities));
     }
 
     @Test

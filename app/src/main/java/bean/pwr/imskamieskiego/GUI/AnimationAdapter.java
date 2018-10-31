@@ -10,7 +10,8 @@ import android.view.animation.AnimationUtils;
  * Wrapper for animations
  */
 public class AnimationAdapter {
-    private Animation animation;
+    private Context context;
+    private int animationID;
 
     /**
      * Create animation adapter object
@@ -18,7 +19,8 @@ public class AnimationAdapter {
      * @param animationID ID of animation from resources
      */
     public AnimationAdapter(Context context, int animationID) {
-        animation = AnimationUtils.loadAnimation(context, animationID);
+        this.context = context;
+        this.animationID = animationID;
     }
 
     /**
@@ -27,6 +29,7 @@ public class AnimationAdapter {
      * @param listener is called after animation end
      */
     public void startAnimation(final View view, @Nullable final AnimationEndListener listener){
+        Animation animation = AnimationUtils.loadAnimation(context, animationID);
         view.setAnimation(animation);
         view.startAnimation(animation);
         animation.setAnimationListener(new Animation.AnimationListener() {
