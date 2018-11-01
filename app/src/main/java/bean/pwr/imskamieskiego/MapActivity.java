@@ -28,9 +28,7 @@ import android.widget.Toast;
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
-import bean.pwr.imskamieskiego.MapDrawer.MapDrawerGestureListener;
 import bean.pwr.imskamieskiego.model.map.Location;
-import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
 
@@ -63,7 +61,7 @@ public class MapActivity extends AppCompatActivity
     private MapDrawer mapDrawer;
 
 
-    private int currentFloor = 1;
+    private int currentFloor;
 
 
 
@@ -78,14 +76,35 @@ public class MapActivity extends AppCompatActivity
         searchFragment = SearchFragment.newInstance();
         quickAccessFragment = (QuickAccessFragment) fragmentManager.findFragmentById(R.id.quickAccessFragment);
 
+        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
+        locationViewModel.getCurrentLocation().observe(this, location -> {
+                    if (location != null) {
+                        displayInfoSheet(location, false);
+                    }
+                }
+        );
+        locationViewModel.getNearestMapPoint().observe(this, mapPoint -> {
+                    if (mapPoint != null) {
+                        mapDrawer.zoomOnPoint(mapPoint);
+                        Log.i(TAG,"x= "+mapPoint.getX()+"y: "+mapPoint.getY()+"floor: "+mapPoint.getFloor());
+                        mapDrawer.addMapPoint(mapPoint,1);
+                    }
+                }
+        );
 
-        viewModelInit();
-        floorViewModelInit();
-
+        floorViewModel = ViewModelProviders.of(this).get(FloorViewModel.class);
         currentFloor = floorViewModel.getCurrentFloor();
-
-
         floorViewModel.setSelectedFloor(currentFloor);
+        floorViewModel.getFloorBitmap().observe(this, bitmap -> {
+                    if (bitmap != null) {
+                        mapDrawer.showFloor(currentFloor, bitmap);
+                    }
+                }
+        );
+
+        floorMenuInit();
+
+
         mapDrawer = findViewById(R.id.mapdrawer);
 
         mapDrawer.setOnLongPressListener(mapPoint -> {
@@ -93,6 +112,27 @@ public class MapActivity extends AppCompatActivity
             locationViewModel.setMapPoint(mapPoint);
         });
 
+
+
+
+
+        DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
+        ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+
+        drawerLayout.addDrawerListener(hamburgerButton);
+        hamburgerButton.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+    }
+
+    private void floorMenuInit(){
         changeFloorButton = findViewById(R.id.floors_button);
 
         PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
@@ -116,22 +156,6 @@ public class MapActivity extends AppCompatActivity
                 Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
             return false;
         });
-
-
-        DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
-        ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-
-        drawerLayout.addDrawerListener(hamburgerButton);
-        hamburgerButton.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
     }
 
 
@@ -197,41 +221,6 @@ public class MapActivity extends AppCompatActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
-
-
-
-    private void viewModelInit() {
-        locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
-        locationViewModel.getCurrentLocation().observe(this, location -> {
-                    if (location != null) {
-                        displayInfoSheet(location, false);
-                    }
-                }
-        );
-        locationViewModel.getNearestMapPoint().observe(this, mapPoint -> {
-                    if (mapPoint != null) {
-                        mapDrawer.zoomOnPoint(mapPoint);
-                        Log.i(TAG,"x= "+mapPoint.getX()+"y: "+mapPoint.getY()+"floor: "+mapPoint.getFloor());
-                        mapDrawer.addMapPoint(mapPoint,1);
-                    }
-                }
-        );
-
-    }
-    private void floorViewModelInit() {
-        floorViewModel = ViewModelProviders.of(this).get(FloorViewModel.class);
-        floorViewModel.getFloorBitmap().observe(this, bitmap -> {
-                    if (bitmap != null) {
-                        mapDrawer.showFloor(currentFloor,bitmap);
-
-                    }
-                }
-        );
-
-    }
-
-
-
 
     private void displaySearchFragment(){
 

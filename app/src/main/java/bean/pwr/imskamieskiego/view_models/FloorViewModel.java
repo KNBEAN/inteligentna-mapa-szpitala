@@ -16,8 +16,7 @@ import bean.pwr.imskamieskiego.repository.FloorDataRepository;
 
 public class FloorViewModel extends AndroidViewModel {
     private FloorDataRepository floorDataRepository;
-    private LocalDB localDB;
-    private int currentFloor=1;
+    private int currentFloor=0;
 
     public int getCurrentFloor() {
         return currentFloor;
@@ -33,9 +32,9 @@ public class FloorViewModel extends AndroidViewModel {
        return floorDataRepository.getFloorNames();
     }
 
-    private LiveData<InputStream> mapImageStream = Transformations.switchMap(selectedFloor, floor -> {
-        return floorDataRepository.getMapImage(floor);
-    });
+    private LiveData<InputStream> mapImageStream = Transformations.switchMap(selectedFloor,
+            floor -> floorDataRepository.getMapImage(floor));
+
     private LiveData<Bitmap> floorBitmap = Transformations.map(mapImageStream, stream -> {
         if (stream != null) {
             return BitmapFactory.decodeStream(stream);
@@ -51,7 +50,7 @@ public class FloorViewModel extends AndroidViewModel {
 
     public FloorViewModel(@NonNull Application application) {
         super(application);
-        localDB = LocalDB.getDatabase(application.getApplicationContext());
+        LocalDB localDB = LocalDB.getDatabase(application.getApplicationContext());
         floorDataRepository = new FloorDataRepository(localDB, application.getApplicationContext());
     }
 
