@@ -2,6 +2,7 @@ package bean.pwr.imskamieskiego;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +21,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -56,7 +59,7 @@ public class MapActivity extends AppCompatActivity
 
 
     private Toolbar toolbar;
-    private ImageButton changeFloorButton;
+    private Button changeFloorButton;
 
     private LocationViewModel locationViewModel;
     private FloorViewModel floorViewModel;
@@ -94,7 +97,7 @@ public class MapActivity extends AppCompatActivity
         });
 
         changeFloorButton = findViewById(R.id.floors_button);
-
+        changeFloorButton.setText(Integer.toString(currentFloor));
         PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
         floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
             if (floorList != null) {
@@ -111,6 +114,7 @@ public class MapActivity extends AppCompatActivity
                 currentFloor = item.getItemId();
                 floorViewModel.setCurrentFloor(currentFloor);
                 floorViewModel.setSelectedFloor(currentFloor);
+                changeFloorButton.setText(Integer.toString(currentFloor));
             }
             else
                 Toast.makeText(MapActivity.this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
