@@ -1,6 +1,7 @@
 package bean.pwr.imskamieskiego;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 
 import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavigationSetupFragment;
@@ -98,7 +100,8 @@ public class MapActivity extends AppCompatActivity
 
         changeFloorButton = findViewById(R.id.floors_button);
         changeFloorButton.setText(Integer.toString(currentFloor));
-        PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
+        Context wrapper = new ContextThemeWrapper(this, R.style.CustomPopupMenu);
+        PopupMenu floorSelect = new PopupMenu(wrapper, changeFloorButton);
         floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
             if (floorList != null) {
                 for (int i = 0; i < floorList.length; i++) {
