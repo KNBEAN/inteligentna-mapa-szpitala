@@ -150,7 +150,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         int id;
         int distance;
 
-        public NodePriorityWrapper(int id, int distance) {
+        NodePriorityWrapper(int id, int distance) {
             this.id = id;
             this.distance = distance;
         }

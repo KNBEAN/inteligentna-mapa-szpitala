@@ -19,6 +19,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import bean.pwr.imskamieskiego.MapDrawer.DottedPaint;
 import bean.pwr.imskamieskiego.R;
@@ -37,7 +38,7 @@ public class MapDrawer extends View {
     private PointF pointToShow;
     private ArrayList<MapPoint> mapPoints;
     private Hashtable<MapPoint, Integer> mapPointsTypes;
-    private ArrayList<MapPoint> pathPoints;
+    private List<MapPoint> pathPoints;
     private ArrayList<Bitmap> tackTextures;
     private int resourceTacksId[];
     private int measureWidth, measureHeight;
@@ -192,7 +193,7 @@ public class MapDrawer extends View {
     }
 
 
-    private Bitmap layerPathAndTacks(ArrayList<MapPoint> mapObjects, ArrayList<MapPoint> pathPoints, Bitmap floorToDrawOn) {
+    private Bitmap layerPathAndTacks(List<MapPoint> mapObjects, List<MapPoint> pathPoints, Bitmap floorToDrawOn) {
         Canvas canvas = new Canvas(floorToDrawOn);
 
         if (!pathPoints.isEmpty()) {
@@ -421,7 +422,7 @@ public class MapDrawer extends View {
      * Set trace to be drawn as path to destined place
      * @param trace array of mappoints to be drawn
      */
-    public void setTrace(ArrayList<MapPoint> trace) {
+    public void setTrace(List<MapPoint> trace) {
         pathPoints = trace;
         invalidate();
     }
@@ -430,7 +431,7 @@ public class MapDrawer extends View {
      * Clear trace to be drawn as path to destined place
      */
     public void removeTrace() {
-        pathPoints = null;
+        pathPoints = new ArrayList<>();
         invalidate();
     }
 

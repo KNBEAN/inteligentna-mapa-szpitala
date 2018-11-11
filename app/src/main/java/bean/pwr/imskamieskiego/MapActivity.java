@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 
+import bean.pwr.imskamieskiego.GUI.NavigationRouteFragment;
 import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavigationSetupFragment;
 import bean.pwr.imskamieskiego.GUI.QuickAccessFragment;
 
@@ -25,10 +26,14 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 
+import java.util.List;
+
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
 import bean.pwr.imskamieskiego.model.map.Location;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.utils.EventWrapper;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
 
@@ -46,6 +51,8 @@ public class MapActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private SearchFragment searchFragment;
     private QuickAccessFragment quickAccessFragment;
+    //    private InfoSheet infoSheetFragment;
+    private NavigationSetupFragment navigationSetupFragment;
 
     //Fragment tags
     private final String infoSheetTag = "InfoSheet";
@@ -77,20 +84,63 @@ public class MapActivity extends AppCompatActivity
         quickAccessFragment = (QuickAccessFragment) fragmentManager.findFragmentById(R.id.quickAccessFragment);
 
         locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
-        locationViewModel.getCurrentLocation().observe(this, location -> {
-                    if (location != null) {
-                        displayInfoSheet(location, false);
-                    }
+
+        locationViewModel.getTargetLocation().observe(this, locationEvent -> {
+            Location location = locationEvent != null ? locationEvent.handleData() : null;
+            if (location != null && !navigationSetupIsShown()) {
+                Log.i(TAG, String.format("target location: %s", location.getId()));
+
+                if (fragmentManager.findFragmentByTag(navigationSetupTag) == null){
+                    displayInfoSheet(location);
                 }
-        );
-        locationViewModel.getNearestMapPoint().observe(this, mapPoint -> {
-                    if (mapPoint != null) {
-                        mapDrawer.zoomOnPoint(mapPoint);
-                        Log.i(TAG,"x= "+mapPoint.getX()+"y: "+mapPoint.getY()+"floor: "+mapPoint.getFloor());
-                        mapDrawer.addMapPoint(mapPoint,1);
-                    }
+            }
+        });
+
+        locationViewModel.getStartLocation().observe(this, locationEvent -> {
+            Location location = locationEvent != null ? locationEvent.handleData() : null;
+            if (location != null) {
+                Log.i(TAG, String.format("start location: %s", location.getId()));
+                NavigationSetupFragment navSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+                if (navSetupFragment != null){
+                    navSetupFragment.setStartLocationName(location.getName());
                 }
-        );
+            }
+        });
+
+
+        locationViewModel.getTargetPoint().observe(this, mapPoints -> {
+
+            if (mapPoints != null){
+                clearTargetPoint();
+//              FIXME zoomOnPoint method is unusable on this moment.
+//              mapDrawer.zoomOnPoint(point);
+//              Log.i(TAG, "x= " + point.getX() + "y: " + point.getY() + "floor: " + point.getFloor());
+                showTargetOnMap(mapPoints);
+            }
+        });
+
+        locationViewModel.getStartPoint().observe(this, mapPoint -> {
+            if (mapPoint != null){
+                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
+                clearStartPoint();
+                //FIXME zoomOnPoint method is unusable on this moment.
+                //mapDrawer.zoomOnPoint(mapPoint);
+                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
+                showStartPointOnMap(mapPoint);
+            }
+        });
+
+
+        locationViewModel.getTrace().observe(this, mapPoints -> {
+            Log.i(TAG, "trace: new trace ready");
+            if (mapPoints != null) {
+                for (MapPoint mapPoint:mapPoints) {
+                    Log.d(TAG, "trace: " + mapPoint.getId());
+                }
+                showTraceOnMap(mapPoints);
+            }
+        });
+
 
         floorViewModel = ViewModelProviders.of(this).get(FloorViewModel.class);
         currentFloor = floorViewModel.getCurrentFloor();
@@ -108,13 +158,12 @@ public class MapActivity extends AppCompatActivity
         mapDrawer = findViewById(R.id.mapdrawer);
 
         mapDrawer.setOnLongPressListener(mapPoint -> {
-            mapDrawer.removeAllMapPoints();
-            locationViewModel.setMapPoint(mapPoint);
+            if (fragmentManager.findFragmentByTag(navigationSetupTag) != null) {
+                locationViewModel.setStartPoint(mapPoint);
+            }else {
+                locationViewModel.setTargetPoint(mapPoint);
+            }
         });
-
-
-
-
 
         DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
         ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
@@ -136,7 +185,7 @@ public class MapActivity extends AppCompatActivity
         changeFloorButton = findViewById(R.id.floors_button);
 
         PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-        floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
+        floorViewModel.getFloorsList().observe(MapActivity.this, floorList -> {
             if (floorList != null) {
                 for (int i = 0; i < floorList.length; i++) {
                     floorSelect.getMenu().add(1,i,i,floorList[i]);
@@ -159,18 +208,22 @@ public class MapActivity extends AppCompatActivity
     }
 
 
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
+            return;
+        }
+        if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
             quickAccessFragment.hideQuickAccessButtons();
+            return;
         }
-        else {
-            super.onBackPressed();
-        }
+
+        mapPointsDrawingBack();
+
+        super.onBackPressed();
+
     }
 
     @Override
@@ -222,6 +275,9 @@ public class MapActivity extends AppCompatActivity
         super.onSaveInstanceState(outState);
     }
 
+
+
+
     private void displaySearchFragment(){
 
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
@@ -234,18 +290,32 @@ public class MapActivity extends AppCompatActivity
         fTransaction.addToBackStack(null).commit();
     }
 
-    private void displayInfoSheet(Location location, boolean asStartPoint){
+
+    private boolean navigationSetupIsShown() {
+        NavigationSetupFragment navSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+        return navSetupFragment != null && navSetupFragment.isAdded();
+    }
+
+
+
+    private void displayInfoSheet(Location location){
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+        InfoSheet infoSheetFragment = (InfoSheet) fragmentManager.findFragmentByTag(infoSheetTag);
 
-        fTransaction.replace(R.id.infoSheetStub, InfoSheet.newInstance(location, asStartPoint), infoSheetTag);
-
-        if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()){fTransaction.hide(quickAccessFragment);}
-
-        fTransaction.addToBackStack(null).commit();
+        if (infoSheetFragment == null) {
+            infoSheetFragment = InfoSheet.newInstance(location);
+            if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()){fTransaction.hide(quickAccessFragment);}
+            fTransaction.replace(R.id.infoSheetStub, infoSheetFragment, infoSheetTag);
+            fTransaction.addToBackStack(null);
+            fTransaction.commit();
+        } else {
+            infoSheetFragment.setLocation(location);
+        }
     }
 
     private void displayNavigationSetup(String destinationLocationName){
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+        Fragment infoSheetFragment = fragmentManager.findFragmentByTag(infoSheetTag);
 
         fTransaction.setCustomAnimations(R.anim.slide_in_from_left,android.R.anim.slide_out_right,
                 R.anim.slide_in_from_left, android.R.anim.slide_out_right);
@@ -254,7 +324,6 @@ public class MapActivity extends AppCompatActivity
 
         if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()){fTransaction.hide(quickAccessFragment);}
 
-        Fragment infoSheetFragment = fragmentManager.findFragmentByTag(infoSheetTag);
         if (infoSheetFragment != null){
             fTransaction.hide(infoSheetFragment);
         }
@@ -262,19 +331,20 @@ public class MapActivity extends AppCompatActivity
         navigationSetupFragment.setNavigationOnClickListener(view -> {
             if (fragmentManager.getBackStackEntryCount() > 0) {
                 fragmentManager.popBackStack(navigationSetupTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                locationViewModel.clearStartPointSelection();
+                clearStartPoint();
             }
         });
 
         fTransaction.addToBackStack(navigationSetupTag).commit();
     }
-    
+
 
     @Override
     public void onQAButtonClick(QuickAccessFragment.QuickAccessButtons button) {
         switch (button){
             case WC:
                 Log.d(TAG, "Quick access WC");
-                displayNavigationSetup("potato");
                 break;
             case FOOD:
                 Log.d(TAG, "Quick access FOOD");
@@ -293,18 +363,27 @@ public class MapActivity extends AppCompatActivity
         if (fragmentManager.getBackStackEntryCount() > 0) {
             fragmentManager.popBackStack();
         }
-        displayInfoSheet(location, true);
-    }
 
-
-    @Override
-    public void infoSheetAction(boolean asStartPoint) {
-        if(asStartPoint){
-            Log.i(TAG, "infoSheetAction: SELECTED");
-            displayNavigationSetup("Tomato");
+        if (fragmentManager.findFragmentByTag(navigationSetupTag) != null ){
+            clearStartPoint();
+            locationViewModel.setStartLocation(location);
+        }else {
+            clearTargetPoint();
+            locationViewModel.setTargetLocation(location);
         }
     }
 
+    @Override
+    public void infoSheetAction() {
+        Log.i(TAG, "infoSheetAction: SELECTED");
+        EventWrapper<Location> locationEvent = locationViewModel.getTargetLocation().getValue();
+        Location targetLocation = locationEvent != null ? locationEvent.getData() : null;
+        if (targetLocation != null) {
+            displayNavigationSetup(targetLocation.getName());
+        } else {
+            displayNavigationSetup(getString(R.string.default_place_name));
+        }
+    }
 
     @Override
     public void startPointSearchRequest() {
@@ -315,5 +394,89 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void startNavigation(boolean avoidStairs) {
         Log.i(TAG, "startNavigation: start navigation");
+        locationViewModel.searchPatch();
+        Fragment navigationFragment = fragmentManager.findFragmentByTag(navigationSetupTag);
+        if (navigationFragment != null){
+            FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+
+            NavigationRouteFragment routeFragment = NavigationRouteFragment.newInstance();
+
+            fTransaction.replace(R.id.toolBarHolder, routeFragment);
+            routeFragment.setNavigationOnClickListener(view -> {
+                if (fragmentManager.getBackStackEntryCount() > 0) {
+                    fragmentManager.popBackStack();
+                    clearTraceOnMap();
+                }
+            });
+            fTransaction.addToBackStack(null).commit();
+        }
     }
+
+
+
+
+
+
+
+
+
+
+    // management of drawing points on map
+
+    private List<MapPoint> targetPoints;
+    private MapPoint startPoint;
+    private boolean traceIsPresent = false;
+
+    private void showTargetOnMap(List<MapPoint> targetPoints){
+        this.targetPoints = targetPoints;
+        for (MapPoint mapPoint:targetPoints) {
+            mapDrawer.addMapPoint(mapPoint, 0);
+        }
+    }
+
+    private void showStartPointOnMap(MapPoint startPoint){
+        this.startPoint = startPoint;
+        mapDrawer.addMapPoint(startPoint, 1);
+    }
+
+    private boolean clearStartPoint(){
+        if (startPoint == null) return false;
+        mapDrawer.removeMapPoint(startPoint);
+        startPoint = null;
+        return true;
+    }
+
+    private boolean clearTargetPoint(){
+        if (targetPoints == null) return false;
+        for (MapPoint mapPoint:targetPoints) {
+            mapDrawer.removeMapPoint(mapPoint);
+        }
+        targetPoints = null;
+        return true;
+    }
+
+    private void showTraceOnMap(List<MapPoint> trace){
+        traceIsPresent = true;
+        mapDrawer.setTrace(trace);
+    }
+
+    private boolean clearTraceOnMap(){
+        if (traceIsPresent) {
+            mapDrawer.removeTrace();
+            traceIsPresent = false;
+            return true;
+        }
+        return false;
+    }
+
+    private void mapPointsDrawingBack(){
+        if (clearTraceOnMap()) return;
+
+        locationViewModel.clearStartPointSelection();
+        if (clearStartPoint()) return;
+
+        locationViewModel.clearTargetPointSelection();
+        clearTargetPoint();
+    }
+
 }

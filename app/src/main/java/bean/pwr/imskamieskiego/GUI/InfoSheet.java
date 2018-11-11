@@ -21,9 +21,6 @@ public class InfoSheet extends Fragment {
     private static final String TAG = "InfoSheet";
     private static final String LOCATION_NAME = "location_name";
     private static final String LOCATION_DESC = "location_desc";
-    private static final String AS_START_POINT = "start_point";
-
-    private boolean asStartPoint = false;
 
     private ImageButton expandSheetButton;
     private InfoSheetListener listener;
@@ -31,6 +28,7 @@ public class InfoSheet extends Fragment {
     private String locationName;
     private String locationDesc;
 
+    private TextView placeName;
     private TextView placeInfo;
     private boolean descriptionIsVisible = false;
 
@@ -45,26 +43,27 @@ public class InfoSheet extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param location
-     * @param asStartPoint
      * @return A new instance of fragment InfoSheet.
      */
-    public static InfoSheet newInstance(Location location, boolean asStartPoint) {
+    public static InfoSheet newInstance(Location location) {
         InfoSheet fragment = new InfoSheet();
         Bundle args = new Bundle();
         args.putString(LOCATION_NAME, location.getName());
         args.putString(LOCATION_DESC, location.getDescription());
-        args.putBoolean(AS_START_POINT, asStartPoint);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static InfoSheet newInstance(){
+        return new InfoSheet();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            locationName = getArguments().getString(LOCATION_NAME);
+            locationName = getArguments().getString(LOCATION_NAME, "");
             locationDesc = getArguments().getString(LOCATION_DESC);
-            asStartPoint = getArguments().getBoolean(AS_START_POINT);
         }
     }
 
@@ -93,21 +92,22 @@ public class InfoSheet extends Fragment {
         ConstraintLayout layoutInfoSheet = view.findViewById(R.id.info_sheet_layout);
         Button guideToButton = view.findViewById(R.id.guide_to_button);
         expandSheetButton = view.findViewById(R.id.info_button);
-        TextView placeName = view.findViewById(R.id.place_name);
+        placeName = view.findViewById(R.id.place_name);
         placeInfo = view.findViewById(R.id.place_info);
 
-        if (asStartPoint){
-            guideToButton.setText(R.string.guide_from);
-        } else {
-            guideToButton.setText(R.string.guide_to);
-        }
+        guideToButton.setText(R.string.guide_to);
 
         placeName.setText(locationName);
         placeInfo.setText(locationDesc != null ? locationDesc : "");
 
 
-        guideToButton.setOnClickListener(v -> listener.infoSheetAction(asStartPoint));
+        guideToButton.setOnClickListener(v -> listener.infoSheetAction());
         expandSheetButton.setOnClickListener(v -> toggleDescriptionShow());
+    }
+
+    public void setLocation(Location location){
+        placeName.setText(location.getName());
+        placeInfo.setText(location.getDescription() != null ? locationDesc : "");
     }
 
     private void toggleDescriptionShow() {
@@ -123,7 +123,7 @@ public class InfoSheet extends Fragment {
     }
 
     public interface InfoSheetListener {
-        void infoSheetAction(boolean asStartPoint);
+        void infoSheetAction();
     }
 
 
