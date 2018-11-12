@@ -20,7 +20,6 @@ import bean.pwr.imskamieskiego.R;
 public class NavigationRouteFragment extends Fragment {
 
     private Toolbar toolbar;
-    private View.OnClickListener navigateOnClickListener;
 
     public NavigationRouteFragment() {
         // Required empty public constructor
@@ -46,13 +45,10 @@ public class NavigationRouteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         toolbar = view.findViewById(R.id.routeToolbar);
-        toolbar.setNavigationOnClickListener(navigateOnClickListener);
-    }
-
-    public void setNavigationOnClickListener(View.OnClickListener listener){
-        navigateOnClickListener = listener;
-        if (toolbar != null){
-            toolbar.setNavigationOnClickListener(navigateOnClickListener);
-        }
+        toolbar.setNavigationOnClickListener(view1 -> {
+            if (getActivity() != null){
+                getActivity().onBackPressed();
+            }
+        });
     }
 }

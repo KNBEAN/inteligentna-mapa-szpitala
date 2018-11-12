@@ -52,7 +52,7 @@ public class MapActivity extends AppCompatActivity
     private SearchFragment searchFragment;
     private QuickAccessFragment quickAccessFragment;
     //    private InfoSheet infoSheetFragment;
-    private NavigationSetupFragment navigationSetupFragment;
+//    private NavigationSetupFragment navigationSetupFragment;
 
     //Fragment tags
     private final String infoSheetTag = "InfoSheet";
@@ -96,16 +96,16 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-        locationViewModel.getStartLocation().observe(this, locationEvent -> {
-            Location location = locationEvent != null ? locationEvent.handleData() : null;
-            if (location != null) {
-                Log.i(TAG, String.format("start location: %s", location.getId()));
-                NavigationSetupFragment navSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
-                if (navSetupFragment != null){
-                    navSetupFragment.setStartLocationName(location.getName());
-                }
-            }
-        });
+//        locationViewModel.getStartLocation().observe(this, locationEvent -> {
+//            Location location = locationEvent != null ? locationEvent.handleData() : null;
+//            if (location != null) {
+//                Log.i(TAG, String.format("start location: %s", location.getId()));
+//                NavigationSetupFragment navSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+//                if (navSetupFragment != null){
+//                    navSetupFragment.setStartLocationName(location.getName());
+//                }
+//            }
+//        });
 
 
         locationViewModel.getTargetPoint().observe(this, mapPoints -> {
@@ -119,16 +119,16 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-        locationViewModel.getStartPoint().observe(this, mapPoint -> {
-            if (mapPoint != null){
-                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
-                clearStartPoint();
-                //FIXME zoomOnPoint method is unusable on this moment.
-                //mapDrawer.zoomOnPoint(mapPoint);
-                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
-                showStartPointOnMap(mapPoint);
-            }
-        });
+//        locationViewModel.getStartPoint().observe(this, mapPoint -> {
+//            if (mapPoint != null){
+//                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
+//                clearStartPoint();
+//                //FIXME zoomOnPoint method is unusable on this moment.
+//                //mapDrawer.zoomOnPoint(mapPoint);
+//                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
+//                showStartPointOnMap(mapPoint);
+//            }
+//        });
 
 
         locationViewModel.getTrace().observe(this, mapPoints -> {
@@ -158,8 +158,9 @@ public class MapActivity extends AppCompatActivity
         mapDrawer = findViewById(R.id.mapdrawer);
 
         mapDrawer.setOnLongPressListener(mapPoint -> {
-            if (fragmentManager.findFragmentByTag(navigationSetupTag) != null) {
-                locationViewModel.setStartPoint(mapPoint);
+            NavigationSetupFragment fragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+            if (fragment != null) {
+                fragment.setStartPoint(mapPoint);
             }else {
                 locationViewModel.setTargetPoint(mapPoint);
             }
@@ -328,13 +329,14 @@ public class MapActivity extends AppCompatActivity
             fTransaction.hide(infoSheetFragment);
         }
 
-        navigationSetupFragment.setNavigationOnClickListener(view -> {
-            if (fragmentManager.getBackStackEntryCount() > 0) {
-                fragmentManager.popBackStack(navigationSetupTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                locationViewModel.clearStartPointSelection();
-                clearStartPoint();
-            }
-        });
+//        navigationSetupFragment.setNavigationOnClickListener(view -> {
+//            if (fragmentManager.getBackStackEntryCount() > 0) {
+//                fragmentManager.popBackStack(navigationSetupTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//                locationViewModel.clearStartPointSelection();
+//
+//                clearStartPoint();
+//            }
+//        });
 
         fTransaction.addToBackStack(navigationSetupTag).commit();
     }
@@ -364,9 +366,10 @@ public class MapActivity extends AppCompatActivity
             fragmentManager.popBackStack();
         }
 
-        if (fragmentManager.findFragmentByTag(navigationSetupTag) != null ){
+        NavigationSetupFragment navigationSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+        if (navigationSetupFragment != null ){
             clearStartPoint();
-            locationViewModel.setStartLocation(location);
+            navigationSetupFragment.setStartLocation(location);
         }else {
             clearTargetPoint();
             locationViewModel.setTargetLocation(location);
@@ -394,31 +397,29 @@ public class MapActivity extends AppCompatActivity
     @Override
     public void startNavigation(boolean avoidStairs) {
         Log.i(TAG, "startNavigation: start navigation");
-        locationViewModel.searchPatch();
-        Fragment navigationFragment = fragmentManager.findFragmentByTag(navigationSetupTag);
+        NavigationSetupFragment navigationFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
         if (navigationFragment != null){
+            locationViewModel.searchPatch(navigationFragment.getStartPoint(), locationViewModel.getTargetPoint().getValue());//navigationFragment.getTargetPoints());
             FragmentTransaction fTransaction = fragmentManager.beginTransaction();
 
             NavigationRouteFragment routeFragment = NavigationRouteFragment.newInstance();
 
             fTransaction.replace(R.id.toolBarHolder, routeFragment);
-            routeFragment.setNavigationOnClickListener(view -> {
-                if (fragmentManager.getBackStackEntryCount() > 0) {
-                    fragmentManager.popBackStack();
-                    clearTraceOnMap();
-                }
-            });
+
             fTransaction.addToBackStack(null).commit();
         }
     }
 
-
-
-
-
-
-
-
+    @Override
+    public void onStartPointSelected(MapPoint selectedStartPoint) {
+        clearStartPoint();
+        if (selectedStartPoint != null){
+            Log.i(TAG, "x= " + selectedStartPoint.getX() + "y: " + selectedStartPoint.getY() + "floor: " + selectedStartPoint.getFloor());
+            //FIXME zoomOnPoint method is unusable on this moment.
+//            mapDrawer.zoomOnPoint(selectedStartPoint);
+            showStartPointOnMap(selectedStartPoint);
+        }
+    }
 
 
     // management of drawing points on map
@@ -472,8 +473,13 @@ public class MapActivity extends AppCompatActivity
     private void mapPointsDrawingBack(){
         if (clearTraceOnMap()) return;
 
-        locationViewModel.clearStartPointSelection();
-        if (clearStartPoint()) return;
+//        locationViewModel.clearStartPointSelection();
+//        if (clearStartPoint()) return;
+        NavigationSetupFragment navigationFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+        if (navigationFragment != null){
+            navigationFragment.onBack();
+            return;
+        }
 
         locationViewModel.clearTargetPointSelection();
         clearTargetPoint();

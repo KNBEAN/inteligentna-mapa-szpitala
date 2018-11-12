@@ -37,11 +37,6 @@ public class LocationViewModel extends AndroidViewModel {
     private MediatorLiveData<EventWrapper<Location>> targetLocation;
     private MediatorLiveData<List<MapPoint>> targetMapPoint;
 
-    private MutableLiveData<MapPoint> startMapPointTrigger;
-    private MutableLiveData<Location> startLocationTrigger;
-    private MediatorLiveData<EventWrapper<Location>> startLocation;
-    private MediatorLiveData<MapPoint> startMapPoint;
-
     private PathSearcher pathSearcher;
 
 
@@ -59,12 +54,6 @@ public class LocationViewModel extends AndroidViewModel {
 
 
         pathSearcher = new PathSearcher(application.getApplicationContext());
-
-        startLocationTrigger = new MutableLiveData<>();
-        startMapPointTrigger = new MutableLiveData<>();
-        startLocation = new MediatorLiveData<>();
-        startMapPoint = new MediatorLiveData<>();
-
 
         targetLocationTrigger = new MutableLiveData<>();
         targetMapPointTrigger = new MutableLiveData<>();
@@ -105,41 +94,6 @@ public class LocationViewModel extends AndroidViewModel {
                 location = LocationFactory.create(application.getString(R.string.default_place_name), null);
             targetLocation.setValue(new EventWrapper(location));
         });
-
-
-
-
-        //Location comes from search
-        startLocation.addSource(startLocationTrigger, location -> startLocation.setValue(new EventWrapper(location)));
-        LiveData<List<MapPoint>> tmpStartPoints = Transformations.switchMap(startLocationTrigger, location ->
-                location != null ? mapRepository.getPointsByLocationID(location.getId()) : null
-        );
-        startMapPoint.addSource(tmpStartPoints, mapPoint -> {
-            if (mapPoint != null && !mapPoint.isEmpty())
-                startPointSelected = true;
-                startMapPoint.setValue(mapPoint.get(0));
-        });
-
-        //MapPoint comes from touch the map
-        LiveData<MapPoint> nearestStartPoint = Transformations.switchMap(startMapPointTrigger,
-                (mapPoint) -> mapRepository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor())
-        );
-
-        startMapPoint.addSource(nearestStartPoint, mapPoint -> {
-            if (mapPoint != null){
-                startPointSelected = true;
-            }
-            startMapPoint.setValue(mapPoint);
-        });
-
-        LiveData<Location> tmpStartLocation = Transformations.switchMap(nearestStartPoint, mapPoint ->
-                mapPoint != null ? mapRepository.getLocationByID(mapPoint.getLocationID()) : null
-        );
-        startLocation.addSource(tmpStartLocation, location -> {
-            if (location == null)
-                location = LocationFactory.create(application.getString(R.string.default_place_name), null);
-            startLocation.setValue(new EventWrapper(location));
-        });
     }
 
     public LiveData<List<MapPoint>> getTargetPoint() {
@@ -150,62 +104,29 @@ public class LocationViewModel extends AndroidViewModel {
         return targetLocation;
     }
 
-    public LiveData<MapPoint> getStartPoint() {
-        return startMapPoint;
-    }
-
-    public LiveData<EventWrapper<Location>> getStartLocation() {
-        return startLocation;
-    }
-
     public LiveData<List<MapPoint>> getTrace(){
         return pathSearcher.getPath();
-    }
-
-
-    public void setStartPoint(MapPoint startMapPoint){
-        startMapPointTrigger.setValue(startMapPoint);
     }
 
     public void setTargetPoint(MapPoint destinationMapPoint){
         targetMapPointTrigger.setValue(destinationMapPoint);
     }
 
-    public void setStartLocation(Location startLocation){
-        startLocationTrigger.setValue(startLocation);
-    }
-
     public void setTargetLocation(Location targetLocation){
         targetLocationTrigger.setValue(targetLocation);
     }
 
-    public void searchPatch(){
-        List<MapPoint> targets = targetMapPoint.getValue();
-        MapPoint startPoint = startMapPoint.getValue();
+    public void searchPatch(MapPoint startPoint, List<MapPoint> targets){
         Log.i(TAG, "searchPatch: S: " + startPoint + " T: " + targets);
         DijkstraSearch dijkstraAlgorithm = new DijkstraSearch(graphRepository, startPoint, targets);
         pathSearcher.startSearch(dijkstraAlgorithm);
-    }
-
-
-    public boolean isStartPointSelected() {
-        return startPointSelected;
     }
 
     public boolean isTargetPointSelected() {
         return targetPointSelected;
     }
 
-    public void clearStartPointSelection(){
-//        setStartLocation(null);
-//        setStartPoint(null);
-        startLocation.setValue(null);
-        startMapPoint.setValue(null);
-    }
-
     public void clearTargetPointSelection(){
-//        setTargetLocation(null);
-//        setTargetPoint(null);
         targetLocation.setValue(null);
         targetMapPoint.setValue(null);
     }

@@ -48,7 +48,4 @@
     <string name="navigation_setup_snackbar_hint">Wybierz miejsce, z którego chcesz rozpocząć nawigację.</string>
     <string name="default_place_name">Korytarz</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>
