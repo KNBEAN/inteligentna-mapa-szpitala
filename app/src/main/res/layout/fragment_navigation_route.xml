@@ -13,8 +13,6 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
-        app:navigationIcon="?attr/actionModeCloseDrawable"
-        android:subtitle="Podążaj wzdłuż wyznaczonej trasy"
-        android:title="Wyznaczona trasa" />
+        app:navigationIcon="?attr/actionModeCloseDrawable" />
 
 </android.support.constraint.ConstraintLayout>

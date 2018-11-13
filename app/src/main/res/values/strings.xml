@@ -47,5 +47,7 @@
     <string name="more_info">more info</string>
     <string name="navigation_setup_snackbar_hint">Wybierz miejsce, z którego chcesz rozpocząć nawigację.</string>
     <string name="default_place_name">Korytarz</string>
+    <string name="route_fragment_title">Wyznaczona trasa</string>
+    <string name="route_fragment_subtitle">Podążaj wzdłuż wyznaczonej trasy</string>
 
 </resources>

@@ -50,5 +50,7 @@ public class NavigationRouteFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+        toolbar.setTitle(R.string.route_fragment_title);
+        toolbar.setSubtitle(R.string.route_fragment_subtitle);
     }
 }
