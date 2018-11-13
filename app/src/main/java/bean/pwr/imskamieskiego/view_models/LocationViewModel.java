@@ -39,19 +39,13 @@ public class LocationViewModel extends AndroidViewModel {
 
     private PathSearcher pathSearcher;
 
-
-
     private boolean targetPointSelected = false;
-    private boolean startPointSelected = false;
-
-
 
     public LocationViewModel(@NonNull Application application) {
         super(application);
         LocalDB dataBase = LocalDB.getDatabase(application.getApplicationContext());
         mapRepository = new MapRepository(dataBase);
         graphRepository = new MapGraphRepository(dataBase);
-
 
         pathSearcher = new PathSearcher(application.getApplicationContext());
 

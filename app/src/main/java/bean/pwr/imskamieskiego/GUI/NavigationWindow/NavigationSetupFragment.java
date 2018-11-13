@@ -98,7 +98,7 @@ public class NavigationSetupFragment extends Fragment {
 
         startButton.setOnClickListener(view1 -> listener.startNavigation(checkStairs.isSelected()));
         textViewStart.setOnClickListener(view1 -> listener.startPointSearchRequest());
-        toolbar.setNavigationOnClickListener(view12 -> {
+        toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null) {
                 getActivity().onBackPressed();
             }

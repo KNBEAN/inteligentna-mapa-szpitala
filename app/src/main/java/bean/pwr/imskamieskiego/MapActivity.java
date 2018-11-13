@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 
+import bean.pwr.imskamieskiego.GUI.MapFragment;
 import bean.pwr.imskamieskiego.GUI.NavigationRouteFragment;
 import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavigationSetupFragment;
 import bean.pwr.imskamieskiego.GUI.QuickAccessFragment;
@@ -25,12 +26,8 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
-
-import java.util.List;
-
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
-import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.utils.EventWrapper;
@@ -43,7 +40,8 @@ public class MapActivity extends AppCompatActivity
         SearchFragment.SearchListener,
         InfoSheet.InfoSheetListener,
         NavigationView.OnNavigationItemSelectedListener,
-        NavigationSetupFragment.NavigationSetupListener {
+        NavigationSetupFragment.NavigationSetupListener,
+        MapFragment.OnMapInteractionListener {
 
     private static final String TAG = "MapActivity";
 
@@ -51,13 +49,13 @@ public class MapActivity extends AppCompatActivity
     private FragmentManager fragmentManager;
     private SearchFragment searchFragment;
     private QuickAccessFragment quickAccessFragment;
-    //    private InfoSheet infoSheetFragment;
-//    private NavigationSetupFragment navigationSetupFragment;
+    private MapFragment mapFragment;
 
     //Fragment tags
     private final String infoSheetTag = "InfoSheet";
     private final String searchFragmentTag = "SearchFragment";
     private final String navigationSetupTag = "NavigationSetupFragment";
+    private final String navigationRouteTag = "NavigationRouteFragment";
 
 
     private Toolbar toolbar;
@@ -65,8 +63,6 @@ public class MapActivity extends AppCompatActivity
 
     private LocationViewModel locationViewModel;
     private FloorViewModel floorViewModel;
-    private MapDrawer mapDrawer;
-
 
     private int currentFloor;
 
@@ -81,6 +77,7 @@ public class MapActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
         searchFragment = SearchFragment.newInstance();
+        mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map_fragment);
         quickAccessFragment = (QuickAccessFragment) fragmentManager.findFragmentById(R.id.quickAccessFragment);
 
         locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
@@ -96,48 +93,30 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-//        locationViewModel.getStartLocation().observe(this, locationEvent -> {
-//            Location location = locationEvent != null ? locationEvent.handleData() : null;
-//            if (location != null) {
-//                Log.i(TAG, String.format("start location: %s", location.getId()));
-//                NavigationSetupFragment navSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
-//                if (navSetupFragment != null){
-//                    navSetupFragment.setStartLocationName(location.getName());
-//                }
-//            }
-//        });
-
-
         locationViewModel.getTargetPoint().observe(this, mapPoints -> {
 
             if (mapPoints != null){
-                clearTargetPoint();
-//              FIXME zoomOnPoint method is unusable on this moment.
-//              mapDrawer.zoomOnPoint(point);
-//              Log.i(TAG, "x= " + point.getX() + "y: " + point.getY() + "floor: " + point.getFloor());
-                showTargetOnMap(mapPoints);
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("target points: ");
+                for (MapPoint mapPoint:mapPoints) {
+                    stringBuilder.append(String.format("%d ", mapPoint.getId()));
+                }
+                Log.d(TAG, stringBuilder.toString());
+                mapFragment.setTargetPoints(mapPoints);
             }
         });
 
-//        locationViewModel.getStartPoint().observe(this, mapPoint -> {
-//            if (mapPoint != null){
-//                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
-//                clearStartPoint();
-//                //FIXME zoomOnPoint method is unusable on this moment.
-//                //mapDrawer.zoomOnPoint(mapPoint);
-//                Log.i(TAG, "x= " + mapPoint.getX() + "y: " + mapPoint.getY() + "floor: " + mapPoint.getFloor());
-//                showStartPointOnMap(mapPoint);
-//            }
-//        });
-
 
         locationViewModel.getTrace().observe(this, mapPoints -> {
-            Log.i(TAG, "trace: new trace ready");
             if (mapPoints != null) {
+                Log.i(TAG, "trace: new trace ready");
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("trace: ");
                 for (MapPoint mapPoint:mapPoints) {
-                    Log.d(TAG, "trace: " + mapPoint.getId());
+                    stringBuilder.append(String.format("%n%d", mapPoint.getId()));
                 }
-                showTraceOnMap(mapPoints);
+                Log.d(TAG, stringBuilder.toString());
+                mapFragment.setTrace(mapPoints);
             }
         });
 
@@ -147,24 +126,12 @@ public class MapActivity extends AppCompatActivity
         floorViewModel.setSelectedFloor(currentFloor);
         floorViewModel.getFloorBitmap().observe(this, bitmap -> {
                     if (bitmap != null) {
-                        mapDrawer.showFloor(currentFloor, bitmap);
+                        mapFragment.showFloor(currentFloor, bitmap);
                     }
                 }
         );
 
         floorMenuInit();
-
-
-        mapDrawer = findViewById(R.id.mapdrawer);
-
-        mapDrawer.setOnLongPressListener(mapPoint -> {
-            NavigationSetupFragment fragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
-            if (fragment != null) {
-                fragment.setStartPoint(mapPoint);
-            }else {
-                locationViewModel.setTargetPoint(mapPoint);
-            }
-        });
 
         DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
         ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
@@ -277,8 +244,6 @@ public class MapActivity extends AppCompatActivity
     }
 
 
-
-
     private void displaySearchFragment(){
 
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
@@ -329,15 +294,6 @@ public class MapActivity extends AppCompatActivity
             fTransaction.hide(infoSheetFragment);
         }
 
-//        navigationSetupFragment.setNavigationOnClickListener(view -> {
-//            if (fragmentManager.getBackStackEntryCount() > 0) {
-//                fragmentManager.popBackStack(navigationSetupTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//                locationViewModel.clearStartPointSelection();
-//
-//                clearStartPoint();
-//            }
-//        });
-
         fTransaction.addToBackStack(navigationSetupTag).commit();
     }
 
@@ -359,7 +315,6 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-
     @Override
     public void onLocationSearched(Location location) {
         if (fragmentManager.getBackStackEntryCount() > 0) {
@@ -368,10 +323,9 @@ public class MapActivity extends AppCompatActivity
 
         NavigationSetupFragment navigationSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
         if (navigationSetupFragment != null ){
-            clearStartPoint();
+            mapFragment.clearStartPoint();
             navigationSetupFragment.setStartLocation(location);
         }else {
-            clearTargetPoint();
             locationViewModel.setTargetLocation(location);
         }
     }
@@ -404,7 +358,7 @@ public class MapActivity extends AppCompatActivity
 
             NavigationRouteFragment routeFragment = NavigationRouteFragment.newInstance();
 
-            fTransaction.replace(R.id.toolBarHolder, routeFragment);
+            fTransaction.replace(R.id.toolBarHolder, routeFragment, navigationRouteTag);
 
             fTransaction.addToBackStack(null).commit();
         }
@@ -412,69 +366,16 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void onStartPointSelected(MapPoint selectedStartPoint) {
-        clearStartPoint();
+        mapFragment.clearStartPoint();
         if (selectedStartPoint != null){
             Log.i(TAG, "x= " + selectedStartPoint.getX() + "y: " + selectedStartPoint.getY() + "floor: " + selectedStartPoint.getFloor());
-            //FIXME zoomOnPoint method is unusable on this moment.
-//            mapDrawer.zoomOnPoint(selectedStartPoint);
-            showStartPointOnMap(selectedStartPoint);
+            mapFragment.setStartPoint(selectedStartPoint);
         }
-    }
-
-
-    // management of drawing points on map
-
-    private List<MapPoint> targetPoints;
-    private MapPoint startPoint;
-    private boolean traceIsPresent = false;
-
-    private void showTargetOnMap(List<MapPoint> targetPoints){
-        this.targetPoints = targetPoints;
-        for (MapPoint mapPoint:targetPoints) {
-            mapDrawer.addMapPoint(mapPoint, 0);
-        }
-    }
-
-    private void showStartPointOnMap(MapPoint startPoint){
-        this.startPoint = startPoint;
-        mapDrawer.addMapPoint(startPoint, 1);
-    }
-
-    private boolean clearStartPoint(){
-        if (startPoint == null) return false;
-        mapDrawer.removeMapPoint(startPoint);
-        startPoint = null;
-        return true;
-    }
-
-    private boolean clearTargetPoint(){
-        if (targetPoints == null) return false;
-        for (MapPoint mapPoint:targetPoints) {
-            mapDrawer.removeMapPoint(mapPoint);
-        }
-        targetPoints = null;
-        return true;
-    }
-
-    private void showTraceOnMap(List<MapPoint> trace){
-        traceIsPresent = true;
-        mapDrawer.setTrace(trace);
-    }
-
-    private boolean clearTraceOnMap(){
-        if (traceIsPresent) {
-            mapDrawer.removeTrace();
-            traceIsPresent = false;
-            return true;
-        }
-        return false;
     }
 
     private void mapPointsDrawingBack(){
-        if (clearTraceOnMap()) return;
+        if (mapFragment.clearTrace()) return;
 
-//        locationViewModel.clearStartPointSelection();
-//        if (clearStartPoint()) return;
         NavigationSetupFragment navigationFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
         if (navigationFragment != null){
             navigationFragment.onBack();
@@ -482,7 +383,20 @@ public class MapActivity extends AppCompatActivity
         }
 
         locationViewModel.clearTargetPointSelection();
-        clearTargetPoint();
+        mapFragment.clearTargetPoints();
     }
 
+    @Override
+    public void onMapClick(MapPoint clickPoint) {
+        NavigationSetupFragment navSetupFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+        NavigationRouteFragment navRouteFragment = (NavigationRouteFragment) fragmentManager.findFragmentByTag(navigationRouteTag);
+        if (navRouteFragment != null && navRouteFragment.isVisible()){
+            //Do nothing
+        } else if (navSetupFragment != null && navSetupFragment.isVisible()) {
+            Log.i(TAG, "onCreate: Navigation setup is visible? :" + navSetupFragment.isVisible());
+            navSetupFragment.setStartPoint(clickPoint);
+        }else {
+            locationViewModel.setTargetPoint(clickPoint);
+        }
+    }
 }

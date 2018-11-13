@@ -116,5 +116,4 @@ public class NavigationSetupViewModel extends AndroidViewModel {
         startMapPoint.setValue(null);
         startPointSelected = false;
     }
-
 }
