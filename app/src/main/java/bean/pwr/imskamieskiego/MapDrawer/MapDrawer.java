@@ -18,6 +18,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -36,7 +38,7 @@ public class MapDrawer extends View {
     private Context context;
     private PointF pointFlast;
     private PointF pointToShow;
-    private ArrayList<MapPoint> mapPoints;
+    private HashSet<MapPoint> mapPoints;
     private Hashtable<MapPoint, Integer> mapPointsTypes;
     private List<MapPoint> pathPoints;
     private ArrayList<Bitmap> tackTextures;
@@ -100,7 +102,7 @@ public class MapDrawer extends View {
         pointFlast = new PointF();
         scaleDetector = 1.f;
         pathPoints = new ArrayList<>();
-        mapPoints = new ArrayList<>();
+        mapPoints = new HashSet<>();
         mapPointsTypes = new Hashtable<>();
         pointToShow = new PointF();
 
@@ -193,7 +195,7 @@ public class MapDrawer extends View {
     }
 
 
-    private Bitmap layerPathAndTacks(List<MapPoint> mapObjects, List<MapPoint> pathPoints, Bitmap floorToDrawOn) {
+    private Bitmap layerPathAndTacks(Collection<MapPoint> mapObjects, List<MapPoint> pathPoints, Bitmap floorToDrawOn) {
         Canvas canvas = new Canvas(floorToDrawOn);
 
         if (!pathPoints.isEmpty()) {
@@ -273,10 +275,10 @@ public class MapDrawer extends View {
                 pointToShow.x += (-measureWidth + desiredWidth) / 2;
                 pointToShow.y += (-measureHeight + desiredHeight) / 2;
                 Log.i(TAG, "onDraw: ZOOM_POINT point to show = " + pointToShow);
-               canvasMatrix.postScale(scaleDetector,scaleDetector,
-                       measureWidth/2,
-                       measureHeight/2);
-               canvasMatrix.postTranslate(pointToShow.x,pointToShow.y);
+                canvasMatrix.postScale(scaleDetector,scaleDetector,
+                        measureWidth/2,
+                        measureHeight/2);
+                canvasMatrix.postTranslate(pointToShow.x,pointToShow.y);
                 offsetX = pointToShow.x;
                 offsetY = pointToShow.y;
                 Log.i(TAG, "onDraw: ZOOM_POINT : scaleFromDetector = " + scaleDetector);
@@ -487,8 +489,8 @@ public class MapDrawer extends View {
             int x = (int) (e.getX()*originalScale);
             int y = (int) (e.getY()*originalScale);
 
-               mapDrawerGestureListener.onLongPress(
-                        MapPointFactory.create(x,y,currentlyDisplayedFloor));
+            mapDrawerGestureListener.onLongPress(
+                    MapPointFactory.create(x,y,currentlyDisplayedFloor));
 
         }
 

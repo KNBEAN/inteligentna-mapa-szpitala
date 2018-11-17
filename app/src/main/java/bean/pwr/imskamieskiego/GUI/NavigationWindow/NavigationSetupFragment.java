@@ -121,12 +121,6 @@ public class NavigationSetupFragment extends Fragment {
         viewModel.setStartPoint(startPoint);
     }
 
-    public boolean onBack() {
-        if (!viewModel.isStartPointSelected()) return false;
-        viewModel.clearStartPointSelection();
-        return true;
-    }
-
     public MapPoint getStartPoint() {
         return viewModel.getStartPoint().getValue();
     }

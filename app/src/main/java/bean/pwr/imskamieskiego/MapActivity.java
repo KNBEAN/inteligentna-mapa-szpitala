@@ -1,8 +1,10 @@
 package bean.pwr.imskamieskiego;
 
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -26,6 +28,8 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import java.util.List;
+
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.model.map.Location;
@@ -33,6 +37,7 @@ import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.utils.EventWrapper;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
+import bean.pwr.imskamieskiego.view_models.PathSearchViewModel;
 
 
 public class MapActivity extends AppCompatActivity
@@ -62,6 +67,7 @@ public class MapActivity extends AppCompatActivity
     private ImageButton changeFloorButton;
 
     private LocationViewModel locationViewModel;
+    private PathSearchViewModel pathSearchViewModel;
     private FloorViewModel floorViewModel;
 
     private int currentFloor;
@@ -81,6 +87,7 @@ public class MapActivity extends AppCompatActivity
         quickAccessFragment = (QuickAccessFragment) fragmentManager.findFragmentById(R.id.quickAccessFragment);
 
         locationViewModel = ViewModelProviders.of(this).get(LocationViewModel.class);
+        pathSearchViewModel = ViewModelProviders.of(this).get(PathSearchViewModel.class);
 
         locationViewModel.getTargetLocation().observe(this, locationEvent -> {
             Location location = locationEvent != null ? locationEvent.handleData() : null;
@@ -106,8 +113,7 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-
-        locationViewModel.getTrace().observe(this, mapPoints -> {
+        pathSearchViewModel.getSearchedTrace().observe(this, mapPoints -> {
             if (mapPoints != null) {
                 Log.i(TAG, "trace: new trace ready");
                 StringBuilder stringBuilder = new StringBuilder();
@@ -353,37 +359,30 @@ public class MapActivity extends AppCompatActivity
         Log.i(TAG, "startNavigation: start navigation");
         NavigationSetupFragment navigationFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
         if (navigationFragment != null){
-            locationViewModel.searchPatch(navigationFragment.getStartPoint(), locationViewModel.getTargetPoint().getValue());//navigationFragment.getTargetPoints());
+            List<MapPoint> targets = locationViewModel.getTargetPoint().getValue();
+            MapPoint startPoint = navigationFragment.getStartPoint();
+            for(MapPoint target : targets){
+                if (target.getId() == startPoint.getId()){
+                    Snackbar.make(findViewById(R.id.map_fragment), R.string.start_is_target_warning, Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            pathSearchViewModel.startPathSearch(startPoint, targets);
+
             FragmentTransaction fTransaction = fragmentManager.beginTransaction();
-
             NavigationRouteFragment routeFragment = NavigationRouteFragment.newInstance();
-
             fTransaction.replace(R.id.toolBarHolder, routeFragment, navigationRouteTag);
-
             fTransaction.addToBackStack(null).commit();
         }
     }
 
     @Override
     public void onStartPointSelected(MapPoint selectedStartPoint) {
-        mapFragment.clearStartPoint();
         if (selectedStartPoint != null){
-            Log.i(TAG, "x= " + selectedStartPoint.getX() + "y: " + selectedStartPoint.getY() + "floor: " + selectedStartPoint.getFloor());
+            Log.i(TAG, String.format("onStartPointSelected: x: %d y: %d floor: %d", selectedStartPoint.getX(), selectedStartPoint.getY(), selectedStartPoint.getFloor()));
             mapFragment.setStartPoint(selectedStartPoint);
         }
-    }
-
-    private void mapPointsDrawingBack(){
-        if (mapFragment.clearTrace()) return;
-
-        NavigationSetupFragment navigationFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
-        if (navigationFragment != null){
-            navigationFragment.onBack();
-            return;
-        }
-
-        locationViewModel.clearTargetPointSelection();
-        mapFragment.clearTargetPoints();
     }
 
     @Override
@@ -399,4 +398,23 @@ public class MapActivity extends AppCompatActivity
             locationViewModel.setTargetPoint(clickPoint);
         }
     }
+
+    private void mapPointsDrawingBack(){
+        if (mapFragment.isTraceSet()){
+            pathSearchViewModel.clearTrace();
+            mapFragment.clearTrace();
+            return;
+        }
+
+        NavigationSetupFragment navigationFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
+        if (navigationFragment != null){
+            mapFragment.clearStartPoint();
+            return;
+        }
+
+        locationViewModel.clearTargetPointSelection();
+        mapFragment.clearTargetPoints();
+    }
+
+
 }

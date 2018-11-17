@@ -1,10 +1,12 @@
 package bean.pwr.imskamieskiego.GUI;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +16,19 @@ import java.util.List;
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.view_models.MapViewModel;
 
 
 public class MapFragment extends Fragment {
 
+    private final static String TAG = "MapFragment";
+    
     private MapDrawer mapDrawer;
 
-    private List<MapPoint> targetPoints;
-    private MapPoint startPoint;
-    private List<MapPoint> trace;
+    private MapViewModel viewModel;
+    private LiveData<List<MapPoint>> trace;
+    private LiveData<List<MapPoint>> targets;
+    private LiveData<MapPoint> startPoint;
 
     private OnMapInteractionListener listener;
 
@@ -35,6 +41,7 @@ public class MapFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(MapViewModel.class);
     }
 
     @Override
@@ -44,7 +51,28 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mapDrawer = view.findViewById(R.id.mapdrawer);
         mapDrawer.setOnLongPressListener(listener::onMapClick);
+        restoreMap();
         return view;
+    }
+
+    void restoreMap(){
+        Log.d(TAG, "restoreMap: map restore");
+        List<MapPoint> trace = viewModel.getTrace();
+        if (trace != null){
+            mapDrawer.setTrace(trace);
+        }
+
+        List<MapPoint> targets = viewModel.getTargets();
+        if (targets != null){
+            for(MapPoint target:targets){
+                mapDrawer.addMapPoint(target, 0);
+            }
+        }
+
+        MapPoint startPoint = viewModel.getStartPoint();
+        if (startPoint != null){
+            mapDrawer.addMapPoint(startPoint, 1);
+        }
     }
 
     @Override
@@ -72,7 +100,7 @@ public class MapFragment extends Fragment {
 
     public void setStartPoint(MapPoint startPoint){
         clearStartPoint();
-        this.startPoint = startPoint;
+        viewModel.setStartPoint(startPoint);
         if (mapDrawer != null){
             mapDrawer.addMapPoint(startPoint, 1);
         }
@@ -80,7 +108,7 @@ public class MapFragment extends Fragment {
 
     public void setTargetPoints(List<MapPoint> targetPoints){
         clearTargetPoints();
-        this.targetPoints = targetPoints;
+        viewModel.setTargets(targetPoints);
         for (MapPoint mapPoint:targetPoints) {
             mapDrawer.addMapPoint(mapPoint, 0);
         }
@@ -88,49 +116,53 @@ public class MapFragment extends Fragment {
 
     public void setTrace(List<MapPoint>trace){
         clearTrace();
-        this.trace = trace;
-        mapDrawer.setTrace(trace);
+        if (mapDrawer !=null && !trace.isEmpty()) {
+            mapDrawer.setTrace(trace);
+        }
+        viewModel.setTrace(trace);
     }
 
     public boolean isStartPointSet(){
-        return startPoint != null;
+        return viewModel.getStartPoint() != null;
     }
 
     public boolean isTargetPointsSet(){
-        return targetPoints != null;
+        return viewModel.getTargets() != null;
     }
 
     public boolean isTraceSet(){
-        return trace != null;
+        return viewModel.getTrace() != null;
     }
 
     public boolean clearTrace(){
-        if (trace == null) return false;
+        if (viewModel.getTrace() == null) return false;
         if (mapDrawer != null){
             mapDrawer.removeTrace();
         }
-        trace = null;
+        viewModel.setTrace(null);
+        restoreMap();
         return true;
     }
 
     public boolean clearStartPoint(){
-        if (startPoint == null) return false;
+        if (viewModel.getStartPoint() == null) return false;
         if (mapDrawer != null){
-            mapDrawer.removeMapPoint(startPoint);
+            mapDrawer.removeMapPoint(viewModel.getStartPoint());
         }
-        startPoint = null;
+        viewModel.setStartPoint(null);
+        restoreMap();
         return true;
     }
 
     public boolean clearTargetPoints(){
-        if(targetPoints == null) return false;
+        if(viewModel.getTargets() == null) return false;
         if (mapDrawer != null){
-            for (MapPoint mapPoint:targetPoints) {
+            for (MapPoint mapPoint:viewModel.getTargets()) {
                 mapDrawer.removeMapPoint(mapPoint);
             }
-            targetPoints = null;
+            viewModel.setTargets(null);
         }
-
+        restoreMap();
         return true;
     }
 

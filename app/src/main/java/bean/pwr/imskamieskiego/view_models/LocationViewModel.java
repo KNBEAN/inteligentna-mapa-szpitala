@@ -7,7 +7,6 @@ import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,10 +16,6 @@ import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.LocationFactory;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
-import bean.pwr.imskamieskiego.path_search.DijkstraSearch;
-import bean.pwr.imskamieskiego.path_search.PathSearcher;
-import bean.pwr.imskamieskiego.repository.IMapGraphRepository;
-import bean.pwr.imskamieskiego.repository.MapGraphRepository;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 import bean.pwr.imskamieskiego.utils.EventWrapper;
 
@@ -30,14 +25,11 @@ public class LocationViewModel extends AndroidViewModel {
     private static final String TAG = "LocationViewModel";
 
     private MapRepository mapRepository;
-    private IMapGraphRepository graphRepository;
 
     private MutableLiveData<MapPoint> targetMapPointTrigger;
     private MutableLiveData<Location> targetLocationTrigger;
     private MediatorLiveData<EventWrapper<Location>> targetLocation;
     private MediatorLiveData<List<MapPoint>> targetMapPoint;
-
-    private PathSearcher pathSearcher;
 
     private boolean targetPointSelected = false;
 
@@ -45,9 +37,6 @@ public class LocationViewModel extends AndroidViewModel {
         super(application);
         LocalDB dataBase = LocalDB.getDatabase(application.getApplicationContext());
         mapRepository = new MapRepository(dataBase);
-        graphRepository = new MapGraphRepository(dataBase);
-
-        pathSearcher = new PathSearcher(application.getApplicationContext());
 
         targetLocationTrigger = new MutableLiveData<>();
         targetMapPointTrigger = new MutableLiveData<>();
@@ -56,7 +45,7 @@ public class LocationViewModel extends AndroidViewModel {
 
 
         //Location comes from search
-        targetLocation.addSource(targetLocationTrigger, location -> targetLocation.setValue(new EventWrapper(location)));
+        targetLocation.addSource(targetLocationTrigger, location -> targetLocation.setValue(new EventWrapper<>(location)));
         LiveData<List<MapPoint>> tmpTargetPoints = Transformations.switchMap(targetLocationTrigger, location ->
                 location != null ? mapRepository.getPointsByLocationID(location.getId()) : null
         );
@@ -86,7 +75,7 @@ public class LocationViewModel extends AndroidViewModel {
         targetLocation.addSource(tmpTargetLocation, location -> {
             if (location == null)
                 location = LocationFactory.create(application.getString(R.string.default_place_name), null);
-            targetLocation.setValue(new EventWrapper(location));
+            targetLocation.setValue(new EventWrapper<>(location));
         });
     }
 
@@ -98,22 +87,12 @@ public class LocationViewModel extends AndroidViewModel {
         return targetLocation;
     }
 
-    public LiveData<List<MapPoint>> getTrace(){
-        return pathSearcher.getPath();
-    }
-
     public void setTargetPoint(MapPoint destinationMapPoint){
         targetMapPointTrigger.setValue(destinationMapPoint);
     }
 
     public void setTargetLocation(Location targetLocation){
         targetLocationTrigger.setValue(targetLocation);
-    }
-
-    public void searchPatch(MapPoint startPoint, List<MapPoint> targets){
-        Log.i(TAG, "searchPatch: S: " + startPoint + " T: " + targets);
-        DijkstraSearch dijkstraAlgorithm = new DijkstraSearch(graphRepository, startPoint, targets);
-        pathSearcher.startSearch(dijkstraAlgorithm);
     }
 
     public boolean isTargetPointSelected() {
@@ -123,6 +102,7 @@ public class LocationViewModel extends AndroidViewModel {
     public void clearTargetPointSelection(){
         targetLocation.setValue(null);
         targetMapPoint.setValue(null);
+        targetPointSelected = false;
     }
 
 }

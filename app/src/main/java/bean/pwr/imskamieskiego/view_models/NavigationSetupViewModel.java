@@ -30,9 +30,6 @@ public class NavigationSetupViewModel extends AndroidViewModel {
 
     private MutableLiveData<String> targetLocationName;
 
-    private boolean startPointSelected = false;
-
-
     public NavigationSetupViewModel(@NonNull Application application, String targetName) {
         super(application);
 
@@ -51,23 +48,14 @@ public class NavigationSetupViewModel extends AndroidViewModel {
         LiveData<List<MapPoint>> tmpStartPoints = Transformations.switchMap(startLocationTrigger, location ->
                 location != null ? mapRepository.getPointsByLocationID(location.getId()) : null
         );
-        startMapPoint.addSource(tmpStartPoints, mapPoint -> {
-            if (mapPoint != null && !mapPoint.isEmpty())
-                startPointSelected = true;
-            startMapPoint.setValue(mapPoint.get(0));
-        });
+        startMapPoint.addSource(tmpStartPoints, mapPoint -> startMapPoint.setValue(mapPoint.get(0)));
 
         //MapPoint comes from touch the map
         LiveData<MapPoint> nearestStartPoint = Transformations.switchMap(startMapPointTrigger,
                 (mapPoint) -> mapRepository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor())
         );
 
-        startMapPoint.addSource(nearestStartPoint, mapPoint -> {
-            if (mapPoint != null){
-                startPointSelected = true;
-            }
-            startMapPoint.setValue(mapPoint);
-        });
+        startMapPoint.addSource(nearestStartPoint, mapPoint -> startMapPoint.setValue(mapPoint));
 
         LiveData<Location> tmpStartLocation = Transformations.switchMap(nearestStartPoint, mapPoint ->
                 mapPoint != null ? mapRepository.getLocationByID(mapPoint.getLocationID()) : null
@@ -102,18 +90,8 @@ public class NavigationSetupViewModel extends AndroidViewModel {
         startMapPointTrigger.setValue(startMapPoint);
     }
 
-
     public void setStartLocation(Location startLocation){
         startLocationTrigger.setValue(startLocation);
     }
 
-    public boolean isStartPointSelected() {
-        return startPointSelected;
-    }
-
-    public void clearStartPointSelection(){
-        startLocation.setValue(null);
-        startMapPoint.setValue(null);
-        startPointSelected = false;
-    }
 }
