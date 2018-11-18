@@ -48,13 +48,13 @@ public class AuthorsActivity extends AppCompatActivity {
     }
 
     public void layoutInit(){
-        authorsText = (TextView) findViewById(R.id.authorsText);
-        translateText = (TextView) findViewById(R.id.translateText);
-        thanksText = (TextView) findViewById(R.id.thanksText);
-        appInfo = (LinearLayout) findViewById(R.id.appInfo);
-        authorsTitle = (TextView) findViewById(R.id.authorsTitle);
-        translateTitle = (TextView) findViewById(R.id.translateTitle);
-        thanksTitle = (TextView) findViewById(R.id.thanksTitle);
+        authorsText = findViewById(R.id.authorsText);
+        translateText = findViewById(R.id.translateText);
+        thanksText = findViewById(R.id.thanksText);
+        appInfo = findViewById(R.id.appInfo);
+        authorsTitle = findViewById(R.id.authorsTitle);
+        translateTitle = findViewById(R.id.translateTitle);
+        thanksTitle = findViewById(R.id.thanksTitle);
     }
 
     public void layoutAnimations(){

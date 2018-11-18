@@ -119,7 +119,7 @@ public class MapRepositoryTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         database.close();
     }
 }

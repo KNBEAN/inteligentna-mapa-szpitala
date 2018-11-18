@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego.GUI.NavigationWindow;
+package bean.pwr.imskamieskiego.GUI;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;

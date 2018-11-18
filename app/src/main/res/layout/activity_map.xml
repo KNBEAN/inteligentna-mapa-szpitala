@@ -19,7 +19,8 @@
             android:id="@+id/map_fragment"
             android:name="bean.pwr.imskamieskiego.GUI.MapFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:layout="@layout/fragment_map" />
 
         <include layout="@layout/map_control_layout" />
 

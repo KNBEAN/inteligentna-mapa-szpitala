@@ -37,7 +37,7 @@ public class PathSearcherTest {
         pathSearcher.startSearch(searchAlgorithm);
 
         //It looks a bit like an ugly hack.
-        while (pathSearcher.isInProgress()){};
+        while (pathSearcher.isInProgress()){}
 
         verify(observer, times(1)).onChanged(anyList());
     }

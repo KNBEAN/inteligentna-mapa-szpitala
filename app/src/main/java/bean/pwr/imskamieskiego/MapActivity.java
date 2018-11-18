@@ -14,7 +14,7 @@ import android.view.Menu;
 
 import bean.pwr.imskamieskiego.GUI.MapFragment;
 import bean.pwr.imskamieskiego.GUI.NavigationRouteFragment;
-import bean.pwr.imskamieskiego.GUI.NavigationWindow.NavigationSetupFragment;
+import bean.pwr.imskamieskiego.GUI.NavigationSetupFragment;
 import bean.pwr.imskamieskiego.GUI.QuickAccessFragment;
 
 import android.support.design.widget.NavigationView;

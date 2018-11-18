@@ -5,10 +5,6 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import java.util.List;
-
-import bean.pwr.imskamieskiego.model.map.MapPoint;
-
 public class NavigationSetupViewModelFactory implements ViewModelProvider.Factory {
 
     private Application application;
