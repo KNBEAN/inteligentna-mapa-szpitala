@@ -363,7 +363,7 @@ public class MapActivity extends AppCompatActivity
                     returnedView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
                 } else {
-                    returnedView.setBackgroundColor(getColor(R.color.fontColorWhite));
+                    returnedView.setBackgroundColor(getResources().getColor(R.color.fontColorWhite));
                 }
 
                 return returnedView;
