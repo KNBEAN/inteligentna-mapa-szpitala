@@ -204,16 +204,12 @@ public class MapDrawer extends View {
                     } else {
                         path.lineTo(point.getX() / originalScale, point.getY() / originalScale);
                     }
+                } else {
+                    drawPartPath(canvas, path);
+                    path.reset();
                 }
             }
-            paintPath.setStrokeWidth(17f);
-            paintPath.setShadowLayer(5f, 0, 0, Color.BLACK);
-            paintPath.setColor(Color.WHITE);
-            canvas.drawPath(path, paintPath);
-            paintPath.clearShadowLayer();
-            paintPath.setColor(Color.rgb(59,196,226));
-            paintPath.setStrokeWidth(12f);
-            canvas.drawPath(path, paintPath);
+            drawPartPath(canvas, path);
         }
 
         if (!mapObjects.isEmpty()) {
@@ -229,6 +225,17 @@ public class MapDrawer extends View {
             }
         }
         return floorToDrawOn;
+    }
+
+    private void drawPartPath(Canvas canvas, Path path) {
+        paintPath.setStrokeWidth(17f);
+        paintPath.setShadowLayer(5f, 0, 0, Color.BLACK);
+        paintPath.setColor(Color.WHITE);
+        canvas.drawPath(path, paintPath);
+        paintPath.clearShadowLayer();
+        paintPath.setColor(Color.rgb(59,196,226));
+        paintPath.setStrokeWidth(12f);
+        canvas.drawPath(path, paintPath);
     }
 
 
