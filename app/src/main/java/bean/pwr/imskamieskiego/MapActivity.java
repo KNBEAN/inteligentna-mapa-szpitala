@@ -64,7 +64,9 @@ public class MapActivity extends AppCompatActivity
     private FloorViewModel floorViewModel;
     private MapDrawer mapDrawer;
     private PopupWindow floorListPopupWindow;
+    private NavigationView navigationView;
     private int currentFloor = 1;
+    private final int firstDrawerMenuItemId = 0;
 
 
     @Override
@@ -106,10 +108,19 @@ public class MapActivity extends AppCompatActivity
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
-        drawerLayout.addDrawerListener(hamburgerButton);
-        hamburgerButton.syncState();
+        drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                if (slideOffset < 0.1) {
+                    navigationView.getMenu().getItem(firstDrawerMenuItemId).setChecked(true);
+                }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+            }
+        });
+
+        hamburgerButton.syncState();
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
 
@@ -126,6 +137,7 @@ public class MapActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        navigationView.getMenu().getItem(0).setChecked(true);
     }
 
     @Override
@@ -150,27 +162,22 @@ public class MapActivity extends AppCompatActivity
 
         if (id == R.id.nav_ap) {
 
-        } else if (id == R.id.nav_authors) {
 
+        } else if (id == R.id.nav_authors) {
             Intent intent = new Intent(this, AuthorsActivity.class);
             startActivity(intent);
-
-        } else if (id == R.id.nav_help) {
 
         } else if (id == R.id.nav_info) {
 
         } else if (id == R.id.nav_search) {
 
-
-        } else if (id == R.id.nav_settings) {
-
         }
 
         DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         drawer.closeDrawer(GravityCompat.START);
-
         return true;
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -371,5 +378,6 @@ public class MapActivity extends AppCompatActivity
 
         };
     }
+
 
 }
