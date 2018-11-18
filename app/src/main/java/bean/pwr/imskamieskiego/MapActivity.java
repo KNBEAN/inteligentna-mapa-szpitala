@@ -24,6 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class MapActivity extends AppCompatActivity
     private PathSearchViewModel pathSearchViewModel;
     private FloorViewModel floorViewModel;
     private FloorListWindow floorListWindow;
-
+    private final int firstDrawerMenuItemId = 0;
 
 
     @Override
@@ -148,6 +149,9 @@ public class MapActivity extends AppCompatActivity
         changeFloorButton.setText(String.valueOf(floorViewModel.getCurrentFloor()));
         changeFloorButton.setOnClickListener(floorListWindow::showList);
 
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
         DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
         ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
                 this,
@@ -156,11 +160,18 @@ public class MapActivity extends AppCompatActivity
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
-        drawerLayout.addDrawerListener(hamburgerButton);
-        hamburgerButton.syncState();
+        drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                super.onDrawerSlide(drawerView, slideOffset);
+                if (slideOffset < 0.1) {
+                    navigationView.getMenu().getItem(firstDrawerMenuItemId).setChecked(true);
+                }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+            }
+        });
+
+        hamburgerButton.syncState();
 
     }
 
@@ -206,26 +217,20 @@ public class MapActivity extends AppCompatActivity
         if (id == R.id.nav_ap) {
 
         } else if (id == R.id.nav_authors) {
-
-            Intent intent = new Intent(this,AuthorsActivity.class);
+            Intent intent = new Intent(this, AuthorsActivity.class);
             startActivity(intent);
-
-        } else if (id == R.id.nav_help) {
 
         } else if (id == R.id.nav_info) {
 
         } else if (id == R.id.nav_search) {
 
-
-        } else if (id == R.id.nav_settings) {
-
         }
 
         DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         drawer.closeDrawer(GravityCompat.START);
-
         return true;
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {

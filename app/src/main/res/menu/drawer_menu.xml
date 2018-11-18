@@ -6,30 +6,27 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_search"
+            android:checked="true"
             android:icon="@drawable/ic_search_black_24dp"
-            android:title="@string/navigation_drawer_search"/>
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/ic_help_black_24dp"
-            android:title="@string/navigation_drawer_help" />
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
-            android:title="@string/navigation_drawer_settings" />
+            android:title="@string/navigation_drawer_search"
+            />
         <item
             android:id="@+id/nav_info"
             android:icon="@drawable/ic_info_outline_black_24dp"
-            android:title="@string/navigation_drawer_info" />
+            android:title="@string/navigation_drawer_info"
+
+            />
         <item
             android:id="@+id/nav_ap"
             android:icon="@drawable/ic_accessibility_black_24dp"
-            android:title="@string/navigation_drawer_ap" />
+            android:title="@string/navigation_drawer_ap"
+            />
         <item
             android:id="@+id/nav_authors"
             android:icon="@drawable/ic_supervisor_account_black_24dp"
-            android:title="@string/navigation_drawer_authors" />
+            android:title="@string/navigation_drawer_authors"
+            />
     </group>
-
 
 
 </menu>
