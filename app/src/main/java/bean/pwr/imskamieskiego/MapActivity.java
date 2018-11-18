@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.Constraints;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,9 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,8 +37,6 @@ import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
-
-import static android.view.ViewGroup.*;
 
 
 public class MapActivity extends AppCompatActivity
@@ -67,7 +63,7 @@ public class MapActivity extends AppCompatActivity
     private LocationViewModel locationViewModel;
     private FloorViewModel floorViewModel;
     private MapDrawer mapDrawer;
-    private PopupWindow popupWindow;
+    private PopupWindow floorListPopupWindow;
     private int currentFloor = 1;
 
 
@@ -85,7 +81,7 @@ public class MapActivity extends AppCompatActivity
 
         viewModelInit();
         floorViewModelInit();
-        popupWindowInit();
+        floorListPopupWindowInit();
         currentFloor = floorViewModel.getCurrentFloor();
 
 
@@ -99,7 +95,7 @@ public class MapActivity extends AppCompatActivity
 
         changeFloorButton = findViewById(R.id.floors_button);
         changeFloorButton.setText(Integer.toString(currentFloor));
-        changeFloorButton.setOnClickListener(v -> popupWindow.showAsDropDown(v));
+        changeFloorButton.setOnClickListener(v -> floorListPopupWindow.showAsDropDown(v));
 
 
         DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
@@ -314,15 +310,14 @@ public class MapActivity extends AppCompatActivity
         Log.i(TAG, "startNavigation: start navigation");
     }
 
-    private PopupWindow popupWindowInit() {
+    private void floorListPopupWindowInit() {
 
-        popupWindow = new PopupWindow(MapActivity.this);
 
-        ListView floorListView = new ListView(MapActivity.this);
+        floorListPopupWindow = new PopupWindow(MapActivity.this);
+        View popupLayout = getLayoutInflater().inflate(R.layout.choose_floor_list, null);
+        ListView floorListView = popupLayout.findViewById(R.id.floor_list);
         floorListView.setAdapter(floorsAdapter());
-        popupWindow.setContentView(floorListView);
-
-
+        floorListPopupWindow.setContentView(popupLayout);
 
 
         floorListView.setOnItemClickListener(
@@ -330,7 +325,7 @@ public class MapActivity extends AppCompatActivity
                 (parent, view, position, id) -> {
                     if (currentFloor != position) {
                         currentFloor = position;
-                        popupWindow.dismiss();
+                        floorListPopupWindow.dismiss();
                         floorViewModel.setCurrentFloor(currentFloor);
                         floorViewModel.setSelectedFloor(currentFloor);
                         changeFloorButton.setText(Integer.toString(currentFloor));
@@ -339,39 +334,42 @@ public class MapActivity extends AppCompatActivity
                 });
 
 
-        popupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setFocusable(true);
-        return popupWindow;
-
+        floorListPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        floorListPopupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        floorListPopupWindow.setOutsideTouchable(true);
+        floorListPopupWindow.setFocusable(true);
 
     }
+
 
     ArrayAdapter<String> floorsAdapter() {
         ArrayList<String> floors = new ArrayList<>();
 
         floorViewModel.getFloorList().observe(MapActivity.this, floorList -> {
             if (floorList != null) {
+
                 Collections.addAll(floors, floorList);
             }
         });
 
         return new ArrayAdapter<String>(MapActivity.this, android.R.layout.simple_list_item_1, floors) {
+
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View returnedView = super.getView(position, convertView, parent);
-                ViewGroup.LayoutParams params = parent.getLayoutParams();
-
 
                 if (position == currentFloor) {
                     returnedView.setBackgroundColor(getColor(R.color.colorPrimary));
+
                 } else {
                     returnedView.setBackgroundColor(getColor(R.color.fontColorWhite));
                 }
+
                 return returnedView;
             }
+
         };
     }
+
 }
