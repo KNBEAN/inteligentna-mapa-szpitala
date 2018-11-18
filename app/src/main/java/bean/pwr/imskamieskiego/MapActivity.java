@@ -360,7 +360,7 @@ public class MapActivity extends AppCompatActivity
                 View returnedView = super.getView(position, convertView, parent);
 
                 if (position == currentFloor) {
-                    returnedView.setBackgroundColor(getColor(R.color.colorPrimary));
+                    returnedView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
                 } else {
                     returnedView.setBackgroundColor(getColor(R.color.fontColorWhite));
