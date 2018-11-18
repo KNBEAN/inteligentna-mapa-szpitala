@@ -60,6 +60,10 @@ public class MapFragment extends Fragment {
         List<MapPoint> trace = viewModel.getTrace();
         if (trace != null){
             mapDrawer.setTrace(trace);
+            mapDrawer.removeAllMapPoints();
+            mapDrawer.addMapPoint(trace.get(0), 1);
+            mapDrawer.addMapPoint(trace.get(trace.size()-1), 0);
+            return;
         }
 
         List<MapPoint> targets = viewModel.getTargets();
@@ -118,6 +122,9 @@ public class MapFragment extends Fragment {
         clearTrace();
         if (mapDrawer !=null && !trace.isEmpty()) {
             mapDrawer.setTrace(trace);
+            mapDrawer.removeAllMapPoints();
+            mapDrawer.addMapPoint(trace.get(0), 1);
+            mapDrawer.addMapPoint(trace.get(trace.size()-1), 0);
         }
         viewModel.setTrace(trace);
     }

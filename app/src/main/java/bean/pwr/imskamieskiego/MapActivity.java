@@ -1,6 +1,5 @@
 package bean.pwr.imskamieskiego;
 
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
