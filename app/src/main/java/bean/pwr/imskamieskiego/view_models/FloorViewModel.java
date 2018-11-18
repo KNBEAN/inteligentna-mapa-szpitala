@@ -37,10 +37,6 @@ public class FloorViewModel extends AndroidViewModel {
         return currentFloor;
     }
 
-    public void setCurrentFloor(int currentFloor) {
-        this.currentFloor = currentFloor;
-    }
-
     public LiveData<String[]> getFloorsList(){
         return floorDataRepository.getFloorNames();
     }
@@ -51,5 +47,6 @@ public class FloorViewModel extends AndroidViewModel {
 
     public void setSelectedFloor(int floor) {
         selectedFloor.postValue(floor);
+        this.currentFloor = floor;
     }
 }

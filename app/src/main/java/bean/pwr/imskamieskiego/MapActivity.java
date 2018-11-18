@@ -3,7 +3,6 @@ package bean.pwr.imskamieskiego;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 
+import bean.pwr.imskamieskiego.GUI.FloorListWindow;
 import bean.pwr.imskamieskiego.GUI.MapFragment;
 import bean.pwr.imskamieskiego.GUI.NavigationRouteFragment;
 import bean.pwr.imskamieskiego.GUI.NavigationSetupFragment;
@@ -24,17 +24,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
@@ -76,9 +66,7 @@ public class MapActivity extends AppCompatActivity
     private LocationViewModel locationViewModel;
     private PathSearchViewModel pathSearchViewModel;
     private FloorViewModel floorViewModel;
-    private PopupWindow floorListPopupWindow;
-
-    private int currentFloor;
+    private FloorListWindow floorListWindow;
 
 
 
@@ -136,17 +124,29 @@ public class MapActivity extends AppCompatActivity
 
 
         floorViewModel = ViewModelProviders.of(this).get(FloorViewModel.class);
-        floorListPopupWindowInit();
-        currentFloor = floorViewModel.getCurrentFloor();
-        floorViewModel.setSelectedFloor(currentFloor);
+        floorViewModel.setSelectedFloor(floorViewModel.getCurrentFloor());
         floorViewModel.getFloorBitmap().observe(this, bitmap -> {
                     if (bitmap != null) {
-                        mapFragment.showFloor(currentFloor, bitmap);
+                        mapFragment.showFloor(floorViewModel.getCurrentFloor(), bitmap);
                     }
                 }
         );
 
-        floorMenuInit();
+        floorListWindow = new FloorListWindow(this, getLayoutInflater().inflate(R.layout.choose_floor_list, null));
+        floorListWindow.setFloorSelectListener(floor -> {
+            if (floorViewModel.getCurrentFloor() != floor) {
+                floorListWindow.dismissList();
+                floorViewModel.setSelectedFloor(floor);
+                changeFloorButton.setText(String.valueOf(floor));
+            }
+        });
+
+        floorListWindow.setSelectedFloor(floorViewModel.getCurrentFloor());
+        floorViewModel.getFloorsList().observe(this, floorListWindow::setFloorList);
+
+        changeFloorButton = findViewById(R.id.floors_button);
+        changeFloorButton.setText(String.valueOf(floorViewModel.getCurrentFloor()));
+        changeFloorButton.setOnClickListener(floorListWindow::showList);
 
         DrawerLayout drawerLayout = findViewById(R.id.mainDrawerLayout);
         ActionBarDrawerToggle hamburgerButton = new ActionBarDrawerToggle(
@@ -162,13 +162,6 @@ public class MapActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-    }
-
-    private void floorMenuInit(){
-        changeFloorButton = findViewById(R.id.floors_button);
-        changeFloorButton.setText(Integer.toString(currentFloor));
-        PopupMenu floorSelect = new PopupMenu(MapActivity.this, changeFloorButton);
-        changeFloorButton.setOnClickListener(v -> floorListPopupWindow.showAsDropDown(v));
     }
 
 
@@ -404,52 +397,5 @@ public class MapActivity extends AppCompatActivity
 
         locationViewModel.clearTargetPointSelection();
         mapFragment.clearTargetPoints();
-    }
-
-
-
-
-    private void floorListPopupWindowInit() {
-        floorListPopupWindow = new PopupWindow(MapActivity.this);
-        View popupLayout = getLayoutInflater().inflate(R.layout.choose_floor_list, null);
-        ListView floorListView = popupLayout.findViewById(R.id.floor_list);
-        floorListView.setAdapter(floorsAdapter());
-        floorListPopupWindow.setContentView(popupLayout);
-        floorListView.setOnItemClickListener(
-                (parent, view, position, id) -> {
-                    if (currentFloor != position) {
-                        currentFloor = position;
-                        floorListPopupWindow.dismiss();
-                        floorViewModel.setCurrentFloor(currentFloor);
-                        floorViewModel.setSelectedFloor(currentFloor);
-                        changeFloorButton.setText(Integer.toString(currentFloor));
-                    }
-                });
-        floorListPopupWindow.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-        floorListPopupWindow.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-        floorListPopupWindow.setOutsideTouchable(true);
-        floorListPopupWindow.setFocusable(true);
-    }
-
-    ArrayAdapter<String> floorsAdapter() {
-        ArrayList<String> floors = new ArrayList<>();
-        floorViewModel.getFloorsList().observe(MapActivity.this, floorList -> {
-            if (floorList != null) {
-                Collections.addAll(floors, floorList);
-            }
-        });
-        return new ArrayAdapter<String>(MapActivity.this, android.R.layout.simple_list_item_1, floors) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View returnedView = super.getView(position, convertView, parent);
-                if (position == currentFloor) {
-                    returnedView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                } else {
-                    returnedView.setBackgroundColor(getResources().getColor(R.color.fontColorWhite));
-                }
-                return returnedView;
-            }
-        };
     }
 }
