@@ -19,7 +19,9 @@ import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 import bean.pwr.imskamieskiego.utils.EventWrapper;
 
-
+/**
+ * View model, which one control selection of target location/point for navigation.
+ */
 public class LocationViewModel extends AndroidViewModel {
 
     private static final String TAG = "LocationViewModel";
@@ -79,26 +81,52 @@ public class LocationViewModel extends AndroidViewModel {
         });
     }
 
+    /**
+     * Returns list of points for selected target.
+     * @return list of target points as live data
+     */
     public LiveData<List<MapPoint>> getTargetPoint() {
         return targetMapPoint;
     }
 
+    /**
+     * Returns selected location as live data. Selected location is wrapped into EventWrapper object.
+     * If the target point was selected from the map and this target point is not assigned to any
+     * location, the location will be generated as the location with the default name.
+     * @return  LiveData with location wrapped into EventWrapper
+     */
     public LiveData<EventWrapper<Location>> getTargetLocation() {
         return targetLocation;
     }
 
+    /**
+     * Set target point. If passed map point isn't exact point in database,
+     * the nearest point will be set as the destination.
+     * @param destinationMapPoint target point
+     */
     public void setTargetPoint(MapPoint destinationMapPoint){
         targetMapPointTrigger.setValue(destinationMapPoint);
     }
 
+    /**
+     * Set target location
+     * @param targetLocation target location
+     */
     public void setTargetLocation(Location targetLocation){
         targetLocationTrigger.setValue(targetLocation);
     }
 
+    /**
+     * Returns status of target point selection.
+     * @return if target is selected, returns true. Otherwise return false.
+     */
     public boolean isTargetPointSelected() {
         return targetPointSelected;
     }
 
+    /**
+     * Clear target selection
+     */
     public void clearTargetPointSelection(){
         targetLocation.setValue(null);
         targetMapPoint.setValue(null);

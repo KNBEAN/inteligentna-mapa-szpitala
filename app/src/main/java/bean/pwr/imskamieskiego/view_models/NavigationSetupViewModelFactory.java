@@ -10,6 +10,12 @@ public class NavigationSetupViewModelFactory implements ViewModelProvider.Factor
     private Application application;
     private String targetLocationName;
 
+    /**
+     * The constructor of the NavigationSetupViewModel factory. This factory is used to pass a
+     * custom parameter to the NavigationSetupViewModel constructor.
+     * @param application application context
+     * @param targetLocationName name of target location
+     */
     public NavigationSetupViewModelFactory(Application application, String targetLocationName){
         this.application = application;
         this.targetLocationName = targetLocationName;

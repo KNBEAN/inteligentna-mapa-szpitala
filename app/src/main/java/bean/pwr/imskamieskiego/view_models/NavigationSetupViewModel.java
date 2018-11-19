@@ -17,6 +17,9 @@ import bean.pwr.imskamieskiego.model.map.LocationFactory;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 
+/**
+ * View model for navigation setup fragment.
+ */
 public class NavigationSetupViewModel extends AndroidViewModel {
 
     private static final String TAG = "NavSetupViewModel";
@@ -27,9 +30,13 @@ public class NavigationSetupViewModel extends AndroidViewModel {
     private MutableLiveData<Location> startLocationTrigger;
     private MediatorLiveData<Location> startLocation;
     private MediatorLiveData<MapPoint> startMapPoint;
-
     private MutableLiveData<String> targetLocationName;
 
+    /**
+     * Custom for navigation setup view model.
+     * @param application application context
+     * @param targetName name of target location
+     */
     public NavigationSetupViewModel(@NonNull Application application, String targetName) {
         super(application);
 
@@ -70,26 +77,53 @@ public class NavigationSetupViewModel extends AndroidViewModel {
         setTarget(targetName);
     }
 
+    /**
+     * Set target location name
+     * @param targetLocationName name of target location
+     */
     public void setTarget(String targetLocationName){
         this.targetLocationName.setValue(targetLocationName);
     }
 
+    /**
+     * Returns target location name as live data
+     * @return live data with target location name
+     */
     public LiveData<String> getTargetLocationName(){
         return targetLocationName;
     }
 
+    /**
+     * Returns selected start point as live data
+     * @return live data with actual selected start point
+     */
     public LiveData<MapPoint> getStartPoint() {
         return startMapPoint;
     }
 
+    /**
+     * Returns the selected starting location. If the starting point was selected from the map and
+     * this starting point is not assigned to any location, the location will be generated as the
+     * location with the default name.
+     * @return selected location as live data
+     */
     public LiveData<Location> getStartLocation() {
         return startLocation;
     }
 
+    /**
+     * Set start point. If passed map point isn't exact point in database,
+     * the nearest point will be set as the start point.
+     * @param startMapPoint start point
+     */
     public void setStartPoint(MapPoint startMapPoint){
         startMapPointTrigger.setValue(startMapPoint);
     }
 
+    /**
+     * Set start location
+     * @param startLocation start location
+     */
     public void setStartLocation(Location startLocation){
         startLocationTrigger.setValue(startLocation);
     }

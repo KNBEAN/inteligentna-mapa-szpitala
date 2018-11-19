@@ -29,15 +29,27 @@ public class PathSearchViewModel extends AndroidViewModel {
         searchedTrace.addSource(pathSearcher.getPath(), searchedTrace::setValue);
     }
 
+    /**
+     * Gets live data with found trace. Live data will be update, when new trace will be ready.
+     * @return live data with list of MapPoints
+     */
     public LiveData<List<MapPoint>> getSearchedTrace(){
         return searchedTrace;
     }
 
+    /**
+     * Starts search of new trace between given points.
+     * @param startPoint start point
+     * @param targets list of possible targets
+     */
     public void startPathSearch(MapPoint startPoint, List<MapPoint> targets){
         DijkstraSearch dijkstraAlgorithm = new DijkstraSearch(graphRepository, startPoint, targets);
         pathSearcher.startSearch(dijkstraAlgorithm);
     }
 
+    /**
+     * Clear last search result
+     */
     public void clearTrace(){
         searchedTrace.setValue(null);
     }
