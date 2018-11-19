@@ -15,7 +15,7 @@ public class EventWrapper<T> {
     }
 
     /**
-     * Return information, was data read before.
+     * Return information about handling status.
      * @return return true if data was handled in past. False if data is new.
      */
     public boolean isHandled() {
@@ -31,6 +31,10 @@ public class EventWrapper<T> {
         }
     }
 
+    /**
+     * Returns data
+     * @return data contained in EventWrapper object
+     */
     public T getData() {
         return data;
     }

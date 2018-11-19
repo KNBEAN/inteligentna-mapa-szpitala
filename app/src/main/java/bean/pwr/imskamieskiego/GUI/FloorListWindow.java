@@ -24,6 +24,11 @@ public class FloorListWindow {
     private int selectedFloor;
     private FloorSelectListener listener;
 
+    /**
+     * Create new popup menu with floor list
+     * @param context context of list
+     * @param popupLayout layout with floors list view
+     */
     public FloorListWindow(Context context, View popupLayout) {
         floorList = new ArrayList<>();
 
@@ -44,29 +49,51 @@ public class FloorListWindow {
         floorListPopupWindow.setFocusable(true);
     }
 
+    /**
+     * Show popup window with list of floors
+     * @param view the view on which to pin the popup window
+     */
     public void showList(View view){
         floorListPopupWindow.showAsDropDown(view);
     }
 
+    /**
+     * Hide popup window with floors list
+     */
     public void dismissList(){
         floorListPopupWindow.dismiss();
     }
 
+    /**
+     * Set floor from list as selected
+     * @param selectedFloor position of floor
+     */
     public void setSelectedFloor(int selectedFloor) {
         this.selectedFloor = selectedFloor;
     }
 
+    /**
+     * Set list of floor names
+     * @param floorList array with floor names
+     */
     public void setFloorList(String[] floorList) {
         this.floorList.clear();
         this.floorList.addAll(Arrays.asList(floorList));
     }
 
+    /**
+     * Set listener of list selection
+     * @param listener selection listener
+     */
     public void setFloorSelectListener(FloorSelectListener listener){
         this.listener = listener;
     }
 
-
     public interface FloorSelectListener{
+        /**
+         * Called, when select floor from list
+         * @param floor floor position from list
+         */
         void onFloorSelect(int floor);
     }
 

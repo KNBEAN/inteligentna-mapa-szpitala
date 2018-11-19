@@ -160,6 +160,7 @@ public class MapActivity extends AppCompatActivity
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
 
+        drawerLayout.addDrawerListener(hamburgerButton);
         drawerLayout.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -170,9 +171,7 @@ public class MapActivity extends AppCompatActivity
 
             }
         });
-
         hamburgerButton.syncState();
-
     }
 
 

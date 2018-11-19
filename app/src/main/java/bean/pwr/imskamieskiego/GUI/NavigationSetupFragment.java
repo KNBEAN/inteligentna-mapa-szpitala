@@ -21,7 +21,9 @@ import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.view_models.NavigationSetupViewModel;
 import bean.pwr.imskamieskiego.view_models.NavigationSetupViewModelFactory;
 
-
+/**
+ * This fragment is responsible for selecting the start point for navigation.
+ */
 public class NavigationSetupFragment extends Fragment {
 
     private static final String TAG = "NavSetupFragment";
@@ -126,10 +128,21 @@ public class NavigationSetupFragment extends Fragment {
     }
 
     public interface NavigationSetupListener {
+        /**
+         * Called, when navigation setup fragment need start location search functionality
+         */
         void startPointSearchRequest();
 
+        /**
+         * Called, when navigation setup fragment starts navigation
+         * @param avoidStairs
+         */
         void startNavigation(boolean avoidStairs);
 
+        /**
+         * Called, when navigation setup fragment selects start point
+         * @param selectedStartPoint
+         */
         void onStartPointSelected(MapPoint selectedStartPoint);
     }
 

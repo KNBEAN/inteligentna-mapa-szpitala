@@ -40,9 +40,9 @@ public class InfoSheet extends Fragment {
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this fragment.
      *
-     * @param location
+     * @param location location whose details will be displayed
      * @return A new instance of fragment InfoSheet.
      */
     public static InfoSheet newInstance(Location location) {
@@ -105,6 +105,11 @@ public class InfoSheet extends Fragment {
         expandSheetButton.setOnClickListener(v -> toggleDescriptionShow());
     }
 
+    /**
+     * Set the location to show the details. If the location does not contain a detailed
+     * description, the description will not be displayed.
+     * @param location location
+     */
     public void setLocation(Location location){
         placeName.setText(location.getName());
         placeInfo.setText(location.getDescription() != null ? locationDesc : "");
@@ -123,6 +128,9 @@ public class InfoSheet extends Fragment {
     }
 
     public interface InfoSheetListener {
+        /**
+         * Called when action button is clicked
+         */
         void infoSheetAction();
     }
 

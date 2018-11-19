@@ -1,6 +1,5 @@
 package bean.pwr.imskamieskiego.GUI;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,7 +17,9 @@ import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.view_models.MapViewModel;
 
-
+/**
+ * Fragment which contains view of map
+ */
 public class MapFragment extends Fragment {
 
     private final static String TAG = "MapFragment";
@@ -26,9 +27,6 @@ public class MapFragment extends Fragment {
     private MapDrawer mapDrawer;
 
     private MapViewModel viewModel;
-    private LiveData<List<MapPoint>> trace;
-    private LiveData<List<MapPoint>> targets;
-    private LiveData<MapPoint> startPoint;
 
     private OnMapInteractionListener listener;
 
@@ -55,7 +53,7 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-    void restoreMap(){
+    private void restoreMap(){
         Log.d(TAG, "restoreMap: map restore");
         List<MapPoint> trace = viewModel.getTrace();
         if (trace != null){
@@ -96,12 +94,21 @@ public class MapFragment extends Fragment {
         listener = null;
     }
 
+    /**
+     * Set floor to show
+     * @param floorNumber the floor number that will be shown
+     * @param mapImage the image of floor
+     */
     public void showFloor(int floorNumber, Bitmap mapImage){
         if (mapDrawer != null){
             mapDrawer.showFloor(floorNumber, mapImage);
         }
     }
 
+    /**
+     * Set start point to show on map
+     * @param startPoint start point
+     */
     public void setStartPoint(MapPoint startPoint){
         clearStartPoint();
         viewModel.setStartPoint(startPoint);
@@ -110,6 +117,10 @@ public class MapFragment extends Fragment {
         }
     }
 
+    /**
+     * Set list of target points to show on map
+     * @param targetPoints target points
+     */
     public void setTargetPoints(List<MapPoint> targetPoints){
         clearTargetPoints();
         viewModel.setTargets(targetPoints);
@@ -118,6 +129,10 @@ public class MapFragment extends Fragment {
         }
     }
 
+    /**
+     * Set trace to show on map
+     * @param trace trace
+     */
     public void setTrace(List<MapPoint>trace){
         clearTrace();
         if (mapDrawer !=null && !trace.isEmpty()) {
@@ -129,18 +144,34 @@ public class MapFragment extends Fragment {
         viewModel.setTrace(trace);
     }
 
+    /**
+     * Returns true, when start point is set. Otherwise returns false
+     * @return
+     */
     public boolean isStartPointSet(){
         return viewModel.getStartPoint() != null;
     }
 
+    /**
+     * Returns true, when target points are set. Otherwise returns false
+     * @return
+     */
     public boolean isTargetPointsSet(){
         return viewModel.getTargets() != null;
     }
 
+    /**
+     * Return true, when trace is set. Otherwise return false
+     * @return
+     */
     public boolean isTraceSet(){
         return viewModel.getTrace() != null;
     }
 
+    /**
+     * Removes trace from map
+     * @return true if trace was set
+     */
     public boolean clearTrace(){
         if (viewModel.getTrace() == null) return false;
         if (mapDrawer != null){
@@ -151,6 +182,10 @@ public class MapFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Removes start point from map
+     * @return true if start point was set
+     */
     public boolean clearStartPoint(){
         if (viewModel.getStartPoint() == null) return false;
         if (mapDrawer != null){
@@ -161,6 +196,10 @@ public class MapFragment extends Fragment {
         return true;
     }
 
+    /**
+     * Removes target points from map
+     * @return true if target points was set
+     */
     public boolean clearTargetPoints(){
         if(viewModel.getTargets() == null) return false;
         if (mapDrawer != null){
@@ -173,7 +212,12 @@ public class MapFragment extends Fragment {
         return true;
     }
 
+
     public interface OnMapInteractionListener {
+        /**
+         * Called after clicking the map
+         * @param clickPoint the point where the map was clicked
+         */
         void onMapClick(MapPoint clickPoint);
     }
 }
