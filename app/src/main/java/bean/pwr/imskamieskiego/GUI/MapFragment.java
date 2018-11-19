@@ -59,21 +59,21 @@ public class MapFragment extends Fragment {
         if (trace != null){
             mapDrawer.setTrace(trace);
             mapDrawer.removeAllMapPoints();
-            mapDrawer.addMapPoint(trace.get(0), 1);
-            mapDrawer.addMapPoint(trace.get(trace.size()-1), 0);
+            mapDrawer.addMapPoint(trace.get(0), 2);
+            mapDrawer.addMapPoint(trace.get(trace.size()-1), 1);
             return;
         }
 
         List<MapPoint> targets = viewModel.getTargets();
         if (targets != null){
             for(MapPoint target:targets){
-                mapDrawer.addMapPoint(target, 0);
+                mapDrawer.addMapPoint(target, 1);
             }
         }
 
         MapPoint startPoint = viewModel.getStartPoint();
         if (startPoint != null){
-            mapDrawer.addMapPoint(startPoint, 1);
+            mapDrawer.addMapPoint(startPoint, 2);
         }
     }
 
@@ -113,7 +113,7 @@ public class MapFragment extends Fragment {
         clearStartPoint();
         viewModel.setStartPoint(startPoint);
         if (mapDrawer != null){
-            mapDrawer.addMapPoint(startPoint, 1);
+            mapDrawer.addMapPoint(startPoint, 2);
         }
     }
 
@@ -125,7 +125,7 @@ public class MapFragment extends Fragment {
         clearTargetPoints();
         viewModel.setTargets(targetPoints);
         for (MapPoint mapPoint:targetPoints) {
-            mapDrawer.addMapPoint(mapPoint, 0);
+            mapDrawer.addMapPoint(mapPoint, 1);
         }
     }
 
@@ -138,8 +138,8 @@ public class MapFragment extends Fragment {
         if (mapDrawer !=null && !trace.isEmpty()) {
             mapDrawer.setTrace(trace);
             mapDrawer.removeAllMapPoints();
-            mapDrawer.addMapPoint(trace.get(0), 1);
-            mapDrawer.addMapPoint(trace.get(trace.size()-1), 0);
+            mapDrawer.addMapPoint(trace.get(0), 2);
+            mapDrawer.addMapPoint(trace.get(trace.size()-1), 1);
         }
         viewModel.setTrace(trace);
     }

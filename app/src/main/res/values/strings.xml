@@ -40,4 +40,5 @@
     <string name="route_fragment_title">Wyznaczona trasa</string>
     <string name="route_fragment_subtitle">Podążaj wzdłuż wyznaczonej trasy</string>
     <string name="start_is_target_warning">Cel i punkt startowy są w tym samym miejscu.</string>
+    <string name="lack_of_detailed_description">Brak dodatkowych informacji</string>
 </resources>

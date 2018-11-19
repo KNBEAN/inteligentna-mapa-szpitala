@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,8 +98,9 @@ public class InfoSheet extends Fragment {
 
         guideToButton.setText(R.string.guide_to);
 
+        Log.d(TAG, "onViewCreated: Show location: "+ locationName + " desc: " + locationDesc);
         placeName.setText(locationName);
-        placeInfo.setText(locationDesc != null ? locationDesc : "");
+        placeInfo.setText(locationDesc != null ? locationDesc : getString(R.string.lack_of_detailed_description));
 
 
         guideToButton.setOnClickListener(v -> listener.infoSheetAction());
@@ -111,20 +113,31 @@ public class InfoSheet extends Fragment {
      * @param location location
      */
     public void setLocation(Location location){
+        closeDetails();
+        locationName = location.getName();
+        locationDesc = location.getDescription();
         placeName.setText(location.getName());
-        placeInfo.setText(location.getDescription() != null ? locationDesc : "");
+        placeInfo.setText(location.getDescription() != null ? locationDesc : getString(R.string.lack_of_detailed_description));
     }
 
     private void toggleDescriptionShow() {
-        if (!descriptionIsVisible && locationDesc != null) {
-            placeInfo.setVisibility(View.VISIBLE);
-            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
-            descriptionIsVisible = true;
+        if (!descriptionIsVisible) {
+            openDetails();
         } else {
-            placeInfo.setVisibility(View.GONE);
-            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
-            descriptionIsVisible = false;
+            closeDetails();
         }
+    }
+
+    private void openDetails(){
+        placeInfo.setVisibility(View.VISIBLE);
+        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+        descriptionIsVisible = true;
+    }
+
+    private void closeDetails(){
+        placeInfo.setVisibility(View.GONE);
+        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+        descriptionIsVisible = false;
     }
 
     public interface InfoSheetListener {
