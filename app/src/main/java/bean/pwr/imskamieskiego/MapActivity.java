@@ -110,16 +110,16 @@ public class MapActivity extends AppCompatActivity
             }
         });
 
-        pathSearchViewModel.getSearchedTrace().observe(this, mapPoints -> {
+        pathSearchViewModel.getSearchedRoute().observe(this, mapPoints -> {
             if (mapPoints != null) {
-                Log.i(TAG, "trace: new trace ready");
+                Log.i(TAG, "route: new route ready");
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("trace: ");
+                stringBuilder.append("route: ");
                 for (MapPoint mapPoint:mapPoints) {
                     stringBuilder.append(String.format("%n%d", mapPoint.getId()));
                 }
                 Log.d(TAG, stringBuilder.toString());
-                mapFragment.setTrace(mapPoints);
+                mapFragment.setRoute(mapPoints);
             }
         });
 
@@ -387,9 +387,9 @@ public class MapActivity extends AppCompatActivity
     }
 
     private void mapPointsDrawingBack(){
-        if (mapFragment.isTraceSet()){
-            pathSearchViewModel.clearTrace();
-            mapFragment.clearTrace();
+        if (mapFragment.isRouteSet()){
+            pathSearchViewModel.clearRoute();
+            mapFragment.clearRoute();
             return;
         }
 

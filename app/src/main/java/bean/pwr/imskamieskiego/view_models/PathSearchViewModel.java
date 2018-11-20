@@ -18,27 +18,27 @@ import bean.pwr.imskamieskiego.repository.MapGraphRepository;
 public class PathSearchViewModel extends AndroidViewModel {
 
     private IMapGraphRepository graphRepository;
-    private MediatorLiveData<List<MapPoint>> searchedTrace;
+    private MediatorLiveData<List<MapPoint>> searchedRoute;
     private PathSearcher pathSearcher;
 
     public PathSearchViewModel(@NonNull Application application) {
         super(application);
         graphRepository = new MapGraphRepository(LocalDB.getDatabase(application));
-        searchedTrace = new MediatorLiveData<>();
+        searchedRoute = new MediatorLiveData<>();
         pathSearcher = new PathSearcher(application);
-        searchedTrace.addSource(pathSearcher.getPath(), searchedTrace::setValue);
+        searchedRoute.addSource(pathSearcher.getPath(), searchedRoute::setValue);
     }
 
     /**
-     * Gets live data with found trace. Live data will be update, when new trace will be ready.
+     * Gets live data with found route. Live data will be update, when new route will be ready.
      * @return live data with list of MapPoints
      */
-    public LiveData<List<MapPoint>> getSearchedTrace(){
-        return searchedTrace;
+    public LiveData<List<MapPoint>> getSearchedRoute(){
+        return searchedRoute;
     }
 
     /**
-     * Starts search of new trace between given points.
+     * Starts search of new route between given points.
      * @param startPoint start point
      * @param targets list of possible targets
      */
@@ -50,7 +50,7 @@ public class PathSearchViewModel extends AndroidViewModel {
     /**
      * Clear last search result
      */
-    public void clearTrace(){
-        searchedTrace.setValue(null);
+    public void clearRoute(){
+        searchedRoute.setValue(null);
     }
 }

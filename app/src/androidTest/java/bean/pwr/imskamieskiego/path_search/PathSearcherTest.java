@@ -32,8 +32,8 @@ public class PathSearcherTest {
     public void callObserverWhenSearchEnded() {
 
         pathSearcher = new PathSearcher(InstrumentationRegistry.getContext());
-        LiveData<List<MapPoint>> trace = pathSearcher.getPath();
-        trace.observeForever(observer);
+        LiveData<List<MapPoint>> path = pathSearcher.getPath();
+        path.observeForever(observer);
         pathSearcher.startSearch(searchAlgorithm);
 
         //It looks a bit like an ugly hack.

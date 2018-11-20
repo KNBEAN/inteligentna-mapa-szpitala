@@ -7,21 +7,21 @@ import java.util.List;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 /**
- * View model which contain actual selected start point, targets and trace. This view model is
+ * View model which contain actual selected start point, targets and route. This view model is
  * created for preserving data for MapDrawer between orientation changes etc.
  */
 public class MapViewModel extends ViewModel {
 
-    List<MapPoint> trace;
+    List<MapPoint> route;
     List<MapPoint> targets;
     MapPoint startPoint;
 
     /**
-     * Returns trace as list of MapPoints.
-     * @return list of MapPoints. If trace isn't set, returns null.
+     * Returns route as list of MapPoints.
+     * @return list of MapPoints. If route isn't set, returns null.
      */
-    public List<MapPoint> getTrace() {
-        return trace;
+    public List<MapPoint> getRoute() {
+        return route;
     }
 
     /**
@@ -41,11 +41,11 @@ public class MapViewModel extends ViewModel {
     }
 
     /**
-     * Set new trace
-     * @param trace list of MapPoints
+     * Set new route
+     * @param route list of MapPoints
      */
-    public void setTrace(List<MapPoint> trace) {
-        this.trace = trace;
+    public void setRoute(List<MapPoint> route) {
+        this.route = route;
     }
 
     /**

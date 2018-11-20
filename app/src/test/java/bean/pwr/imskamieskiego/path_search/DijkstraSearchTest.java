@@ -26,7 +26,7 @@ public class DijkstraSearchTest {
     public void searchPathToReachableTarget() {
         MapPoint startPoint = graphRepository.getPointByID(2);
         MapPoint endPoint = graphRepository.getPointByID(7);
-        List<MapPoint> expectedTrace = Arrays.asList(
+        List<MapPoint> expectedPath = Arrays.asList(
                 startPoint,
                 graphRepository.getPointByID(3),
                 graphRepository.getPointByID(4),
@@ -38,9 +38,9 @@ public class DijkstraSearchTest {
         
         dijkstraSearch = new DijkstraSearch(graphRepository, startPoint, endPoint);
         dijkstraSearch.startSearch();
-        List<MapPoint> trace = dijkstraSearch.getPath();
+        List<MapPoint> path = dijkstraSearch.getPath();
         
-        assertEquals(expectedTrace, trace);
+        assertEquals(expectedPath, path);
     }
 
     @Test
@@ -50,9 +50,9 @@ public class DijkstraSearchTest {
 
         dijkstraSearch = new DijkstraSearch(graphRepository, startPoint, endPoint);
         dijkstraSearch.startSearch();
-        List<MapPoint> trace = dijkstraSearch.getPath();
+        List<MapPoint> path = dijkstraSearch.getPath();
 
-        assertTrue(trace.isEmpty());
+        assertTrue(path.isEmpty());
     }
 
     @Test
@@ -62,9 +62,9 @@ public class DijkstraSearchTest {
 
         dijkstraSearch = new DijkstraSearch(graphRepository, startPoint, endPoint);
         dijkstraSearch.startSearch();
-        List<MapPoint> trace = dijkstraSearch.getPath();
+        List<MapPoint> path = dijkstraSearch.getPath();
 
-        assertTrue(trace.isEmpty());
+        assertTrue(path.isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -83,7 +83,7 @@ public class DijkstraSearchTest {
                 graphRepository.getPointByID(7),
                 graphRepository.getPointByID(5));
         
-        List<MapPoint> expectedTrace = Arrays.asList(
+        List<MapPoint> expectedPath = Arrays.asList(
                 startPoint,
                 graphRepository.getPointByID(3),
                 graphRepository.getPointByID(4),
@@ -93,9 +93,9 @@ public class DijkstraSearchTest {
 
         dijkstraSearch = new DijkstraSearch(graphRepository, startPoint, endPoints);
         dijkstraSearch.startSearch();
-        List<MapPoint> trace = dijkstraSearch.getPath();
+        List<MapPoint> path = dijkstraSearch.getPath();
 
-        assertEquals(expectedTrace, trace);
+        assertEquals(expectedPath, path);
     }
 
     @Test(expected = IllegalArgumentException.class)

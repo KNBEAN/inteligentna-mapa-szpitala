@@ -55,12 +55,12 @@ public class MapFragment extends Fragment {
 
     private void restoreMap(){
         Log.d(TAG, "restoreMap: map restore");
-        List<MapPoint> trace = viewModel.getTrace();
-        if (trace != null){
-            mapDrawer.setTrace(trace);
+        List<MapPoint> route = viewModel.getRoute();
+        if (route != null){
+            mapDrawer.setTrace(route);
             mapDrawer.removeAllMapPoints();
-            mapDrawer.addMapPoint(trace.get(0), 2);
-            mapDrawer.addMapPoint(trace.get(trace.size()-1), 1);
+            mapDrawer.addMapPoint(route.get(0), 2);
+            mapDrawer.addMapPoint(route.get(route.size()-1), 1);
             return;
         }
 
@@ -130,18 +130,18 @@ public class MapFragment extends Fragment {
     }
 
     /**
-     * Set trace to show on map
-     * @param trace trace
+     * Set route to show on map
+     * @param route route to show
      */
-    public void setTrace(List<MapPoint>trace){
-        clearTrace();
-        if (mapDrawer !=null && !trace.isEmpty()) {
-            mapDrawer.setTrace(trace);
+    public void setRoute(List<MapPoint>route){
+        clearRoute();
+        if (mapDrawer !=null && !route.isEmpty()) {
+            mapDrawer.setTrace(route);
             mapDrawer.removeAllMapPoints();
-            mapDrawer.addMapPoint(trace.get(0), 2);
-            mapDrawer.addMapPoint(trace.get(trace.size()-1), 1);
+            mapDrawer.addMapPoint(route.get(0), 2);
+            mapDrawer.addMapPoint(route.get(route.size()-1), 1);
         }
-        viewModel.setTrace(trace);
+        viewModel.setRoute(route);
     }
 
     /**
@@ -161,23 +161,23 @@ public class MapFragment extends Fragment {
     }
 
     /**
-     * Return true, when trace is set. Otherwise return false
+     * Return true, when route is set. Otherwise return false
      * @return
      */
-    public boolean isTraceSet(){
-        return viewModel.getTrace() != null;
+    public boolean isRouteSet(){
+        return viewModel.getRoute() != null;
     }
 
     /**
-     * Removes trace from map
-     * @return true if trace was set
+     * Removes route from map
+     * @return true if route was set
      */
-    public boolean clearTrace(){
-        if (viewModel.getTrace() == null) return false;
+    public boolean clearRoute(){
+        if (viewModel.getRoute() == null) return false;
         if (mapDrawer != null){
             mapDrawer.removeTrace();
         }
-        viewModel.setTrace(null);
+        viewModel.setRoute(null);
         restoreMap();
         return true;
     }
