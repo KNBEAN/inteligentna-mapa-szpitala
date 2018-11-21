@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,6 @@ public class InfoSheet extends Fragment {
     private static final String TAG = "InfoSheet";
     private static final String LOCATION_NAME = "location_name";
     private static final String LOCATION_DESC = "location_desc";
-    private static final String AS_START_POINT = "start_point";
-
-    private boolean asStartPoint = false;
 
     private ImageButton expandSheetButton;
     private InfoSheetListener listener;
@@ -31,6 +29,7 @@ public class InfoSheet extends Fragment {
     private String locationName;
     private String locationDesc;
 
+    private TextView placeName;
     private TextView placeInfo;
     private boolean descriptionIsVisible = false;
 
@@ -42,29 +41,30 @@ public class InfoSheet extends Fragment {
 
     /**
      * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
+     * this fragment.
      *
-     * @param location
-     * @param asStartPoint
+     * @param location location whose details will be displayed
      * @return A new instance of fragment InfoSheet.
      */
-    public static InfoSheet newInstance(Location location, boolean asStartPoint) {
+    public static InfoSheet newInstance(Location location) {
         InfoSheet fragment = new InfoSheet();
         Bundle args = new Bundle();
         args.putString(LOCATION_NAME, location.getName());
         args.putString(LOCATION_DESC, location.getDescription());
-        args.putBoolean(AS_START_POINT, asStartPoint);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static InfoSheet newInstance(){
+        return new InfoSheet();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            locationName = getArguments().getString(LOCATION_NAME);
+            locationName = getArguments().getString(LOCATION_NAME, "");
             locationDesc = getArguments().getString(LOCATION_DESC);
-            asStartPoint = getArguments().getBoolean(AS_START_POINT);
         }
     }
 
@@ -93,37 +93,58 @@ public class InfoSheet extends Fragment {
         ConstraintLayout layoutInfoSheet = view.findViewById(R.id.info_sheet_layout);
         Button guideToButton = view.findViewById(R.id.guide_to_button);
         expandSheetButton = view.findViewById(R.id.info_button);
-        TextView placeName = view.findViewById(R.id.place_name);
+        placeName = view.findViewById(R.id.place_name);
         placeInfo = view.findViewById(R.id.place_info);
 
-        if (asStartPoint){
-            guideToButton.setText(R.string.guide_from);
-        } else {
-            guideToButton.setText(R.string.guide_to);
-        }
+        guideToButton.setText(R.string.guide_to);
 
+        Log.d(TAG, "onViewCreated: Show location: "+ locationName + " desc: " + locationDesc);
         placeName.setText(locationName);
-        placeInfo.setText(locationDesc != null ? locationDesc : "");
+        placeInfo.setText(locationDesc != null ? locationDesc : getString(R.string.lack_of_detailed_description));
 
 
-        guideToButton.setOnClickListener(v -> listener.infoSheetAction(asStartPoint));
+        guideToButton.setOnClickListener(v -> listener.infoSheetAction());
         expandSheetButton.setOnClickListener(v -> toggleDescriptionShow());
     }
 
+    /**
+     * Set the location to show the details. If the location does not contain a detailed
+     * description, the description will not be displayed.
+     * @param location location
+     */
+    public void setLocation(Location location){
+        closeDetails();
+        locationName = location.getName();
+        locationDesc = location.getDescription();
+        placeName.setText(location.getName());
+        placeInfo.setText(location.getDescription() != null ? locationDesc : getString(R.string.lack_of_detailed_description));
+    }
+
     private void toggleDescriptionShow() {
-        if (!descriptionIsVisible && locationDesc != null) {
-            placeInfo.setVisibility(View.VISIBLE);
-            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
-            descriptionIsVisible = true;
+        if (!descriptionIsVisible) {
+            openDetails();
         } else {
-            placeInfo.setVisibility(View.GONE);
-            expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
-            descriptionIsVisible = false;
+            closeDetails();
         }
     }
 
+    private void openDetails(){
+        placeInfo.setVisibility(View.VISIBLE);
+        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_down_black_24dp);
+        descriptionIsVisible = true;
+    }
+
+    private void closeDetails(){
+        placeInfo.setVisibility(View.GONE);
+        expandSheetButton.setImageResource(R.drawable.ic_arrow_drop_up_black_24dp);
+        descriptionIsVisible = false;
+    }
+
     public interface InfoSheetListener {
-        void infoSheetAction(boolean asStartPoint);
+        /**
+         * Called when action button is clicked
+         */
+        void infoSheetAction();
     }
 
 

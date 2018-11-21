@@ -44,7 +44,7 @@ public class LocationDaoTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 LocalDB.class)
@@ -56,7 +56,7 @@ public class LocationDaoTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         database.close();
     }
 

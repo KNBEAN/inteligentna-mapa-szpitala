@@ -3,69 +3,134 @@ package bean.pwr.imskamieskiego.view_models;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
+import java.util.Arrays;
 import java.util.List;
 
-import bean.pwr.imskamieskiego.MapActivity;
+import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.Location;
+import bean.pwr.imskamieskiego.model.map.LocationFactory;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
-import bean.pwr.imskamieskiego.repository.IMapRepository;
 import bean.pwr.imskamieskiego.repository.MapRepository;
+import bean.pwr.imskamieskiego.utils.EventWrapper;
 
 /**
- * The ViewModel used in [InfoSheetWindow]
+ * View model, which one control selection of target location/point for navigation.
  */
-
 public class LocationViewModel extends AndroidViewModel {
 
-    private MapRepository repository;
-    private LocalDB dataBase;
+    private static final String TAG = "LocationViewModel";
 
-    private MutableLiveData<MapPoint> targetMapPoint = new MutableLiveData<>();
+    private MapRepository mapRepository;
 
+    private MutableLiveData<MapPoint> targetMapPointTrigger;
+    private MutableLiveData<Location> targetLocationTrigger;
+    private MediatorLiveData<EventWrapper<Location>> targetLocation;
+    private MediatorLiveData<List<MapPoint>> targetMapPoint;
 
-    private LiveData<MapPoint> nearestMapPoint = Transformations.switchMap(targetMapPoint,
-            (mapPoint) -> {
+    private boolean targetPointSelected = false;
 
-                return repository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor());
-
-            });
-
-    public LiveData<MapPoint> getNearestMapPoint() {
-        return nearestMapPoint;
-    }
-
-    private LiveData<Location> currentLocation = Transformations.switchMap(nearestMapPoint, mapPoint -> {
-
-
-        if (mapPoint != null) {
-            return repository.getLocationByID(mapPoint.getLocationID());
-        }
-        return null;
-    });
-
-    public LiveData<Location> getCurrentLocation() {
-        return currentLocation;
-    }
-
-    public void setMapPoint(MapPoint mapPoint) {
-        targetMapPoint.postValue(mapPoint);
-    }
-
-
-    //Target location
     public LocationViewModel(@NonNull Application application) {
         super(application);
-        dataBase = LocalDB.getDatabase(application.getApplicationContext());
-        repository = new MapRepository(dataBase);
+        LocalDB dataBase = LocalDB.getDatabase(application.getApplicationContext());
+        mapRepository = new MapRepository(dataBase);
+
+        targetLocationTrigger = new MutableLiveData<>();
+        targetMapPointTrigger = new MutableLiveData<>();
+        targetLocation = new MediatorLiveData<>();
+        targetMapPoint = new MediatorLiveData<>();
 
 
+        //Location comes from search
+        targetLocation.addSource(targetLocationTrigger, location -> targetLocation.setValue(new EventWrapper<>(location)));
+        LiveData<List<MapPoint>> tmpTargetPoints = Transformations.switchMap(targetLocationTrigger, location ->
+                location != null ? mapRepository.getPointsByLocationID(location.getId()) : null
+        );
+        targetMapPoint.addSource(tmpTargetPoints, mapPoints -> {
+            if (mapPoints != null){
+                targetPointSelected = true;
+            }
+            targetMapPoint.setValue(mapPoints);
+        });
+
+        //MapPoint comes from touch the map
+        LiveData<MapPoint> nearestTargetPoint = Transformations.switchMap(targetMapPointTrigger,
+                (mapPoint) -> mapRepository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor())
+        );
+
+        targetMapPoint.addSource(nearestTargetPoint, mapPoint -> {
+            if (mapPoint != null){
+                targetPointSelected = true;
+            }
+            targetMapPoint.setValue(Arrays.asList(mapPoint));
+        });
+
+        LiveData<Location> tmpTargetLocation = Transformations.switchMap(nearestTargetPoint, mapPoint ->
+                mapPoint != null ? mapRepository.getLocationByID(mapPoint.getLocationID()) : null
+        );
+
+        targetLocation.addSource(tmpTargetLocation, location -> {
+            if (location == null)
+                location = LocationFactory.create(application.getString(R.string.default_place_name), null);
+            targetLocation.setValue(new EventWrapper<>(location));
+        });
     }
 
+    /**
+     * Returns list of points for selected target.
+     * @return list of target points as LiveData
+     */
+    public LiveData<List<MapPoint>> getTargetPoint() {
+        return targetMapPoint;
+    }
+
+    /**
+     * Returns selected location as LiveData. Selected location is wrapped into EventWrapper object.
+     * If the target point was selected from the map and this target point is not assigned to any
+     * location, the location will be generated as the location with the default name.
+     * @return  LiveData with location wrapped into EventWrapper
+     */
+    public LiveData<EventWrapper<Location>> getTargetLocation() {
+        return targetLocation;
+    }
+
+    /**
+     * Set target point. If passed map point isn't exact point in database,
+     * the nearest point will be set as the destination.
+     * @param destinationMapPoint target point
+     */
+    public void setTargetPoint(MapPoint destinationMapPoint){
+        targetMapPointTrigger.setValue(destinationMapPoint);
+    }
+
+    /**
+     * Set target location
+     * @param targetLocation target location
+     */
+    public void setTargetLocation(Location targetLocation){
+        targetLocationTrigger.setValue(targetLocation);
+    }
+
+    /**
+     * Returns status of target point selection.
+     * @return if target is selected, returns true. Otherwise return false.
+     */
+    public boolean isTargetPointSelected() {
+        return targetPointSelected;
+    }
+
+    /**
+     * Clear target selection
+     */
+    public void clearTargetPointSelection(){
+        targetLocation.setValue(null);
+        targetMapPoint.setValue(null);
+        targetPointSelected = false;
+    }
 
 }

@@ -26,7 +26,6 @@ import static org.mockito.Mockito.when;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
-import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
 import bean.pwr.imskamieskiego.model.map.Location;
@@ -42,7 +41,6 @@ public class MapRepositoryTest {
 
     private LocalDB database;
     private LocationDao locationDao;
-    private MapPointDao mapPointDao;
 
     private List<Location> resultForLowerCase;
     private List<Location> resultForUpperCase;
@@ -64,7 +62,6 @@ public class MapRepositoryTest {
                 .build();
 
         locationDao = database.getLocationDao();
-        mapPointDao = database.getMapPointDao();
         repository = new MapRepository(database);
 
         lifecycle = new LifecycleRegistry(lifecycleOwner);
@@ -76,11 +73,6 @@ public class MapRepositoryTest {
                 new LocationEntity(2, "kończyna",null),
                 new LocationEntity(3, "OkoŃ",null));
         addDataToDB(locationEntities);
-    }
-
-    @After
-    public void tearDown() throws Exception {
-        database.close();
     }
 
     @Test
@@ -124,5 +116,10 @@ public class MapRepositoryTest {
         }
         locationDao.insertAllLocations(locationEntities);
         locationDao.insertAllTags(locationTags);
+    }
+
+    @After
+    public void tearDown() {
+        database.close();
     }
 }

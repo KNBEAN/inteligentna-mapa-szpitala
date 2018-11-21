@@ -36,7 +36,7 @@ public class FloorInfoDaoTest {
     private Observer observer;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 LocalDB.class)
@@ -54,7 +54,7 @@ public class FloorInfoDaoTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         database.close();
     }
 

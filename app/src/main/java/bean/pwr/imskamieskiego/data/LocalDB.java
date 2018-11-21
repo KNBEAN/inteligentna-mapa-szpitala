@@ -122,7 +122,7 @@ public abstract class LocalDB extends RoomDatabase {
             list = gson.fromJson(reader, typeToken.getType());
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e("LocalDB", "Can't load data from file: " + jsonName, e);
+            Log.e(TAG, "Can't load data from file: " + jsonName, e);
         }
 
         return list;

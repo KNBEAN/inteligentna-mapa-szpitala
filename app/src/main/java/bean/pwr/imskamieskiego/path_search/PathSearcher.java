@@ -26,7 +26,7 @@ public class PathSearcher {
     private boolean inProgress = false;
 
     private PathSearchAlgorithm algorithm;
-    private MutableLiveData<List<MapPoint>> liveDataTrace;
+    private MutableLiveData<List<MapPoint>> liveDataPath;
 
     /**
      * Create new instance of PathSearcher.
@@ -35,7 +35,7 @@ public class PathSearcher {
      */
     public PathSearcher(Context context){
         responseHandler = new Handler(context.getMainLooper());
-        liveDataTrace = new MutableLiveData<>();
+        liveDataPath = new MutableLiveData<>();
     }
 
     /**
@@ -70,7 +70,7 @@ public class PathSearcher {
         long endTime = System.nanoTime();
         Log.d(TAG, "Algorithm ended in " + ((endTime-startTime)/1000000)+ "ms");
 
-        liveDataTrace.postValue(algorithm.getPath());
+        liveDataPath.postValue(algorithm.getPath());
         responseHandler.post(this::searchComplete);
     }
 
@@ -97,6 +97,6 @@ public class PathSearcher {
      * @return LiveData object representing the path of results
      */
     public LiveData<List<MapPoint>> getPath(){
-        return liveDataTrace;
+        return liveDataPath;
     }
 }

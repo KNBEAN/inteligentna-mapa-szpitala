@@ -21,7 +21,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
     private int startPointID;
     private int[] endPointIDs;
     private IMapGraphRepository graphRepository;
-    private List<MapPoint> trace;
+    private List<MapPoint> path;
 
     /**
      * Create instance of Dijkstra algorithm to search path between given points. Points can't have
@@ -40,7 +40,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         this.endPointIDs = new int[1];
         this.endPointIDs[0] = endPoint.getId();
         this.graphRepository = graphRepository;
-        this.trace = new ArrayList<>();
+        this.path = new ArrayList<>();
     }
 
     /**
@@ -70,7 +70,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         }
 
         this.graphRepository = graphRepository;
-        this.trace = new ArrayList<>();
+        this.path = new ArrayList<>();
     }
 
     /**
@@ -85,7 +85,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         int depthFetch = 10;
 
 
-        trace.clear();
+        path.clear();
 
         Map<Integer, Integer> nodeVisitHistory = new HashMap<>();
         Map<Integer, Integer> distancesFromStart = new HashMap<>();
@@ -109,7 +109,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
 
             if (isEndPoint(from_id)){
                 //The target has been achieved.
-                generateTrace(nodeVisitHistory, from_id);
+                generatePath(nodeVisitHistory, from_id);
                 return;
             }
 
@@ -142,7 +142,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
     @Override
     @NonNull
     public List<MapPoint> getPath() {
-        return trace;
+        return path;
     }
 
 
@@ -150,7 +150,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         int id;
         int distance;
 
-        public NodePriorityWrapper(int id, int distance) {
+        NodePriorityWrapper(int id, int distance) {
             this.id = id;
             this.distance = distance;
         }
@@ -194,9 +194,9 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         return fetchedEdges;
     }
 
-    private void generateTrace(Map<Integer, Integer> nodeVisitHistory, int endPointID){
-        int traceSize = nodeVisitHistory.size();
-        if (traceSize == 0) return;
+    private void generatePath(Map<Integer, Integer> nodeVisitHistory, int endPointID){
+        int pathSize = nodeVisitHistory.size();
+        if (pathSize == 0) return;
         if (!nodeVisitHistory.containsKey(endPointID)) return;
 
 
@@ -214,7 +214,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
             int id = listOfVisits.get(i);
             for (MapPoint point:unsortedMapPointList) {
                 if (point.getId() == id){
-                    trace.add(point);
+                    path.add(point);
                     break;
                 }
             }

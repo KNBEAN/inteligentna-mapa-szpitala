@@ -24,7 +24,7 @@ public class EdgeDaoTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         database = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 LocalDB.class)
                 // allowing main thread queries, just for testing
@@ -35,7 +35,7 @@ public class EdgeDaoTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         database.close();
     }
 
