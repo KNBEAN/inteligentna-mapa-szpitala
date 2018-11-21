@@ -1,10 +1,12 @@
 bean.pwr.imskamieskiego
 bean.pwr.imskamieskiego.GUI
+bean.pwr.imskamieskiego.GUI.locationSearch
 bean.pwr.imskamieskiego.MapDrawer
-bean.pwr.imskamieskiego.GUI.NavigationWindow
 bean.pwr.imskamieskiego.data
 bean.pwr.imskamieskiego.data.map.dao
 bean.pwr.imskamieskiego.data.map.entity
 bean.pwr.imskamieskiego.model.map
 bean.pwr.imskamieskiego.path_search
 bean.pwr.imskamieskiego.repository
+bean.pwr.imskamieskiego.utils
+bean.pwr.imskamieskiego.view_models
