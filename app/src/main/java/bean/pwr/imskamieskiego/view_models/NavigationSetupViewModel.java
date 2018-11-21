@@ -33,7 +33,7 @@ public class NavigationSetupViewModel extends AndroidViewModel {
     private MutableLiveData<String> targetLocationName;
 
     /**
-     * Custom for navigation setup view model.
+     * Custom ViewModel for navigation setup view model.
      * @param application application context
      * @param targetName name of target location
      */
@@ -78,7 +78,7 @@ public class NavigationSetupViewModel extends AndroidViewModel {
     }
 
     /**
-     * Set target location name
+     * Sets target location name
      * @param targetLocationName name of target location
      */
     public void setTarget(String targetLocationName){
@@ -86,16 +86,16 @@ public class NavigationSetupViewModel extends AndroidViewModel {
     }
 
     /**
-     * Returns target location name as live data
-     * @return live data with target location name
+     * Returns target location name as LiveData
+     * @return LiveData with target location name
      */
     public LiveData<String> getTargetLocationName(){
         return targetLocationName;
     }
 
     /**
-     * Returns selected start point as live data
-     * @return live data with actual selected start point
+     * Returns selected start point as LiveData
+     * @return LiveData with actual selected start point
      */
     public LiveData<MapPoint> getStartPoint() {
         return startMapPoint;
@@ -105,7 +105,7 @@ public class NavigationSetupViewModel extends AndroidViewModel {
      * Returns the selected starting location. If the starting point was selected from the map and
      * this starting point is not assigned to any location, the location will be generated as the
      * location with the default name.
-     * @return selected location as live data
+     * @return selected location as LiveData
      */
     public LiveData<Location> getStartLocation() {
         return startLocation;
@@ -121,7 +121,7 @@ public class NavigationSetupViewModel extends AndroidViewModel {
     }
 
     /**
-     * Set start location
+     * Sets start location
      * @param startLocation start location
      */
     public void setStartLocation(Location startLocation){

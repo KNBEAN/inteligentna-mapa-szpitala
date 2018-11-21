@@ -83,14 +83,14 @@ public class LocationViewModel extends AndroidViewModel {
 
     /**
      * Returns list of points for selected target.
-     * @return list of target points as live data
+     * @return list of target points as LiveData
      */
     public LiveData<List<MapPoint>> getTargetPoint() {
         return targetMapPoint;
     }
 
     /**
-     * Returns selected location as live data. Selected location is wrapped into EventWrapper object.
+     * Returns selected location as LiveData. Selected location is wrapped into EventWrapper object.
      * If the target point was selected from the map and this target point is not assigned to any
      * location, the location will be generated as the location with the default name.
      * @return  LiveData with location wrapped into EventWrapper

@@ -30,8 +30,8 @@ public class PathSearchViewModel extends AndroidViewModel {
     }
 
     /**
-     * Gets live data with found route. Live data will be update, when new route will be ready.
-     * @return live data with list of MapPoints
+     * Gets LiveData with route that was found. LiveData will be update, when new route will be ready.
+     * @return LiveData with list of MapPoints
      */
     public LiveData<List<MapPoint>> getSearchedRoute(){
         return searchedRoute;

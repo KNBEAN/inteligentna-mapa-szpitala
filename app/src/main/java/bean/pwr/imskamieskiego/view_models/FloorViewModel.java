@@ -42,16 +42,16 @@ public class FloorViewModel extends AndroidViewModel {
     }
 
     /**
-     * Returns live data which contains list of floor names
-     * @return live data with strings array with floor names
+     * Returns LiveData which contains list of floor names
+     * @return LiveData with strings array with floor names
      */
     public LiveData<String[]> getFloorsList(){
         return floorDataRepository.getFloorNames();
     }
 
     /**
-     * Returns live data with bitmap of currently selected floor
-     * @return live data with bitmap
+     * Returns LiveData with bitmap of currently selected floor
+     * @return LiveData with bitmap
      */
     public LiveData<Bitmap> getFloorBitmap() {
         return floorBitmap;
