@@ -187,7 +187,9 @@ public class MapActivity extends AppCompatActivity
             return;
         }
 
-        mapPointsDrawingBack();
+        if (fragmentManager.findFragmentByTag(searchFragmentTag) == null) {
+            mapPointsDrawingBack();
+        }
 
         super.onBackPressed();
 
