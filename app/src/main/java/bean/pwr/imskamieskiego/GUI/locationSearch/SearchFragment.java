@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         searchViewModel.getSuggestionsList().observe(this, this::createSuggestions);
         searchViewModel.getSubmitQueryResult().observe(this, this::processSearchResult);
+
     }
 
     @Override
@@ -71,6 +73,14 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchView.setOnQueryTextListener(this);
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        searchView.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     @Override
