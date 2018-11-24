@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.R;
@@ -99,9 +98,6 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private void selectSuggestionItem(View view){
         String selectedLocation = ((TextView)view.findViewById(R.id.locationName)).getText().toString();
         Log.d(TAG, "selectSuggestionItem: Selected suggestion: " + selectedLocation);
-
-        Toast.makeText(this.getContext(), "Selected suggestion "+selectedLocation, Toast.LENGTH_LONG).show();
-
         searchView.setQuery(selectedLocation, true);
     }
 
