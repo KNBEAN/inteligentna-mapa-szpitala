@@ -1,8 +1,6 @@
 package bean.pwr.imskamieskiego.data.map.dao;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;
 
@@ -11,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Rule;
 import org.junit.rules.TestRule;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
@@ -163,6 +160,7 @@ public class MapPointDaoTest {
 
         LocationDao locationDao = database.getLocationDao();
         locationDao.insertAllLocations(locationList);
+        mapPointDao.insertAllPoints(getTestData());
         mapPointDao.insertAllQuickAccess(quickAccessList);
 
         TestObserver<List<MapPointEntity>> observer = new TestObserver<>();
