@@ -2,35 +2,28 @@ package bean.pwr.imskamieskiego.data.map.dao;
 
 import android.arch.core.executor.testing.InstantTaskExecutorRule;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.persistence.room.Room;
-import android.database.Cursor;
 import android.support.test.InstrumentationRegistry;
-import android.util.Log;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import bean.pwr.imskamieskiego.TestObserver;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
-import bean.pwr.imskamieskiego.model.map.Location;
 
-import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class LocationDaoTest {
     @Rule
@@ -38,10 +31,6 @@ public class LocationDaoTest {
 
     private LocalDB database;
     private LocationDao locationDao;
-
-    @Mock
-    private Observer observer;
-
 
     @Before
     public void setUp() {
@@ -71,9 +60,9 @@ public class LocationDaoTest {
         locationDao.insertAllLocations(locations);
 
         LiveData<LocationEntity> result = locationDao.getByID(locations.get(0).getId());
+        TestObserver<LocationEntity> observer = new TestObserver<>();
         result.observeForever(observer);
-
-        assertEquals(locations.get(0), result.getValue());
+        assertEquals(locations.get(0), observer.observedValues.get(0));
     }
 
     @Test
@@ -87,9 +76,10 @@ public class LocationDaoTest {
         locationDao.insertAllLocations(locations);
 
         LiveData<LocationEntity> result = locationDao.getByID(locations.get(0).getId());
-        result.observeForever(observer);
 
-        assertEquals(locations.get(0), result.getValue());
+        TestObserver<LocationEntity> observer = new TestObserver<>();
+        result.observeForever(observer);
+        assertEquals(locations.get(0), observer.observedValues.get(0));
     }
 
     @Test
@@ -103,9 +93,10 @@ public class LocationDaoTest {
         locationDao.insertAllLocations(locations);
 
         LiveData<LocationEntity> result = locationDao.getByID(2);
+        TestObserver<LocationEntity> observer = new TestObserver<>();
         result.observeForever(observer);
 
-        assertNull(result.getValue());
+        assertNull(observer.observedValues.get(0));
     }
 
 
@@ -131,7 +122,8 @@ public class LocationDaoTest {
 
 
         LiveData<List<LocationEntity>> locations = locationDao.getListByTag("%koń%", 5);
+        TestObserver<List<LocationEntity>> observer = new TestObserver<>();
         locations.observeForever(observer);
-        assertTrue(locations.getValue().containsAll(similarLocations));
+        assertTrue(observer.observedValues.get(0).containsAll(similarLocations));
     }
 }

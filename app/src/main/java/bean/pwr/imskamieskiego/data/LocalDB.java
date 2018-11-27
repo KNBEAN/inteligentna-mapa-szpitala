@@ -34,6 +34,7 @@ import bean.pwr.imskamieskiego.data.map.entity.FloorInfoEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
 import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
+import bean.pwr.imskamieskiego.data.map.entity.QuickAccessEntity;
 
 
 @Database(entities =
@@ -42,7 +43,8 @@ import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
                 LocationEntity.class,
                 EdgeEntity.class,
                 FloorInfoEntity.class,
-                LocationTagEntity.class
+                LocationTagEntity.class,
+                QuickAccessEntity.class
         },
         version = 1)
 @TypeConverters({IntegerConverter.class})
@@ -55,6 +57,7 @@ public abstract class LocalDB extends RoomDatabase {
     private static final String LOCATION_LIST_FILE = "locationList.json";
     private static final String TAG_LIST_FILE = "tagList.json";
     private static final String FLOOR_LIST_FILE = "floorList.json";
+    private static final String QUICK_ACCESS_LIST_FILE = "quickAccessList.json";
 
     public abstract MapPointDao getMapPointDao();
     public abstract LocationDao getLocationDao();
@@ -104,6 +107,9 @@ public abstract class LocalDB extends RoomDatabase {
 
                             List<FloorInfoEntity> floorInfoList = getEntityListFromJsonFile(context, FLOOR_LIST_FILE, new TypeToken<List<FloorInfoEntity>>() {});
                             floorInfoDao.insertAllFloors(floorInfoList);
+
+                            List<QuickAccessEntity> quickAccessList = getEntityListFromJsonFile(context, QUICK_ACCESS_LIST_FILE, new TypeToken<List<QuickAccessEntity>>() {});
+
 
                         });
                         Log.d(TAG, "onCreate: data loaded into database");
