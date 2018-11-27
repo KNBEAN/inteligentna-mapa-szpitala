@@ -109,7 +109,7 @@ public abstract class LocalDB extends RoomDatabase {
                             floorInfoDao.insertAllFloors(floorInfoList);
 
                             List<QuickAccessEntity> quickAccessList = getEntityListFromJsonFile(context, QUICK_ACCESS_LIST_FILE, new TypeToken<List<QuickAccessEntity>>() {});
-
+                            mapPointDao.insertAllQuickAccess(quickAccessList);
 
                         });
                         Log.d(TAG, "onCreate: data loaded into database");

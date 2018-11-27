@@ -304,16 +304,20 @@ public class MapActivity extends AppCompatActivity
         switch (button){
             case WC:
                 Log.d(TAG, "Quick access WC");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.TOILET_QA);
                 break;
             case FOOD:
                 Log.d(TAG, "Quick access FOOD");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.FOOD_QA);
                 break;
             case ASSISTANT:
                 Log.d(TAG, "Quick access ASSISTANT");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.PATIENT_ASSISTANT_QA);
                 break;
             default:
                 Log.d(TAG, "Quick access undefined");
         }
+        quickAccessFragment.hideQuickAccessButtons();
     }
 
     @Override

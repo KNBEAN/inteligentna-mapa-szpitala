@@ -51,4 +51,12 @@ public interface IMapRepository {
      */
     LiveData<List<Location>> getLocationsListByName(String name, int limit);
 
+    /**
+     * Returns a list of Map Points related to the location marked as "quick access location", e.g.
+     * toilets, gastronomy, information points ect. Any location type has other quick access type id.
+     * @param quickAccessType type of quick access location
+     * @return list of MapPoints
+     */
+    LiveData<List<MapPoint>> getPointsByQuickAccessType(int quickAccessType);
+
 }

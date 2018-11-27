@@ -65,4 +65,12 @@ public class MapRepository implements IMapRepository {
                 list-> new ArrayList<>(list)
         );
     }
+
+    @Override
+    public LiveData<List<MapPoint>> getPointsByQuickAccessType(int quickAccessType) {
+        return Transformations.map(
+                mapPointDao.getQuickAccessPoints(quickAccessType),
+                list -> new ArrayList<>(list)
+        );
+    }
 }
