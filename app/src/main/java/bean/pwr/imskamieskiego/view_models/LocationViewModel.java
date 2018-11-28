@@ -155,12 +155,15 @@ public class LocationViewModel extends AndroidViewModel {
         switch (quickAccessType){
             case TOILET_QA:
                 qaLocationName = application.getString(R.string.wc_quick_access_button);
+                qaLocationDescription = application.getString(R.string.quick_access_wc_desc);
                 break;
             case FOOD_QA:
                 qaLocationName = application.getString(R.string.food_quick_access_button);
+                qaLocationDescription = application.getString(R.string.quick_access_food_desc);
                 break;
             case PATIENT_ASSISTANT_QA:
                 qaLocationName = application.getString(R.string.ap_quick_access_button);
+                qaLocationDescription = application.getString(R.string.quick_access_ap_desc);
                 break;
             default:
                 qaLocationName = application.getString(R.string.default_place_name);

@@ -7,7 +7,6 @@
 package bean.pwr.imskamieskiego.repository;
 
 import android.arch.lifecycle.LiveData;
-import android.database.Cursor;
 import java.util.List;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;

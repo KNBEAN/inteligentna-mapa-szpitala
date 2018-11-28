@@ -188,12 +188,12 @@ public class MapActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
-        if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
-            quickAccessFragment.hideQuickAccessButtons();
-            return;
-        }
 
         if (fragmentManager.findFragmentByTag(searchFragmentTag) == null) {
+            if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
+                quickAccessFragment.hideQuickAccessButtons();
+                return;
+            }
             mapPointsDrawingBack();
         }
 
