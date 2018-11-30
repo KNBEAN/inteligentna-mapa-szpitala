@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -202,7 +203,9 @@ public class MapDrawer extends View {
 
 
     private Bitmap layerPathAndTacks(Collection<MapPoint> mapObjects, List<MapPoint> pathPoints, Bitmap floorToDrawOn) {
-        Canvas canvas = new Canvas(floorToDrawOn);
+
+        Bitmap mutableBitmap = floorToDrawOn.copy(Bitmap.Config.ARGB_8888,true);
+        Canvas canvas = new Canvas(mutableBitmap);
 
         if (!pathPoints.isEmpty()) {
             Path path = new Path();
@@ -233,7 +236,7 @@ public class MapDrawer extends View {
                 }
             }
         }
-        return floorToDrawOn;
+        return mutableBitmap;
     }
 
     private void drawPartPath(Canvas canvas, Path path) {
