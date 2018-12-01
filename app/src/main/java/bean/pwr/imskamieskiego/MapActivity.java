@@ -190,7 +190,7 @@ public class MapActivity extends AppCompatActivity
         }
 
         if (fragmentManager.findFragmentByTag(searchFragmentTag) == null) {
-            if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
+            if (quickAccessFragment.isVisible() && quickAccessFragment.isExpanded()){
                 quickAccessFragment.hideQuickAccessButtons();
                 return;
             }
@@ -297,8 +297,7 @@ public class MapActivity extends AppCompatActivity
 
         fTransaction.addToBackStack(navigationSetupTag).commit();
     }
-
-
+    
     @Override
     public void onQAButtonClick(QuickAccessFragment.QuickAccessButtons button) {
         switch (button){
@@ -317,7 +316,6 @@ public class MapActivity extends AppCompatActivity
             default:
                 Log.d(TAG, "Quick access undefined");
         }
-        quickAccessFragment.hideQuickAccessButtons();
     }
 
     @Override

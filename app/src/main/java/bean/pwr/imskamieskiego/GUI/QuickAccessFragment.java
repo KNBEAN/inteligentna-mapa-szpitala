@@ -95,15 +95,12 @@ public class QuickAccessFragment extends Fragment {
 
         wcButton.setOnClickListener(view1 -> {
             listener.onQAButtonClick(QuickAccessButtons.WC);
-            hideQuickAccessButtons();
         });
         patientAssistantButton.setOnClickListener(view1 -> {
             listener.onQAButtonClick(QuickAccessButtons.ASSISTANT);
-            hideQuickAccessButtons();
         });
         foodButton.setOnClickListener(view1 -> {
             listener.onQAButtonClick(QuickAccessButtons.FOOD);
-            hideQuickAccessButtons();
         });
 
     }
