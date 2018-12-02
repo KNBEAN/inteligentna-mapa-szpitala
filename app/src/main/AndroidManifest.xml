@@ -24,9 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".nav_window_activity.AboutHospitalActivity"
+            android:label="@string/navigation_drawer_info"
+
+            />
 
         <activity
-            android:name=".AuthorsActivity"
+            android:name=".nav_window_activity.AuthorsActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
     </application>

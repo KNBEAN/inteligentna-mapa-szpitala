@@ -32,6 +32,8 @@ import bean.pwr.imskamieskiego.GUI.InfoSheet;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.nav_window_activity.AboutHospitalActivity;
+import bean.pwr.imskamieskiego.nav_window_activity.AuthorsActivity;
 import bean.pwr.imskamieskiego.utils.EventWrapper;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
@@ -219,7 +221,9 @@ public class MapActivity extends AppCompatActivity
             Intent intent = new Intent(this, AuthorsActivity.class);
             startActivity(intent);
 
-        } else if (id == R.id.nav_info) {
+        } else if (id == R.id.nav_about_hospital_info) {
+            Intent intent = new Intent(this, AboutHospitalActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_search) {
 

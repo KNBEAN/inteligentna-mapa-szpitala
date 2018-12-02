@@ -41,4 +41,15 @@
     <string name="route_fragment_subtitle">Podążaj wzdłuż wyznaczonej trasy</string>
     <string name="start_is_target_warning">Cel i punkt startowy są w tym samym miejscu.</string>
     <string name="lack_of_detailed_description">Brak dodatkowych informacji</string>
+    <string name="place_address">ul. H. M. Kamieńskiego 73a 51–124 Wrocław</string>
+    <string name="website_address">http://www.wssk.wroc.pl</string>
+    <string name="address">Adres: </string>
+    <string name="website_address_text">Strona internetowa:</string>
+    <string name="contact">Kontakt: </string>
+    <string name="phone_number">71 327 01 00</string>
+    <string name="hospital_mail">Adres mailowy: </string>
+    <string name="hospital_mail_address">sekretariat@wssk.wroc.pl</string>
+    <string name="about_hospital">Pierwszym w Polsce ośrodek wykonujący operacje z użyciem robota chirurgicznego da Vinci. Jeden z najbardziej wyspecjalizowanych szpitali w regionie.</string>
+
+
 </resources>

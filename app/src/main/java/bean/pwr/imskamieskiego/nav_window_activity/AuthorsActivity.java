@@ -1,4 +1,4 @@
-package bean.pwr.imskamieskiego;
+package bean.pwr.imskamieskiego.nav_window_activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +7,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import bean.pwr.imskamieskiego.R;
 
 
 public class AuthorsActivity extends AppCompatActivity {
