@@ -188,12 +188,12 @@ public class MapActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
-        if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
-            quickAccessFragment.hideQuickAccessButtons();
-            return;
-        }
 
         if (fragmentManager.findFragmentByTag(searchFragmentTag) == null) {
+            if (quickAccessFragment.isVisible() && quickAccessFragment.isExpanded()){
+                quickAccessFragment.hideQuickAccessButtons();
+                return;
+            }
             mapPointsDrawingBack();
         }
 
@@ -297,19 +297,21 @@ public class MapActivity extends AppCompatActivity
 
         fTransaction.addToBackStack(navigationSetupTag).commit();
     }
-
-
+    
     @Override
     public void onQAButtonClick(QuickAccessFragment.QuickAccessButtons button) {
         switch (button){
             case WC:
                 Log.d(TAG, "Quick access WC");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.TOILET_QA);
                 break;
             case FOOD:
                 Log.d(TAG, "Quick access FOOD");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.FOOD_QA);
                 break;
             case ASSISTANT:
                 Log.d(TAG, "Quick access ASSISTANT");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.PATIENT_ASSISTANT_QA);
                 break;
             default:
                 Log.d(TAG, "Quick access undefined");
