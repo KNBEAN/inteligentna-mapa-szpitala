@@ -175,7 +175,7 @@ public class MapDrawer extends View {
      */
     public void showFloor(int floor,Bitmap floorMap) {
         if (floor < 0) throw new IllegalArgumentException("Positive value needed");
-        originalMap = floorMap;
+        originalMap = convertBitmapToMutable(floorMap);
         if (originalMap == null) throw new NullPointerException();
         currentlyDisplayedFloor = floor;
         invalidate();
@@ -211,9 +211,7 @@ public class MapDrawer extends View {
 
     private Bitmap layerPathAndTacks(Collection<MapPoint> mapObjects, List<MapPoint> pathPoints, Bitmap floorToDrawOn) {
 
-        Bitmap mutableBitmap = floorToDrawOn.copy(Bitmap.Config.ARGB_8888,true);
-        mutableBitmap = convertBitmapToMutable(mutableBitmap);
-        Canvas canvas = new Canvas(mutableBitmap);
+        Canvas canvas = new Canvas(floorToDrawOn);
 
         if (!pathPoints.isEmpty()) {
             Path path = new Path();
@@ -244,7 +242,7 @@ public class MapDrawer extends View {
                 }
             }
         }
-        return mutableBitmap;
+        return floorToDrawOn;
     }
 
     private Bitmap convertBitmapToMutable(Bitmap bitmap){
@@ -262,7 +260,6 @@ public class MapDrawer extends View {
             bitmap.copyPixelsToBuffer(map);
 
             bitmap.recycle();
-            System.gc();
 
             bitmap = Bitmap.createBitmap(width, height, type);
             map.position(0);
