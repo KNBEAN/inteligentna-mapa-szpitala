@@ -10,12 +10,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Matrix;
 import android.graphics.PointF;
+import android.os.Environment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -23,6 +25,12 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -167,7 +175,7 @@ public class MapDrawer extends View {
      */
     public void showFloor(int floor,Bitmap floorMap) {
         if (floor < 0) throw new IllegalArgumentException("Positive value needed");
-        originalMap = floorMap;
+        originalMap = convertBitmapToMutable(floorMap);
         if (originalMap == null) throw new NullPointerException();
         currentlyDisplayedFloor = floor;
         invalidate();
@@ -202,6 +210,7 @@ public class MapDrawer extends View {
 
 
     private Bitmap layerPathAndTacks(Collection<MapPoint> mapObjects, List<MapPoint> pathPoints, Bitmap floorToDrawOn) {
+
         Canvas canvas = new Canvas(floorToDrawOn);
 
         if (!pathPoints.isEmpty()) {
@@ -234,6 +243,38 @@ public class MapDrawer extends View {
             }
         }
         return floorToDrawOn;
+    }
+
+    private Bitmap convertBitmapToMutable(Bitmap bitmap){
+
+        try {
+            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "temp.tmp");
+            RandomAccessFile randomAccessFile = new RandomAccessFile(file,"rw");
+
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            Bitmap.Config type = bitmap.getConfig();
+
+            FileChannel channel = randomAccessFile.getChannel();
+            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, bitmap.getRowBytes()*height);
+            bitmap.copyPixelsToBuffer(map);
+
+            bitmap.recycle();
+
+            bitmap = Bitmap.createBitmap(width, height, type);
+            map.position(0);
+
+            bitmap.copyPixelsFromBuffer(map);
+
+            channel.close();
+            randomAccessFile.close();
+
+            file.delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
     }
 
     private void drawPartPath(Canvas canvas, Path path) {
