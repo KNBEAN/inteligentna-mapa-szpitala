@@ -33,15 +33,11 @@
             />
         <activity
             android:name=".nav_window_activity.AboutApp"
-            android:label="@string/navigation_drawer_info"
+            android:label="@string/navigation_drawer_about_app"
             android:theme="@style/AppTheme.ActionBar"
             android:parentActivityName=".MapActivity"
 
             />
-
-        <activity
-            android:name=".nav_window_activity.AuthorsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
 
     </application>
 
