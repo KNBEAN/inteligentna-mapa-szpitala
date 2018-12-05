@@ -22,7 +22,6 @@
     <string name="food_quick_access_button">Jedzenie</string>
     <string name="wc_quick_access_button">Toaleta</string>
     <string name="guide_to">Prowadź do</string>
-    <string name="place_name">Place name</string>
     <string name="authors_window_title_authors">Autorzy</string>
     <string name="authors">Karol Wyskocki\nAnna Lasota\nKamil Świechowski\nPiotr Janus</string>
     <string name="authors_window_title_translations">Tłumaczenia</string>
@@ -47,7 +46,6 @@
     <string name="website_address_text">Strona internetowa:</string>
     <string name="contact">Kontakt: </string>
     <string name="phone_number">71 327 01 00</string>
-    <string name="hospital_mail">Adres mailowy: </string>
     <string name="hospital_mail_address">sekretariat@wssk.wroc.pl</string>
     <string name="about_hospital">Pierwszy w Polsce ośrodek wykonujący operacje z użyciem robota chirurgicznego da Vinci. Jeden z najbardziej wyspecjalizowanych szpitali w regionie.</string>
 
