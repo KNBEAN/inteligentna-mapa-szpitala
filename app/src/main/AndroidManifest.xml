@@ -38,6 +38,13 @@
             android:parentActivityName=".MapActivity"
 
             />
+        <activity
+            android:name=".nav_window_activity.AboutPatientAssistantActivity"
+            android:label="@string/navigation_drawer_ap"
+            android:theme="@style/AppTheme.ActionBar"
+            android:parentActivityName=".MapActivity"
+
+            />
 
     </application>
 

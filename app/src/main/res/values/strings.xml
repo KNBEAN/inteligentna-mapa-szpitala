@@ -48,6 +48,11 @@
     <string name="phone_number">71 327 01 00</string>
     <string name="hospital_mail_address">sekretariat@wssk.wroc.pl</string>
     <string name="about_hospital">Pierwszy w Polsce ośrodek wykonujący operacje z użyciem robota chirurgicznego da Vinci. Jeden z najbardziej wyspecjalizowanych szpitali w regionie.</string>
+    <string name="ap_description">W dniu 24 kwietnia 2017 roku w Wojewódzkim Szpitalu Specjalistycznym Ośrodku Badawczo-Rozwojowym ruszył pilotażowy projekt praktyk zawodowych Asystent Pacjenta dla studentów Inżynierii Biomedycznej. Projekt uruchomiono w wyniku podpisanego porozumienia pomiędzy Katedrą Inżynierii Biomedycznej na Wydziale Podstawowych Problemów Techniki reprezentowaną przez prof. Arkadiusza Wójsa oraz prof. Halinę Podbielską a Wojewódzkim Szpitalem Specjalistycznym Ośrodkiem Badawczo-Rozwojowym we Wrocławiu reprezentowanym przez prof. Wojciecha Witkiewicza. W organizację praktyk zawodowych bardzo aktywnie włączyli się sami studenci należący do Koła Naukowego “MICELA”. Bezpośredni nadzór merytoryczny ze strony PWr pełni dr inż. Magdalena Przybyło oraz prof. Marek Langner. Od strony studentów Tomasz Klimek (III rok IB), Karolina Koszmider (III rok IB) Piotr Narecki (II rok IB) 2017/2018 . Natomiast w Szpitalu Pani Patrycja Jędrzejczak.
+
+Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pacjenta, mogą poznać organizację i funkcjonowanie Szpitala, jego strukturę organizacyjną, zaplecze sprzętowe oraz potrzeby pacjentów i kadry medycznej w zakresie inżynierii biomedycznej. Rozpoczęcie praktyk poprzedza cykl szkoleń przeprowadzonych przez pracowników Wojewódzkiego Szpitala Specjalistycznego, dotyczących: organizacji pracy szpitala, historii Wojewódzkiego Szpitala Specjalistycznego Ośrodka Badawczo-Rozwojowego, zasad finansowania służby zdrowia, przepisów BHP obowiązujących w Szpitalu oraz ochrony danych osobowych.</string>
+    <string name="source">Źródło:</string>
+    <string name="ibam_website">http://lbam.pwr.edu.pl/</string>
 
 
 </resources>

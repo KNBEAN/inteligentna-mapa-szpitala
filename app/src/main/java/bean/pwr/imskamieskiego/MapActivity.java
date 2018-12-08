@@ -34,6 +34,7 @@ import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutApp;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutHospitalActivity;
+import bean.pwr.imskamieskiego.nav_window_activity.AboutPatientAssistantActivity;
 import bean.pwr.imskamieskiego.utils.EventWrapper;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.LocationViewModel;
@@ -216,6 +217,8 @@ public class MapActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_ap) {
+            Intent intent = new Intent(this, AboutPatientAssistantActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_authors) {
             Intent intent = new Intent(this, AboutApp.class);
