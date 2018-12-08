@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">IMS Kamieńskiego</string>
-    <string name="nav_window_start">Wpisz miejsce startowe</string>
-    <string name="nav_window_destination">Wpisz miejsce docelowe</string>
+    <string name="nav_window_start_hint">Wpisz miejsce startowe</string>
+    <string name="nav_window_destination_hint">Wpisz miejsce docelowe</string>
     <string name="nav_window_to">Do</string>
     <string name="nav_window_from">Z</string>
     <string name="nav_window_stairs">Schody</string>
-    <string name="nav_window_button">Start</string>
+    <string name="nav_window_button_start">Start</string>
     <string name="title_activity_map">Mapa szpitala</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -29,11 +29,11 @@
     <string name="bug_report">Wszelkie sugestie odnośnie aplikacji proszę zgłaszać pod adresem: </string>
     <string name="bug_report_address">examplemail@mail.com</string>
     <string name="version_number">1.0</string>
-    <string name="short_description">Głównym celem aplikacji jest pomoc pacjentom,
+    <string name="short_app_description">Głównym celem aplikacji jest pomoc pacjentom,
         osobom odwiedzającym oraz pracownikom szpitala w
         odnajdywaniu się w budynku.</string>
     <string name="place">Miejsce</string>
-    <string name="more_info">more info</string>
+    <string name="more_info">Więcej informacji.</string>
     <string name="navigation_setup_snackbar_hint">Wybierz miejsce, z którego chcesz rozpocząć nawigację.</string>
     <string name="default_place_name">Korytarz</string>
     <string name="route_fragment_title">Wyznaczona trasa</string>
