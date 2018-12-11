@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package bean.pwr.imskamieskiego.GUI;
 
 import android.content.Context;
@@ -89,15 +95,12 @@ public class QuickAccessFragment extends Fragment {
 
         wcButton.setOnClickListener(view1 -> {
             listener.onQAButtonClick(QuickAccessButtons.WC);
-            hideQuickAccessButtons();
         });
         patientAssistantButton.setOnClickListener(view1 -> {
             listener.onQAButtonClick(QuickAccessButtons.ASSISTANT);
-            hideQuickAccessButtons();
         });
         foodButton.setOnClickListener(view1 -> {
             listener.onQAButtonClick(QuickAccessButtons.FOOD);
-            hideQuickAccessButtons();
         });
 
     }

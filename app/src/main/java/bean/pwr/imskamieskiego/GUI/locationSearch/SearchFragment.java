@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package bean.pwr.imskamieskiego.GUI.locationSearch;
 
 import android.arch.lifecycle.ViewModelProviders;
@@ -11,10 +17,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.R;
@@ -41,6 +47,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         searchViewModel.getSuggestionsList().observe(this, this::createSuggestions);
         searchViewModel.getSubmitQueryResult().observe(this, this::processSearchResult);
+
     }
 
     @Override
@@ -74,6 +81,14 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        searchView.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    }
+
+    @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
     }
@@ -99,9 +114,6 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private void selectSuggestionItem(View view){
         String selectedLocation = ((TextView)view.findViewById(R.id.locationName)).getText().toString();
         Log.d(TAG, "selectSuggestionItem: Selected suggestion: " + selectedLocation);
-
-        Toast.makeText(this.getContext(), "Selected suggestion "+selectedLocation, Toast.LENGTH_LONG).show();
-
         searchView.setQuery(selectedLocation, true);
     }
 

@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package bean.pwr.imskamieskiego.repository;
 
 import android.arch.lifecycle.LiveData;
@@ -57,6 +63,14 @@ public class MapRepository implements IMapRepository {
         return Transformations.map(
                 locationDao.getListByTag(name.toLowerCase(), limit),
                 list-> new ArrayList<>(list)
+        );
+    }
+
+    @Override
+    public LiveData<List<MapPoint>> getPointsByQuickAccessType(int quickAccessType) {
+        return Transformations.map(
+                mapPointDao.getQuickAccessPoints(quickAccessType),
+                list -> new ArrayList<>(list)
         );
     }
 }

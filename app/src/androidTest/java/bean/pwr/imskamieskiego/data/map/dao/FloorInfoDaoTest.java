@@ -19,8 +19,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import bean.pwr.imskamieskiego.TestObserver;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.entity.FloorInfoEntity;
+import bean.pwr.imskamieskiego.model.map.Location;
 
 import static org.junit.Assert.*;
 
@@ -31,9 +33,6 @@ public class FloorInfoDaoTest {
 
     private LocalDB database;
     private FloorInfoDao floorInfoDao;
-
-    @Mock
-    private Observer observer;
 
     @Before
     public void setUp() {
@@ -71,9 +70,10 @@ public class FloorInfoDaoTest {
         String[] expectedNames = {"ground floor", "1st floor", "2nd floor"};
 
         LiveData<String[]> floorNames = floorInfoDao.getFloorNames();
+        TestObserver<String[]> observer = new TestObserver<>();
         floorNames.observeForever(observer);
 
 
-        assertArrayEquals(expectedNames, floorNames.getValue());
+        assertArrayEquals(expectedNames, observer.observedValues.get(0));
     }
 }

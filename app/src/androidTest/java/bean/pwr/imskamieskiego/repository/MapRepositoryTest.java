@@ -24,6 +24,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.when;
 
+import bean.pwr.imskamieskiego.TestObserver;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.dao.LocationDao;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
@@ -48,7 +49,6 @@ public class MapRepositoryTest {
     @Mock private LifecycleOwner lifecycleOwner;
     private LifecycleRegistry lifecycle;
 
-    @Mock private Observer observer;
     private List<LocationEntity> locationEntities;
 
     @Before
@@ -90,22 +90,27 @@ public class MapRepositoryTest {
     @Test
     public void getLocationsByEmptyName() {
         LiveData<List<Location>> result = repository.getLocationsListByName("%%", 5);
-        result.observe(lifecycleOwner, observer);
+        TestObserver<List<Location>> observer = new TestObserver<>();
+        result.observeForever(observer);
 
-        assertTrue(result.getValue().containsAll(locationEntities));
+        assertTrue(observer.observedValues.get(0).containsAll(locationEntities));
     }
 
     @Test
     public void getLocationsWhenNoMatch() {
         LiveData<List<Location>> result = repository.getLocationsListByName("potato", 5);
-        result.observe(lifecycleOwner, observer);
-        assertTrue(result.getValue().isEmpty());
+        TestObserver<List<Location>> observer = new TestObserver<>();
+        result.observeForever(observer);
+
+        assertTrue(observer.observedValues.get(0).isEmpty());
     }
 
     @Test(expected = NullPointerException.class)
     public void getLocationsWhenNameIsNull() {
 
-        repository.getLocationsListByName(null, 5).observe(lifecycleOwner, observer);
+        LiveData<List<Location>> result = repository.getLocationsListByName(null, 5);
+        TestObserver<List<Location>> observer = new TestObserver<>();
+        result.observeForever(observer);
 
     }
 

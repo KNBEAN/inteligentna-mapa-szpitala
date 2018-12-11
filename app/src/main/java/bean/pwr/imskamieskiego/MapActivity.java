@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package bean.pwr.imskamieskiego;
 
 import android.arch.lifecycle.ViewModelProviders;
@@ -185,12 +191,14 @@ public class MapActivity extends AppCompatActivity
             drawer.closeDrawer(GravityCompat.START);
             return;
         }
-        if (quickAccessFragment.isAdded() && quickAccessFragment.isExpanded()){
-            quickAccessFragment.hideQuickAccessButtons();
-            return;
-        }
 
-        mapPointsDrawingBack();
+        if (fragmentManager.findFragmentByTag(searchFragmentTag) == null) {
+            if (quickAccessFragment.isVisible() && quickAccessFragment.isExpanded()){
+                quickAccessFragment.hideQuickAccessButtons();
+                return;
+            }
+            mapPointsDrawingBack();
+        }
 
         super.onBackPressed();
 
@@ -296,19 +304,21 @@ public class MapActivity extends AppCompatActivity
 
         fTransaction.addToBackStack(navigationSetupTag).commit();
     }
-
-
+    
     @Override
     public void onQAButtonClick(QuickAccessFragment.QuickAccessButtons button) {
         switch (button){
             case WC:
                 Log.d(TAG, "Quick access WC");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.TOILET_QA);
                 break;
             case FOOD:
                 Log.d(TAG, "Quick access FOOD");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.FOOD_QA);
                 break;
             case ASSISTANT:
                 Log.d(TAG, "Quick access ASSISTANT");
+                locationViewModel.getQuickAccessTarget(LocationViewModel.PATIENT_ASSISTANT_QA);
                 break;
             default:
                 Log.d(TAG, "Quick access undefined");

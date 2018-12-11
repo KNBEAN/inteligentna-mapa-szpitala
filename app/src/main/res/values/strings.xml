@@ -1,3 +1,9 @@
+<!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
 <resources>
     <string name="app_name">IMS Kamieńskiego</string>
     <string name="nav_window_start_hint">Wpisz miejsce startowe</string>
@@ -19,7 +25,7 @@
     <string name="search_view_hint">Wyszukaj miejsce</string>
     <string name="floor_change_button_description">Przycisk zmiany piętra</string>
     <string name="ap_quick_access_button">Asystent Pacjenta</string>
-    <string name="food_quick_access_button">Jedzenie</string>
+    <string name="food_quick_access_button">Gastronomia</string>
     <string name="wc_quick_access_button">Toaleta</string>
     <string name="guide_to">Prowadź do</string>
     <string name="authors_window_title_authors">Autorzy:</string>
@@ -53,6 +59,8 @@
 Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pacjenta, mogą poznać organizację i funkcjonowanie Szpitala, jego strukturę organizacyjną, zaplecze sprzętowe oraz potrzeby pacjentów i kadry medycznej w zakresie inżynierii biomedycznej. Rozpoczęcie praktyk poprzedza cykl szkoleń przeprowadzonych przez pracowników Wojewódzkiego Szpitala Specjalistycznego, dotyczących: organizacji pracy szpitala, historii Wojewódzkiego Szpitala Specjalistycznego Ośrodka Badawczo-Rozwojowego, zasad finansowania służby zdrowia, przepisów BHP obowiązujących w Szpitalu oraz ochrony danych osobowych.</string>
     <string name="source">Źródło:</string>
     <string name="ibam_website">http://lbam.pwr.edu.pl/</string>
-
+    <string name="quick_access_wc_desc">Znajdź trasę do najbliższej toalety</string>
+    <string name="quick_access_food_desc">Znajdź trasę do najbliższego punktu gastronomicznego</string>
+    <string name="quick_access_ap_desc">Znajdź trasę do najbliższego stanowiska Asystenta Pacjenta</string>
 
 </resources>

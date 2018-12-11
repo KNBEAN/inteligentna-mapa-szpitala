@@ -6,38 +6,41 @@
 
 package bean.pwr.imskamieskiego.data.map.entity;
 
+
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
 
-@Entity(tableName = "location_tags",
+@Entity(tableName = "quick_access_locations",
         foreignKeys = @ForeignKey(
                 entity = LocationEntity.class,
                 parentColumns = "id",
                 childColumns = "location_id",
                 onDelete = ForeignKey.CASCADE),
         indices = @Index("location_id"))
-public class LocationTagEntity {
+public class QuickAccessEntity {
 
     @PrimaryKey
-    @NonNull
-    private String tag;
-
+    private int id;
     private int location_id;
+    private int quick_access_type;
 
-
-    public LocationTagEntity(@NonNull String tag, int location_id) {
-        this.tag = tag;
+    public QuickAccessEntity(int id, int location_id, int quick_access_type) {
+        this.id = id;
         this.location_id = location_id;
+        this.quick_access_type = quick_access_type;
     }
 
-    public int getLocation_id(){
+    public int getId() {
+        return id;
+    }
+
+    public int getLocation_id() {
         return location_id;
     }
 
-    public String getTag(){
-        return tag;
+    public int getQuick_access_type() {
+        return quick_access_type;
     }
 }

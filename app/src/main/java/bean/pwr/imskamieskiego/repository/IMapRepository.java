@@ -1,7 +1,12 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package bean.pwr.imskamieskiego.repository;
 
 import android.arch.lifecycle.LiveData;
-import android.database.Cursor;
 import java.util.List;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -44,5 +49,13 @@ public interface IMapRepository {
      * @return LiveData with list of locations
      */
     LiveData<List<Location>> getLocationsListByName(String name, int limit);
+
+    /**
+     * Returns a list of Map Points related to the location marked as "quick access location", e.g.
+     * toilets, gastronomy, information points ect. Any location type has other quick access type id.
+     * @param quickAccessType type of quick access location
+     * @return list of MapPoints
+     */
+    LiveData<List<MapPoint>> getPointsByQuickAccessType(int quickAccessType);
 
 }

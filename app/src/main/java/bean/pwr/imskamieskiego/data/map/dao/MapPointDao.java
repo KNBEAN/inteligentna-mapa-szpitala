@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package bean.pwr.imskamieskiego.data.map.dao;
 
 import android.arch.lifecycle.LiveData;
@@ -9,6 +15,8 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
+import bean.pwr.imskamieskiego.data.map.entity.QuickAccessEntity;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 @Dao
 public interface MapPointDao {
@@ -16,9 +24,12 @@ public interface MapPointDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllPoints(List<MapPointEntity> mapPoints);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAllQuickAccess(List<QuickAccessEntity> quickAccessLocations);
+
     @Query("SELECT * FROM nodes WHERE id = :id")
     MapPointEntity getByID(int id);
-  
+
     @Query("SELECT * FROM nodes WHERE id IN (:id)")
     List<MapPointEntity> getByID(List<Integer> id);
 
@@ -29,9 +40,9 @@ public interface MapPointDao {
     LiveData<List<MapPointEntity>> getByLocationIDLiveData(int locationID);
 
     @Query("SELECT * FROM nodes " +
-           "WHERE floor = :floor " +
-           "ORDER BY (:xPos - x)*(:xPos - x) + (:yPos - y)*(:yPos - y) " +
-           "LIMIT 1")
+            "WHERE floor = :floor " +
+            "ORDER BY (:xPos - x)*(:xPos - x) + (:yPos - y)*(:yPos - y) " +
+            "LIMIT 1")
     MapPointEntity getNearest(int xPos, int yPos, int floor);
 
     @Query("SELECT * FROM nodes " +
@@ -39,5 +50,8 @@ public interface MapPointDao {
             "ORDER BY (:xPos - x)*(:xPos - x) + (:yPos - y)*(:yPos - y) " +
             "LIMIT 1")
     LiveData<MapPointEntity> getNearestLiveData(int xPos, int yPos, int floor);
+
+    @Query("SELECT nodes.id, floor, x, y, locationID FROM nodes JOIN quick_access_locations ON locationID = location_id WHERE quick_access_type = :quickAccessType")
+    LiveData<List<MapPointEntity>> getQuickAccessPoints(int quickAccessType);
 
 }

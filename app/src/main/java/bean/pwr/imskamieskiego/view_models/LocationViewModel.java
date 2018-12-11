@@ -1,3 +1,9 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 package bean.pwr.imskamieskiego.view_models;
 
 import android.app.Application;
@@ -24,12 +30,18 @@ import bean.pwr.imskamieskiego.utils.EventWrapper;
  */
 public class LocationViewModel extends AndroidViewModel {
 
+    public static final int TOILET_QA = 1;
+    public static final int FOOD_QA = 2;
+    public static final int PATIENT_ASSISTANT_QA = 3;
+
     private static final String TAG = "LocationViewModel";
 
+    private Application application;
     private MapRepository mapRepository;
 
     private MutableLiveData<MapPoint> targetMapPointTrigger;
     private MutableLiveData<Location> targetLocationTrigger;
+    private MutableLiveData<Integer> targetQuickAccessType;
     private MediatorLiveData<EventWrapper<Location>> targetLocation;
     private MediatorLiveData<List<MapPoint>> targetMapPoint;
 
@@ -37,11 +49,13 @@ public class LocationViewModel extends AndroidViewModel {
 
     public LocationViewModel(@NonNull Application application) {
         super(application);
+        this.application = application;
         LocalDB dataBase = LocalDB.getDatabase(application.getApplicationContext());
         mapRepository = new MapRepository(dataBase);
 
         targetLocationTrigger = new MutableLiveData<>();
         targetMapPointTrigger = new MutableLiveData<>();
+        targetQuickAccessType = new MutableLiveData<>();
         targetLocation = new MediatorLiveData<>();
         targetMapPoint = new MediatorLiveData<>();
 
@@ -52,6 +66,17 @@ public class LocationViewModel extends AndroidViewModel {
                 location != null ? mapRepository.getPointsByLocationID(location.getId()) : null
         );
         targetMapPoint.addSource(tmpTargetPoints, mapPoints -> {
+            if (mapPoints != null){
+                targetPointSelected = true;
+            }
+            targetMapPoint.setValue(mapPoints);
+        });
+
+        //Data from quick access
+        LiveData<List<MapPoint>> quickAccessMapPoints = Transformations.switchMap(targetQuickAccessType,
+                type -> type != null ? mapRepository.getPointsByQuickAccessType(type) : null
+        );
+        targetMapPoint.addSource(quickAccessMapPoints, mapPoints -> {
             if (mapPoints != null){
                 targetPointSelected = true;
             }
@@ -122,6 +147,30 @@ public class LocationViewModel extends AndroidViewModel {
      */
     public boolean isTargetPointSelected() {
         return targetPointSelected;
+    }
+
+    public void getQuickAccessTarget(int quickAccessType){
+        String qaLocationName;
+        String qaLocationDescription = null;
+        switch (quickAccessType){
+            case TOILET_QA:
+                qaLocationName = application.getString(R.string.wc_quick_access_button);
+                qaLocationDescription = application.getString(R.string.quick_access_wc_desc);
+                break;
+            case FOOD_QA:
+                qaLocationName = application.getString(R.string.food_quick_access_button);
+                qaLocationDescription = application.getString(R.string.quick_access_food_desc);
+                break;
+            case PATIENT_ASSISTANT_QA:
+                qaLocationName = application.getString(R.string.ap_quick_access_button);
+                qaLocationDescription = application.getString(R.string.quick_access_ap_desc);
+                break;
+            default:
+                qaLocationName = application.getString(R.string.default_place_name);
+
+        }
+        targetQuickAccessType.setValue(quickAccessType);
+        targetLocation.setValue(new EventWrapper<>(LocationFactory.create(qaLocationName, qaLocationDescription)));
     }
 
     /**
