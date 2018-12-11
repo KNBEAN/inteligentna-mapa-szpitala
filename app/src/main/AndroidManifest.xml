@@ -24,10 +24,27 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".AuthorsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:name=".nav_window_activity.AboutHospitalActivity"
+            android:label="@string/navigation_drawer_info"
+            android:theme="@style/AppTheme.ActionBar"
+            android:parentActivityName=".MapActivity"
+
+            />
+        <activity
+            android:name=".nav_window_activity.AboutApp"
+            android:label="@string/navigation_drawer_about_app"
+            android:theme="@style/AppTheme.ActionBar"
+            android:parentActivityName=".MapActivity"
+
+            />
+        <activity
+            android:name=".nav_window_activity.AboutPatientAssistantActivity"
+            android:label="@string/navigation_drawer_ap"
+            android:theme="@style/AppTheme.ActionBar"
+            android:parentActivityName=".MapActivity"
+
+            />
 
     </application>
 

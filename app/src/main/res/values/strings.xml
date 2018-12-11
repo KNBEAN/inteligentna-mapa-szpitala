@@ -6,12 +6,12 @@
 
 <resources>
     <string name="app_name">IMS Kamieńskiego</string>
-    <string name="nav_window_start">Wpisz miejsce startowe</string>
-    <string name="nav_window_destination">Wpisz miejsce docelowe</string>
+    <string name="nav_window_start_hint">Wpisz miejsce startowe</string>
+    <string name="nav_window_destination_hint">Wpisz miejsce docelowe</string>
     <string name="nav_window_to">Do</string>
     <string name="nav_window_from">Z</string>
     <string name="nav_window_stairs">Schody</string>
-    <string name="nav_window_button">Start</string>
+    <string name="nav_window_button_start">Start</string>
     <string name="title_activity_map">Mapa szpitala</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -19,7 +19,7 @@
     <string name="nav_header_subtitle">Ośrodek Badawczo-Rozwojowy</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="navigation_drawer_search">Wyszukiwanie</string>
-    <string name="navigation_drawer_authors">Autorzy</string>
+    <string name="navigation_drawer_about_app">O aplikacji</string>
     <string name="navigation_drawer_ap">Asystent Pacjenta</string>
     <string name="navigation_drawer_info">O szpitalu</string>
     <string name="search_view_hint">Wyszukaj miejsce</string>
@@ -28,26 +28,39 @@
     <string name="food_quick_access_button">Gastronomia</string>
     <string name="wc_quick_access_button">Toaleta</string>
     <string name="guide_to">Prowadź do</string>
-    <string name="place_name">Place name</string>
-    <string name="authors_window_title_authors">Autorzy</string>
+    <string name="authors_window_title_authors">Autorzy:</string>
     <string name="authors">Karol Wyskocki\nAnna Lasota\nKamil Świechowski\nPiotr Janus</string>
-    <string name="authors_window_title_translations">Tłumaczenia</string>
-    <string name="translations_authors">Język angielski - Jan Kowalski\nJęzyk rosyjski - Adam Nowak\nJęzyk niemiecki - Joanna Kowalska</string>
-    <string name="authors_window_title_thanks">Podziękowania</string>
-    <string name="thanks">Dziękujemy przede wszystkim </string>
+    <string name="authors_window_title_thanks">Podziękowania:</string>
+    <string name="thanks">Dziękujemy przede wszystkim testerom i użytkownikom aplikacji.</string>
+    <string name="bug_report">Wszelkie sugestie odnośnie aplikacji proszę zgłaszać pod adresem: </string>
+    <string name="bug_report_address">examplemail@mail.com</string>
     <string name="version_number">1.0</string>
-    <string name="short_description">Głównym celem aplikacji jest pomoc pacjentom,
+    <string name="short_app_description">Głównym celem aplikacji jest pomoc pacjentom,
         osobom odwiedzającym oraz pracownikom szpitala w
         odnajdywaniu się w budynku.</string>
     <string name="place">Miejsce</string>
-    <string name="more_info">more info</string>
+    <string name="more_info">Więcej informacji.</string>
     <string name="navigation_setup_snackbar_hint">Wybierz miejsce, z którego chcesz rozpocząć nawigację.</string>
     <string name="default_place_name">Korytarz</string>
     <string name="route_fragment_title">Wyznaczona trasa</string>
     <string name="route_fragment_subtitle">Podążaj wzdłuż wyznaczonej trasy</string>
     <string name="start_is_target_warning">Cel i punkt startowy są w tym samym miejscu.</string>
     <string name="lack_of_detailed_description">Brak dodatkowych informacji</string>
+    <string name="place_address">ul. H. M. Kamieńskiego 73a 51–124 Wrocław</string>
+    <string name="website_address">http://www.wssk.wroc.pl</string>
+    <string name="address">Adres: </string>
+    <string name="website_address_text">Strona internetowa:</string>
+    <string name="contact">Kontakt: </string>
+    <string name="phone_number">71 327 01 00</string>
+    <string name="hospital_mail_address">sekretariat@wssk.wroc.pl</string>
+    <string name="about_hospital">Pierwszy w Polsce ośrodek wykonujący operacje z użyciem robota chirurgicznego da Vinci. Jeden z najbardziej wyspecjalizowanych szpitali w regionie.</string>
+    <string name="ap_description">W dniu 24 kwietnia 2017 roku w Wojewódzkim Szpitalu Specjalistycznym Ośrodku Badawczo-Rozwojowym ruszył pilotażowy projekt praktyk zawodowych Asystent Pacjenta dla studentów Inżynierii Biomedycznej. Projekt uruchomiono w wyniku podpisanego porozumienia pomiędzy Katedrą Inżynierii Biomedycznej na Wydziale Podstawowych Problemów Techniki reprezentowaną przez prof. Arkadiusza Wójsa oraz prof. Halinę Podbielską a Wojewódzkim Szpitalem Specjalistycznym Ośrodkiem Badawczo-Rozwojowym we Wrocławiu reprezentowanym przez prof. Wojciecha Witkiewicza. W organizację praktyk zawodowych bardzo aktywnie włączyli się sami studenci należący do Koła Naukowego “MICELA”. Bezpośredni nadzór merytoryczny ze strony PWr pełni dr inż. Magdalena Przybyło oraz prof. Marek Langner. Od strony studentów Tomasz Klimek (III rok IB), Karolina Koszmider (III rok IB) Piotr Narecki (II rok IB) 2017/2018 . Natomiast w Szpitalu Pani Patrycja Jędrzejczak.
+
+Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pacjenta, mogą poznać organizację i funkcjonowanie Szpitala, jego strukturę organizacyjną, zaplecze sprzętowe oraz potrzeby pacjentów i kadry medycznej w zakresie inżynierii biomedycznej. Rozpoczęcie praktyk poprzedza cykl szkoleń przeprowadzonych przez pracowników Wojewódzkiego Szpitala Specjalistycznego, dotyczących: organizacji pracy szpitala, historii Wojewódzkiego Szpitala Specjalistycznego Ośrodka Badawczo-Rozwojowego, zasad finansowania służby zdrowia, przepisów BHP obowiązujących w Szpitalu oraz ochrony danych osobowych.</string>
+    <string name="source">Źródło:</string>
+    <string name="ibam_website">http://lbam.pwr.edu.pl/</string>
     <string name="quick_access_wc_desc">Znajdź trasę do najbliższej toalety</string>
     <string name="quick_access_food_desc">Znajdź trasę do najbliższego punktu gastronomicznego</string>
     <string name="quick_access_ap_desc">Znajdź trasę do najbliższego stanowiska Asystenta Pacjenta</string>
+
 </resources>
