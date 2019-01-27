@@ -28,12 +28,13 @@ import bean.pwr.imskamieskiego.repository.IMapGraphRepository;
  */
 public class DijkstraSearch implements PathSearchAlgorithm {
 
+    public final static int DEFAULT_PENALIZATION = 1;
+    private int penalizationFactor = DEFAULT_PENALIZATION;
+
     private int startPointID;
     private int[] endPointIDs;
     private IMapGraphRepository graphRepository;
     private List<MapPoint> path;
-    private final int defaultPenalization = 1;
-    private int penalizationFactor = defaultPenalization;
 
     /**
      * Create instance of Dijkstra algorithm to search path between given points. Points can't have
@@ -112,7 +113,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
                 (dist1, dist2) -> dist1.distance-dist2.distance);
 
         Map<Integer, List<Edge>> outgoingEdges = new HashMap<>(fetchEdges(startPointID, initDepthFetch));
-        if (penalizationFactor != defaultPenalization){
+        if (penalizationFactor != DEFAULT_PENALIZATION){
             hardToReachPoints.addAll(fetchHardToReachNodes(new ArrayList<>(outgoingEdges.keySet())));
         }
 
@@ -138,7 +139,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
             if (!outgoingEdges.containsKey(from_id)){
                 Map<Integer, List<Edge>> fetchedEdges = fetchEdges(from_id, depthFetch);
                 outgoingEdges.putAll(fetchedEdges);
-                if (penalizationFactor != defaultPenalization) {
+                if (penalizationFactor != DEFAULT_PENALIZATION) {
                     hardToReachPoints.addAll(new ArrayList<>(fetchedEdges.keySet()));
                 }
             }
@@ -189,13 +190,6 @@ public class DijkstraSearch implements PathSearchAlgorithm {
                 return true;
             }
         }
-        return false;
-    }
-
-
-    private boolean isPenalized(Edge edge){
-        if (penalizationFactor == defaultPenalization) return false;
-
         return false;
     }
 
