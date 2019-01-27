@@ -116,4 +116,48 @@ public class DijkstraSearchTest {
         dijkstraSearch = new DijkstraSearch(graphRepository, startPoint, endPoints);
     }
 
+    @Test
+    public void searchFriendlyPath() {
+        MapPoint startPoint = graphRepository.getPointByID(2);
+        MapPoint endPoint = graphRepository.getPointByID(7);
+        List<MapPoint> expectedPath = Arrays.asList(
+                startPoint,
+                graphRepository.getPointByID(9),
+                graphRepository.getPointByID(10),
+                endPoint
+        );
+
+
+        dijkstraSearch = new DijkstraSearch(graphRepository, startPoint, endPoint);
+        //TODO set penalization factor as 10
+        dijkstraSearch.setPenalizationFactor(10);
+        dijkstraSearch.startSearch();
+        List<MapPoint> path = dijkstraSearch.getPath();
+
+        assertEquals(expectedPath, path);
+    }
+
+
+    @Test
+    public void unfriendlyPathIsBetter() {
+        MapPoint startPoint = graphRepository.getPointByID(2);
+        MapPoint endPoint = graphRepository.getPointByID(7);
+        List<MapPoint> expectedPath = Arrays.asList(
+                startPoint,
+                graphRepository.getPointByID(3),
+                graphRepository.getPointByID(4),
+                graphRepository.getPointByID(5),
+                graphRepository.getPointByID(6),
+                endPoint
+        );
+
+
+        dijkstraSearch = new DijkstraSearch(graphRepository, startPoint, endPoint);
+        //TODO set penalization factor as 5
+        dijkstraSearch.setPenalizationFactor(5);
+        dijkstraSearch.startSearch();
+        List<MapPoint> path = dijkstraSearch.getPath();
+
+        assertEquals(expectedPath, path);
+    }
 }

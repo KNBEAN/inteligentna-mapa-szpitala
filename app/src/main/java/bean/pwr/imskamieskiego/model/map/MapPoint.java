@@ -40,4 +40,10 @@ public interface MapPoint {
      * @return ID of location
      */
     int getLocationID();
+
+    /**
+     * Flag for hard to reach place, like stairs or steep driveway ect.
+     * @return If it's difficult to get there, it returns true, otherwise it returns false.
+     */
+    boolean isHardToReach();
 }

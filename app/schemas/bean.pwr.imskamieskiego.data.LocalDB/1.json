@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5b3c29832fd2f59a6698ff631bd53b66",
+    "identityHash": "347483d435366c8371f26b9ef6edd727",
     "entities": [
       {
         "tableName": "nodes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `floor` INTEGER NOT NULL, `x` INTEGER NOT NULL, `y` INTEGER NOT NULL, `locationID` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `floor` INTEGER NOT NULL, `x` INTEGER NOT NULL, `y` INTEGER NOT NULL, `locationID` INTEGER NOT NULL, `hardToReach` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -35,6 +35,12 @@
           {
             "fieldPath": "locationID",
             "columnName": "locationID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hardToReach",
+            "columnName": "hardToReach",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -247,7 +253,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5b3c29832fd2f59a6698ff631bd53b66\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"347483d435366c8371f26b9ef6edd727\")"
     ]
   }
 }
