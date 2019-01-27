@@ -24,6 +24,7 @@ import bean.pwr.imskamieskiego.repository.MapGraphRepository;
 public class PathSearchViewModel extends AndroidViewModel {
 
     private static final int FAST_PATH = DijkstraSearch.DEFAULT_PENALIZATION;
+    //TODO these parameters should be chosen experimentally
     private static final int OPTIMAL_PATH = 5;
     private static final int COMFORTABLE_PATH = 10;
 

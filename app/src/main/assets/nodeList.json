@@ -645,7 +645,7 @@
     "y": 1499,
     "floor": 0,
     "locationID": 48,
-    "hardToReach": false
+    "hardToReach": true
   },
   {
     "id": 101,
@@ -789,7 +789,7 @@
     "y": 999,
     "floor": 0,
     "locationID": 47,
-    "hardToReach": false
+    "hardToReach": true
   },
   {
     "id": 83,
@@ -1213,7 +1213,7 @@
     "y": 1490,
     "floor": 1,
     "locationID": 506,
-    "hardToReach": false
+    "hardToReach": true
   },
   {
     "id": 533,
@@ -1237,7 +1237,7 @@
     "y": 999,
     "floor": 1,
     "locationID": 505,
-    "hardToReach": false
+    "hardToReach": true
   },
   {
     "id": 530,
@@ -1253,7 +1253,7 @@
     "y": 700,
     "floor": 1,
     "locationID": 504,
-    "hardToReach": false
+    "hardToReach": true
   },
   {
     "id": 528,
@@ -1533,7 +1533,7 @@
     "y": 1499,
     "floor": 2,
     "locationID": 647,
-    "hardToReach": false
+    "hardToReach": true
   },
   {
     "id": 671,
@@ -1549,6 +1549,6 @@
     "y": 707,
     "floor": 0,
     "locationID": 46,
-    "hardToReach": false
+    "hardToReach": true
   }
 ]
