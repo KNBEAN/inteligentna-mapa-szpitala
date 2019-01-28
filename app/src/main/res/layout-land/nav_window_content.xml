@@ -13,21 +13,6 @@
     tools:showIn="@layout/nav_window">
 
 
-    <Button
-        android:id="@+id/startButton"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:enabled="false"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/nav_window_button_start"
-        android:textColor="#fff"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
-
     <android.support.constraint.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="0dp"
@@ -79,7 +64,7 @@
                 android:clickable="true"
                 android:gravity="start"
                 android:hint="@string/nav_window_start_hint"
-                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
                 android:textAllCaps="false"
@@ -87,7 +72,8 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textViewFrom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView6"
-                app:layout_constraintTop_toTopOf="@+id/textViewFrom" />
+                app:layout_constraintTop_toTopOf="@+id/textViewFrom"
+                android:focusable="true" />
         </android.support.constraint.ConstraintLayout>
 
         <android.support.constraint.ConstraintLayout
@@ -131,14 +117,15 @@
                 android:clickable="true"
                 android:gravity="start"
                 android:hint="@string/nav_window_destination_hint"
-                android:paddingLeft="4dp"
+                android:paddingStart="4dp"
                 android:paddingTop="2dp"
                 android:paddingBottom="2dp"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textViewTo"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView3"
-                app:layout_constraintTop_toTopOf="@+id/textViewTo" />
+                app:layout_constraintTop_toTopOf="@+id/textViewTo"
+                android:focusable="true" />
         </android.support.constraint.ConstraintLayout>
 
         <View
@@ -153,19 +140,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
-
-    <CheckBox
-        android:id="@+id/checkStairs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:enabled="false"
-        android:text="@string/nav_window_stairs"
-        android:textSize="18sp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/startButton" />
 
 
 </android.support.constraint.ConstraintLayout>

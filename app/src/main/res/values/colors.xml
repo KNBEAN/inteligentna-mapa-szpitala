@@ -6,10 +6,10 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#ff9900</color>
-    <color name="colorPrimaryDark">#c66a00</color>
+    <color name="colorPrimary">#FF9900</color>
+    <color name="colorPrimaryDark">#C66A00</color>
     <color name="colorPrimaryLight">#ffca47</color>
-    <color name="colorAccent">#01579b</color>
+    <color name="colorAccent">#01579B</color>
     <color name="fontColorWhite">#ffffff</color>
     <color name="fontColorBlack">#000000</color>
     <color name="shadow_background">#64000000</color>
