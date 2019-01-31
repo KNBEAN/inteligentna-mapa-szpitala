@@ -16,6 +16,7 @@ import android.database.Cursor;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
+import bean.pwr.imskamieskiego.data.map.entity.LocationPointEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
 
 @Dao
@@ -26,6 +27,9 @@ public interface LocationDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllTags(List<LocationTagEntity> locationTags);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAllLocationPoints(List<LocationPointEntity> locationPoints);
 
     @Query("SELECT * FROM locations WHERE id = :ID")
     LiveData<LocationEntity> getByID(int ID);

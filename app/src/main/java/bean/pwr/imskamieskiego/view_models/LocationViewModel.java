@@ -43,7 +43,7 @@ public class LocationViewModel extends AndroidViewModel {
     private MutableLiveData<Location> targetLocationTrigger;
     private MutableLiveData<Integer> targetQuickAccessType;
     private MediatorLiveData<EventWrapper<Location>> targetLocation;
-    private MediatorLiveData<List<MapPoint>> targetMapPoint;
+    private MediatorLiveData<List<MapPoint>> targetMapPoints;
 
     private boolean targetPointSelected = false;
 
@@ -57,30 +57,30 @@ public class LocationViewModel extends AndroidViewModel {
         targetMapPointTrigger = new MutableLiveData<>();
         targetQuickAccessType = new MutableLiveData<>();
         targetLocation = new MediatorLiveData<>();
-        targetMapPoint = new MediatorLiveData<>();
+        targetMapPoints = new MediatorLiveData<>();
 
 
         //Location comes from search
         targetLocation.addSource(targetLocationTrigger, location -> targetLocation.setValue(new EventWrapper<>(location)));
-        LiveData<List<MapPoint>> tmpTargetPoints = Transformations.switchMap(targetLocationTrigger, location ->
-                location != null ? mapRepository.getPointsByLocationID(location.getId()) : null
+        LiveData<MapPoint> tmpTargetPoint = Transformations.switchMap(targetLocationTrigger, location ->
+                location != null ? mapRepository.getPointByLocationID(location.getId()) : null
         );
-        targetMapPoint.addSource(tmpTargetPoints, mapPoints -> {
-            if (mapPoints != null){
+        targetMapPoints.addSource(tmpTargetPoint, mapPoint -> {
+            if (mapPoint != null) {
                 targetPointSelected = true;
             }
-            targetMapPoint.setValue(mapPoints);
+            targetMapPoints.setValue(Arrays.asList(mapPoint));
         });
 
         //Data from quick access
         LiveData<List<MapPoint>> quickAccessMapPoints = Transformations.switchMap(targetQuickAccessType,
                 type -> type != null ? mapRepository.getPointsByQuickAccessType(type) : null
         );
-        targetMapPoint.addSource(quickAccessMapPoints, mapPoints -> {
-            if (mapPoints != null){
+        targetMapPoints.addSource(quickAccessMapPoints, mapPoints -> {
+            if (mapPoints != null) {
                 targetPointSelected = true;
             }
-            targetMapPoint.setValue(mapPoints);
+            targetMapPoints.setValue(mapPoints);
         });
 
         //MapPoint comes from touch the map
@@ -88,11 +88,11 @@ public class LocationViewModel extends AndroidViewModel {
                 (mapPoint) -> mapRepository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor())
         );
 
-        targetMapPoint.addSource(nearestTargetPoint, mapPoint -> {
-            if (mapPoint != null){
+        targetMapPoints.addSource(nearestTargetPoint, mapPoint -> {
+            if (mapPoint != null) {
                 targetPointSelected = true;
             }
-            targetMapPoint.setValue(Arrays.asList(mapPoint));
+            targetMapPoints.setValue(Arrays.asList(mapPoint));
         });
 
         LiveData<Location> tmpTargetLocation = Transformations.switchMap(nearestTargetPoint, mapPoint ->
@@ -108,17 +108,19 @@ public class LocationViewModel extends AndroidViewModel {
 
     /**
      * Returns list of points for selected target.
+     *
      * @return list of target points as LiveData
      */
     public LiveData<List<MapPoint>> getTargetPoint() {
-        return targetMapPoint;
+        return targetMapPoints;
     }
 
     /**
      * Returns selected location as LiveData. Selected location is wrapped into EventWrapper object.
      * If the target point was selected from the map and this target point is not assigned to any
      * location, the location will be generated as the location with the default name.
-     * @return  LiveData with location wrapped into EventWrapper
+     *
+     * @return LiveData with location wrapped into EventWrapper
      */
     public LiveData<EventWrapper<Location>> getTargetLocation() {
         return targetLocation;
@@ -127,32 +129,35 @@ public class LocationViewModel extends AndroidViewModel {
     /**
      * Set target point. If passed map point isn't exact point in database,
      * the nearest point will be set as the destination.
+     *
      * @param destinationMapPoint target point
      */
-    public void setTargetPoint(MapPoint destinationMapPoint){
+    public void setTargetPoint(MapPoint destinationMapPoint) {
         targetMapPointTrigger.setValue(destinationMapPoint);
     }
 
     /**
      * Set target location
+     *
      * @param targetLocation target location
      */
-    public void setTargetLocation(Location targetLocation){
+    public void setTargetLocation(Location targetLocation) {
         targetLocationTrigger.setValue(targetLocation);
     }
 
     /**
      * Returns status of target point selection.
+     *
      * @return if target is selected, returns true. Otherwise return false.
      */
     public boolean isTargetPointSelected() {
         return targetPointSelected;
     }
 
-    public void getQuickAccessTarget(int quickAccessType){
+    public void getQuickAccessTarget(int quickAccessType) {
         String qaLocationName;
         String qaLocationDescription = null;
-        switch (quickAccessType){
+        switch (quickAccessType) {
             case TOILET_QA:
                 qaLocationName = application.getString(R.string.wc_quick_access_button);
                 qaLocationDescription = application.getString(R.string.quick_access_wc_desc);
@@ -176,9 +181,9 @@ public class LocationViewModel extends AndroidViewModel {
     /**
      * Clear target selection
      */
-    public void clearTargetPointSelection(){
+    public void clearTargetPointSelection() {
         targetLocation.setValue(null);
-        targetMapPoint.setValue(null);
+        targetMapPoints.setValue(null);
         targetPointSelected = false;
     }
 

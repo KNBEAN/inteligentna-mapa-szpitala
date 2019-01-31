@@ -33,11 +33,15 @@ public interface MapPointDao {
     @Query("SELECT * FROM nodes WHERE id IN (:id)")
     List<MapPointEntity> getByID(List<Integer> id);
 
-    @Query("SELECT * FROM nodes WHERE locationID = (:locationID)")
-    List<MapPointEntity> getByLocationID(int locationID);
+    @Query("SELECT nodes.id, nodes.floor, nodes.x, nodes.y, nodes.locationID, nodes.hardToReach " +
+            "FROM nodes JOIN locations_points ON mapPointID = id " +
+            "WHERE locations_points.locationID = :locationID")
+    MapPointEntity getByLocationID(int locationID);
 
-    @Query("SELECT * FROM nodes WHERE locationID = (:locationID)")
-    LiveData<List<MapPointEntity>> getByLocationIDLiveData(int locationID);
+    @Query("SELECT nodes.id, nodes.floor, nodes.x, nodes.y, nodes.locationID, nodes.hardToReach " +
+            "FROM nodes JOIN locations_points ON mapPointID = id " +
+            "WHERE locations_points.locationID = :locationID")
+    LiveData<MapPointEntity> getByLocationIDLiveData(int locationID);
 
     @Query("SELECT * FROM nodes " +
             "WHERE floor = :floor " +
