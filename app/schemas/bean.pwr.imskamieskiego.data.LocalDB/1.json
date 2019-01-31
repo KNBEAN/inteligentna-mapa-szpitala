@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "347483d435366c8371f26b9ef6edd727",
+    "identityHash": "aceb9f6480f4ae22429d09efa152d4de",
     "entities": [
       {
         "tableName": "nodes",
@@ -249,11 +249,69 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "locations_points",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`locationID` INTEGER NOT NULL, `mapPointID` INTEGER NOT NULL, PRIMARY KEY(`locationID`), FOREIGN KEY(`locationID`) REFERENCES `locations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`mapPointID`) REFERENCES `nodes`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "locationID",
+            "columnName": "locationID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mapPointID",
+            "columnName": "mapPointID",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "locationID"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_locations_points_mapPointID",
+            "unique": false,
+            "columnNames": [
+              "mapPointID"
+            ],
+            "createSql": "CREATE  INDEX `index_locations_points_mapPointID` ON `${TABLE_NAME}` (`mapPointID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "locations",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "locationID"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "nodes",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mapPointID"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"347483d435366c8371f26b9ef6edd727\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"aceb9f6480f4ae22429d09efa152d4de\")"
     ]
   }
 }

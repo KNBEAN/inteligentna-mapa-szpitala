@@ -32,6 +32,7 @@ import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
 import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 import bean.pwr.imskamieskiego.data.map.entity.FloorInfoEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
+import bean.pwr.imskamieskiego.data.map.entity.LocationPointEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
 import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
 import bean.pwr.imskamieskiego.data.map.entity.QuickAccessEntity;
@@ -44,7 +45,8 @@ import bean.pwr.imskamieskiego.data.map.entity.QuickAccessEntity;
                 EdgeEntity.class,
                 FloorInfoEntity.class,
                 LocationTagEntity.class,
-                QuickAccessEntity.class
+                QuickAccessEntity.class,
+                LocationPointEntity.class
         },
         version = 1)
 @TypeConverters({IntegerConverter.class})

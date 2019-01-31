@@ -20,6 +20,9 @@ import java.io.InputStream;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.repository.FloorDataRepository;
 
+/**
+ * FloorViewModel controls the currently displayed floor on the map.
+ */
 public class FloorViewModel extends AndroidViewModel {
     private FloorDataRepository floorDataRepository;
     private int currentFloor=0;
