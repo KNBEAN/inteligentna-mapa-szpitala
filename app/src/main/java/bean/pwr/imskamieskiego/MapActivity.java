@@ -345,6 +345,14 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
+    public void onSearchByCode(MapPoint point) {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack();
+        }
+        onMapClick(point);
+    }
+
+    @Override
     public void infoSheetAction() {
         Log.i(TAG, "infoSheetAction: SELECTED");
         EventWrapper<Location> locationEvent = locationViewModel.getTargetLocation().getValue();

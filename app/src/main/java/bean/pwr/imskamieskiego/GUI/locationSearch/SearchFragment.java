@@ -25,6 +25,7 @@ import java.util.List;
 
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.Location;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 
 public class SearchFragment extends Fragment implements SearchView.OnQueryTextListener {
@@ -46,7 +47,8 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         super.onActivityCreated(savedInstanceState);
         searchViewModel = ViewModelProviders.of(this).get(SearchViewModel.class);
         searchViewModel.getSuggestionsList().observe(this, this::createSuggestions);
-        searchViewModel.getSubmitQueryResult().observe(this, this::processSearchResult);
+        searchViewModel.getLocationQueryResult().observe(this, this::processLocationSearchResult);
+        searchViewModel.getCodeQueryResult().observe(this, this::processSearchByCodeResult);
 
     }
 
@@ -117,11 +119,18 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         searchView.setQuery(selectedLocation, true);
     }
 
-    private void processSearchResult(Location location){
+    private void processLocationSearchResult(Location location){
         if (location != null){
-            Log.d(TAG, String.format("processSearchResult: %d, %s", location.getId(), location.getName()));
+            Log.d(TAG, String.format("processLocationSearchResult: %d, %s", location.getId(), location.getName()));
             searchView.clearFocus();
             listener.onLocationSearched(location);
+        }
+    }
+
+    private void processSearchByCodeResult(MapPoint point){
+        if (point != null){
+            searchView.clearFocus();
+            listener.onSearchByCode(point);
         }
     }
 
@@ -146,5 +155,6 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
 
     public interface SearchListener {
         void onLocationSearched(Location location);
+        void onSearchByCode(MapPoint point);
     }
 }
