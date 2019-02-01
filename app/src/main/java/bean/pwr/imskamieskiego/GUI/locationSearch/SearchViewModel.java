@@ -67,15 +67,6 @@ public class SearchViewModel extends AndroidViewModel {
 
     }
 
-    private LiveData<List<Location>> searchLocation(String query) {
-        if (query.matches("[nN]#[0-9]+")) {
-            Log.i(TAG, "Regex match");
-
-        }
-        return mapRepository.getLocationsListByName(query, 1);
-    }
-
-
     void suggestionsQuery(String queryString) {
         suggestionQuery.postValue(queryString);
     }
@@ -85,11 +76,11 @@ public class SearchViewModel extends AndroidViewModel {
     }
 
     void submitQuery(String query) {
-        if (query.matches("[nN]#[0-9]+")) {
+        if (query.matches("#[0-9]+")) {
             Log.i(TAG, "Regex match");
-            int pointCode = Integer.valueOf(query.substring(2));
+            int pointCode = Integer.valueOf(query.substring(1));
             submitCodeQuery.postValue(pointCode);
-        }else {
+        } else {
             submitLocationQuery.postValue(query);
         }
     }
@@ -98,7 +89,7 @@ public class SearchViewModel extends AndroidViewModel {
         return locationQueryResult;
     }
 
-    public LiveData<MapPoint> getCodeQueryResult() {
+    LiveData<MapPoint> getCodeQueryResult() {
         return codeQueryResult;
     }
 }
