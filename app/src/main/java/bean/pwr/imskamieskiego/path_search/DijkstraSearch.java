@@ -140,7 +140,7 @@ public class DijkstraSearch implements PathSearchAlgorithm {
                 Map<Integer, List<Edge>> fetchedEdges = fetchEdges(from_id, depthFetch);
                 outgoingEdges.putAll(fetchedEdges);
                 if (penalizationFactor != DEFAULT_PENALIZATION) {
-                    hardToReachPoints.addAll(new ArrayList<>(fetchedEdges.keySet()));
+                    hardToReachPoints.addAll(fetchHardToReachNodes(new ArrayList<>(fetchedEdges.keySet())));
                 }
             }
 
