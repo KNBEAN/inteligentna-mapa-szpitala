@@ -59,8 +59,7 @@ public class QuickAccessFragment extends Fragment {
      * @return A new instance of fragment QuickAccessFragment.
      */
     public static QuickAccessFragment newInstance() {
-        QuickAccessFragment fragment = new QuickAccessFragment();
-        return fragment;
+        return new QuickAccessFragment();
     }
 
     @Override

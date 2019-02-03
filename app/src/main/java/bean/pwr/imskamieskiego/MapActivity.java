@@ -9,6 +9,7 @@ package bean.pwr.imskamieskiego;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -36,6 +37,8 @@ import android.widget.Button;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
+import bean.pwr.imskamieskiego.GUI.UserLocationSelectFragment;
+import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -50,7 +53,7 @@ import bean.pwr.imskamieskiego.view_models.PathSearchViewModel;
 
 public class MapActivity extends AppCompatActivity
         implements QuickAccessFragment.QuickAccessListener,
-        SearchFragment.SearchListener,
+        SearchFragment.SearchListener, LocationSearchInterface,
         InfoSheet.InfoSheetListener,
         NavigationView.OnNavigationItemSelectedListener,
         NavigationSetupFragment.NavigationSetupListener,
@@ -69,6 +72,7 @@ public class MapActivity extends AppCompatActivity
     private final String searchFragmentTag = "SearchFragment";
     private final String navigationSetupTag = "NavigationSetupFragment";
     private final String navigationRouteTag = "NavigationRouteFragment";
+    private final String userLocationSelectFragmentTag = "UserLocationSelection";
 
 
     private Toolbar toolbar;
@@ -159,6 +163,15 @@ public class MapActivity extends AppCompatActivity
         changeFloorButton.setText(String.valueOf(floorViewModel.getCurrentFloor()));
         changeFloorButton.setOnClickListener(floorListWindow::showList);
 
+        FloatingActionButton userLocationButton = findViewById(R.id.my_position_button);
+        userLocationButton.setOnClickListener(view -> {
+            if (fragmentManager.findFragmentByTag(userLocationSelectFragmentTag) == null){
+                FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+                UserLocationSelectFragment userLocationFragment = UserLocationSelectFragment.newInstance();
+                fTransaction.replace(R.id.toolBarHolder, userLocationFragment, userLocationSelectFragmentTag);
+                fTransaction.addToBackStack(null).commit();
+            }
+        });
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -215,7 +228,7 @@ public class MapActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.searchMenuItem) {
-            displaySearchFragment();
+            startSearch();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -250,19 +263,6 @@ public class MapActivity extends AppCompatActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-    }
-
-
-    private void displaySearchFragment() {
-
-        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
-        if (searchFragment.isAdded()) {
-            fTransaction.show(searchFragment);
-        } else {
-            fTransaction.add(R.id.mainDrawerLayout, searchFragment, searchFragmentTag);
-        }
-
-        fTransaction.addToBackStack(null).commit();
     }
 
 
@@ -365,9 +365,15 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
-    public void startPointSearchRequest() {
-        Log.i(TAG, "startPointSearchRequest: search start point");
-        displaySearchFragment();
+    public void startSearch() {
+        FragmentTransaction fTransaction = fragmentManager.beginTransaction();
+        if (searchFragment.isAdded()) {
+            fTransaction.show(searchFragment);
+        } else {
+            fTransaction.add(R.id.mainDrawerLayout, searchFragment, searchFragmentTag);
+        }
+
+        fTransaction.addToBackStack(null).commit();
     }
 
     @Override

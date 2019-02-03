@@ -26,6 +26,7 @@ import android.support.v7.widget.Toolbar;
 import java.util.Arrays;
 import java.util.List;
 
+import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -132,7 +133,7 @@ public class NavigationSetupFragment extends Fragment {
                     break;
             }
         });
-        textViewStart.setOnClickListener(view1 -> listener.startPointSearchRequest());
+        textViewStart.setOnClickListener(view1 -> listener.startSearch());
         toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null) {
                 getActivity().onBackPressed();
@@ -182,15 +183,10 @@ public class NavigationSetupFragment extends Fragment {
         return viewModel.getStartPoint().getValue();
     }
 
-    public interface NavigationSetupListener {
+    public interface NavigationSetupListener extends LocationSearchInterface {
         int FAST_PATH = 1;
         int OPTIMAL_PATH = 2;
         int COMFORT_PATH = 3;
-
-        /**
-         * Called, when navigation setup fragment need start location search functionality
-         */
-        void startPointSearchRequest();
 
         /**
          * Called, when navigation setup fragment starts navigation
