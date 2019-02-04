@@ -15,6 +15,7 @@ public class NavigationSetupViewModelFactory implements ViewModelProvider.Factor
 
     private Application application;
     private String targetLocationName;
+    private String startLocationName;
 
     /**
      * The constructor of the NavigationSetupViewModel factory. This factory is used to pass a
@@ -22,14 +23,15 @@ public class NavigationSetupViewModelFactory implements ViewModelProvider.Factor
      * @param application application context
      * @param targetLocationName name of target location
      */
-    public NavigationSetupViewModelFactory(Application application, String targetLocationName){
+    public NavigationSetupViewModelFactory(Application application, String targetLocationName, String startLocationName){
         this.application = application;
         this.targetLocationName = targetLocationName;
+        this.startLocationName = startLocationName;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new NavigationSetupViewModel(application, targetLocationName);
+        return (T) new NavigationSetupViewModel(application, targetLocationName, startLocationName);
     }
 }
