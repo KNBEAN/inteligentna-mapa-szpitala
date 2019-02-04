@@ -79,8 +79,7 @@ public class UserLocationSelectFragment extends Fragment {
                 getActivity().onBackPressed();
             }
         });
-        toolbar.setTitle("Podaj swoją pozycję");
-        toolbar.setSubtitle("Zeskanuj kod z plakatu lub podaj kod lokacji");
+        toolbar.setTitle(R.string.user_location_selection_title);
 
         searchButton = view.findViewById(R.id.searchButton);
         searchButton.setOnClickListener(view1 -> searchListener.startSearch());
