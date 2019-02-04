@@ -79,14 +79,14 @@
 
     </FrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/my_position_button"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
+    <fragment
+        android:id="@+id/my_position_button_fragment"
+        android:name="bean.pwr.imskamieskiego.GUI.UserLocationButtonFragment"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
         android:src="@drawable/ic_my_location_white_24dp"
         app:layout_constraintBottom_toTopOf="@+id/infoSheetStub"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout="@layout/fragment_user_location_button" />
 
 </android.support.constraint.ConstraintLayout>
