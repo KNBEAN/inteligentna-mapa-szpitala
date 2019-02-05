@@ -50,7 +50,7 @@ public class UserLocationSelectFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof NavigationSetupFragment.NavigationSetupListener) {
+        if (context instanceof LocationSearchInterface) {
             searchListener = (LocationSearchInterface) context;
         } else {
             throw new RuntimeException(context.toString()

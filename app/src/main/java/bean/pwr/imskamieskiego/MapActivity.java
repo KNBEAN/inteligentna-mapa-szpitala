@@ -21,7 +21,6 @@ import android.view.Menu;
 import bean.pwr.imskamieskiego.GUI.FloorListWindow;
 import bean.pwr.imskamieskiego.GUI.MapFragment;
 import bean.pwr.imskamieskiego.GUI.NavigationRouteFragment;
-import bean.pwr.imskamieskiego.GUI.NavigationSetupFragment;
 import bean.pwr.imskamieskiego.GUI.QuickAccessFragment;
 
 import android.support.design.widget.NavigationView;
@@ -350,7 +349,7 @@ public class MapActivity extends AppCompatActivity
         Log.i(TAG, "infoSheetAction: SELECTED");
 
         if (navigationPointsViewModel.getStartPoint().getValue() != null) {
-            startNavigation(NavigationSetupFragment.NavigationSetupListener.FAST_PATH);
+            startNavigation(1);//NavigationSetupFragment.NavigationSetupListener.FAST_PATH);
         } else {
             showUserLocationSelect();
         }
@@ -380,22 +379,22 @@ public class MapActivity extends AppCompatActivity
         }
 
         PathSearchViewModel.SearchMode searchMode;
-        switch (pathSearchMode) {
-            case NavigationSetupFragment.NavigationSetupListener.FAST_PATH:
+//        switch (pathSearchMode) {
+//            case NavigationSetupFragment.NavigationSetupListener.FAST_PATH:
+//                searchMode = PathSearchViewModel.SearchMode.FAST_PATH;
+//                Log.i(TAG, "Fast path mode");
+//                break;
+//            case NavigationSetupFragment.NavigationSetupListener.OPTIMAL_PATH:
+//                searchMode = PathSearchViewModel.SearchMode.OPTIMAL_PATH;
+//                Log.i(TAG, "Optimal path mode");
+//                break;
+//            case NavigationSetupFragment.NavigationSetupListener.COMFORT_PATH:
+//                searchMode = PathSearchViewModel.SearchMode.COMFORTABLE_PATH;
+//                Log.i(TAG, "Comfort path mode");
+//                break;
+//            default:
                 searchMode = PathSearchViewModel.SearchMode.FAST_PATH;
-                Log.i(TAG, "Fast path mode");
-                break;
-            case NavigationSetupFragment.NavigationSetupListener.OPTIMAL_PATH:
-                searchMode = PathSearchViewModel.SearchMode.OPTIMAL_PATH;
-                Log.i(TAG, "Optimal path mode");
-                break;
-            case NavigationSetupFragment.NavigationSetupListener.COMFORT_PATH:
-                searchMode = PathSearchViewModel.SearchMode.COMFORTABLE_PATH;
-                Log.i(TAG, "Comfort path mode");
-                break;
-            default:
-                searchMode = PathSearchViewModel.SearchMode.FAST_PATH;
-        }
+//        }
 
         pathSearchViewModel.startPathSearch(startPoint, targets, searchMode);
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
@@ -404,6 +403,7 @@ public class MapActivity extends AppCompatActivity
         if (fragmentManager.findFragmentByTag(infoSheetTag) != null) {
             fTransaction.hide(fragmentManager.findFragmentByTag(infoSheetTag));
         }
+        fTransaction.hide(userLocationButtonFragment);
         fTransaction.addToBackStack(null).commit();
     }
 
