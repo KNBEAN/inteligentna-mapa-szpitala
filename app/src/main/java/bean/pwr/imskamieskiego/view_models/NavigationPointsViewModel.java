@@ -153,6 +153,7 @@ public class NavigationPointsViewModel extends AndroidViewModel {
 
     /**
      * Returns selected start point as LiveData
+     *
      * @return LiveData with actual selected start point
      */
     public LiveData<MapPoint> getStartPoint() {
@@ -174,6 +175,7 @@ public class NavigationPointsViewModel extends AndroidViewModel {
      * Returns the selected starting location. If the starting point was selected from the map and
      * this starting point is not assigned to any location, the location will be generated as the
      * location with the default name.
+     *
      * @return selected location as LiveData
      */
     public LiveData<Location> getStartLocation() {
@@ -193,9 +195,10 @@ public class NavigationPointsViewModel extends AndroidViewModel {
     /**
      * Set start point. If passed map point isn't exact point in database,
      * the nearest point will be set as the start point.
+     *
      * @param startMapPoint start point
      */
-    public void setStartPoint(MapPoint startMapPoint){
+    public void setStartPoint(MapPoint startMapPoint) {
         startMapPointTrigger.setValue(startMapPoint);
     }
 
@@ -210,9 +213,10 @@ public class NavigationPointsViewModel extends AndroidViewModel {
 
     /**
      * Sets start location
+     *
      * @param startLocation start location
      */
-    public void setStartLocation(Location startLocation){
+    public void setStartLocation(Location startLocation) {
         startLocationTrigger.setValue(startLocation);
     }
 
@@ -261,7 +265,7 @@ public class NavigationPointsViewModel extends AndroidViewModel {
     /**
      * clear start selection
      */
-    public void clearStartPointSelection(){
+    public void clearStartPointSelection() {
         startLocation.setValue(null);
         startMapPoint.setValue(null);
     }

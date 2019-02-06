@@ -28,12 +28,6 @@ public class PathSearchViewModel extends AndroidViewModel {
     private static final int OPTIMAL_PATH = 5;
     private static final int COMFORTABLE_PATH = 10;
 
-    public enum SearchMode {
-        FAST_PATH,
-        OPTIMAL_PATH,
-        COMFORTABLE_PATH
-    }
-
     private IMapGraphRepository graphRepository;
     private MediatorLiveData<List<MapPoint>> searchedRoute;
     private PathSearcher pathSearcher;
@@ -78,7 +72,7 @@ public class PathSearchViewModel extends AndroidViewModel {
      * @param targets    list of possible targets
      * @param mode       mode of algorithm behavior
      */
-    public void startPathSearch(MapPoint startPoint, List<MapPoint> targets, SearchMode mode) {
+    public void startPathSearch(MapPoint startPoint, List<MapPoint> targets, PathSearchMode mode) {
         DijkstraSearch dijkstraAlgorithm = new DijkstraSearch(graphRepository, startPoint, targets);
         int penalization;
         switch (mode) {

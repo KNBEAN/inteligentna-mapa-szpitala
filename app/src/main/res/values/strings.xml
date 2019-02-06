@@ -6,12 +6,6 @@
 
 <resources>
     <string name="app_name">IMS Kamieńskiego</string>
-    <string name="nav_window_start_hint">Wpisz miejsce startowe</string>
-    <string name="nav_window_destination_hint">Wpisz miejsce docelowe</string>
-    <string name="nav_window_to">Do</string>
-    <string name="nav_window_from">Z</string>
-    <string name="nav_window_stairs">Schody</string>
-    <string name="nav_window_button_start">Start</string>
     <string name="title_activity_map">Mapa szpitala</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -40,7 +34,6 @@
         odnajdywaniu się w budynku.</string>
     <string name="place">Miejsce</string>
     <string name="more_info">Więcej informacji.</string>
-    <string name="navigation_setup_snackbar_hint">Wybierz miejsce, z którego chcesz rozpocząć nawigację.</string>
     <string name="default_place_name">Korytarz</string>
     <string name="route_fragment_title">Wyznaczona trasa</string>
     <string name="route_fragment_subtitle">Podążaj wzdłuż wyznaczonej trasy</string>
@@ -62,11 +55,11 @@ Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pac
     <string name="quick_access_wc_desc">Znajdź trasę do najbliższej toalety</string>
     <string name="quick_access_food_desc">Znajdź trasę do najbliższego punktu gastronomicznego</string>
     <string name="quick_access_ap_desc">Znajdź trasę do najbliższego stanowiska Asystenta Pacjenta</string>
-    <string name="path_search_options">Opcje trasy:</string>
+    <string name="path_search_options">Opcje wyszukiwania trasy</string>
     <string name="fastest_path_option">Szybka</string>
     <string name="optimal_path_option">Optymalna</string>
     <string name="comfortable_path_option">Wygodna</string>
-    <string name="navigation_settings">ustawienia nawigacji</string>
     <string name="user_location_selection_title">Podaj swoją pozycję</string>
+    <string name="path_settings_confirm_button">OK</string>
 
 </resources>

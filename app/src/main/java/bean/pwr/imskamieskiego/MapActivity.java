@@ -7,7 +7,9 @@
 package bean.pwr.imskamieskiego;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -32,9 +34,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.Arrays;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.GUI.InfoSheet;
+import bean.pwr.imskamieskiego.GUI.SearchPathSettingsDialog;
 import bean.pwr.imskamieskiego.GUI.UserLocationButtonFragment;
 import bean.pwr.imskamieskiego.GUI.UserLocationSelectFragment;
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
@@ -46,6 +50,7 @@ import bean.pwr.imskamieskiego.nav_window_activity.AboutHospitalActivity;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutPatientAssistantActivity;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.NavigationPointsViewModel;
+import bean.pwr.imskamieskiego.view_models.PathSearchMode;
 import bean.pwr.imskamieskiego.view_models.PathSearchViewModel;
 
 
@@ -71,7 +76,8 @@ public class MapActivity extends AppCompatActivity
     private final String navigationRouteTag = "NavigationRouteFragment";
     private final String userLocationSelectFragmentTag = "UserLocationSelection";
 
-
+    private SearchPathSettingsDialog pathSettingsDialog;
+    private PathSearchMode searchMode;
     private Button changeFloorButton;
 
     private NavigationPointsViewModel navigationPointsViewModel;
@@ -188,6 +194,35 @@ public class MapActivity extends AppCompatActivity
             }
         });
         hamburgerButton.syncState();
+
+        loadUserPreferences();
+    }
+
+    @Override
+    protected void onDestroy() {
+
+        int indexOfSearchMode = Arrays.asList(
+                PathSearchMode.FAST_PATH,
+                PathSearchMode.OPTIMAL_PATH,
+                PathSearchMode.COMFORTABLE_PATH).indexOf(searchMode);
+
+        SharedPreferences userSettings = getSharedPreferences("user_settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = userSettings.edit();
+        editor.putInt("path_search_mode", indexOfSearchMode < 0 ? 1 : indexOfSearchMode);
+        editor.apply();
+
+        super.onDestroy();
+    }
+
+    public void loadUserPreferences() {
+        SharedPreferences userSettings = getSharedPreferences("user_settings", Context.MODE_PRIVATE);
+        int pathSearchMode = userSettings.getInt("path_search_mode", 1);
+        List<PathSearchMode> searchModes = Arrays.asList(PathSearchMode.FAST_PATH, PathSearchMode.OPTIMAL_PATH, PathSearchMode.COMFORTABLE_PATH);
+        if (pathSearchMode < searchModes.size()) {
+            searchMode = searchModes.get(pathSearchMode);
+        } else {
+            searchMode = PathSearchMode.OPTIMAL_PATH;
+        }
     }
 
     private void showUserLocationSelect() {
@@ -265,6 +300,12 @@ public class MapActivity extends AppCompatActivity
             Intent intent = new Intent(this, AboutHospitalActivity.class);
             startActivity(intent);
 
+        } else if (id == R.id.path_search_settings) {
+            if (pathSettingsDialog == null) {
+                pathSettingsDialog = new SearchPathSettingsDialog(this);
+                pathSettingsDialog.setListener(searchMode -> this.searchMode = searchMode);
+            }
+            pathSettingsDialog.show(searchMode);
         } else if (id == R.id.nav_search) {
 
         }
@@ -272,12 +313,6 @@ public class MapActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.mainDrawerLayout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
 
@@ -349,7 +384,7 @@ public class MapActivity extends AppCompatActivity
         Log.i(TAG, "infoSheetAction: SELECTED");
 
         if (navigationPointsViewModel.getStartPoint().getValue() != null) {
-            startNavigation(1);//NavigationSetupFragment.NavigationSetupListener.FAST_PATH);
+            startNavigation(searchMode);
         } else {
             showUserLocationSelect();
         }
@@ -367,7 +402,7 @@ public class MapActivity extends AppCompatActivity
         fTransaction.addToBackStack(null).commit();
     }
 
-    public void startNavigation(int pathSearchMode) {
+    public void startNavigation(PathSearchMode pathSearchMode) {
         Log.i(TAG, "startNavigation: start navigation");
         List<MapPoint> targets = navigationPointsViewModel.getTargetPoint().getValue();
         MapPoint startPoint = navigationPointsViewModel.getStartPoint().getValue();
@@ -378,25 +413,7 @@ public class MapActivity extends AppCompatActivity
             }
         }
 
-        PathSearchViewModel.SearchMode searchMode;
-//        switch (pathSearchMode) {
-//            case NavigationSetupFragment.NavigationSetupListener.FAST_PATH:
-//                searchMode = PathSearchViewModel.SearchMode.FAST_PATH;
-//                Log.i(TAG, "Fast path mode");
-//                break;
-//            case NavigationSetupFragment.NavigationSetupListener.OPTIMAL_PATH:
-//                searchMode = PathSearchViewModel.SearchMode.OPTIMAL_PATH;
-//                Log.i(TAG, "Optimal path mode");
-//                break;
-//            case NavigationSetupFragment.NavigationSetupListener.COMFORT_PATH:
-//                searchMode = PathSearchViewModel.SearchMode.COMFORTABLE_PATH;
-//                Log.i(TAG, "Comfort path mode");
-//                break;
-//            default:
-                searchMode = PathSearchViewModel.SearchMode.FAST_PATH;
-//        }
-
-        pathSearchViewModel.startPathSearch(startPoint, targets, searchMode);
+        pathSearchViewModel.startPathSearch(startPoint, targets, pathSearchMode);
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
         NavigationRouteFragment routeFragment = NavigationRouteFragment.newInstance();
         fTransaction.replace(R.id.toolBarHolder, routeFragment, navigationRouteTag);
