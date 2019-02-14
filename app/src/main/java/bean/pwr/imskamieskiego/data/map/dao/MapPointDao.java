@@ -51,7 +51,7 @@ public interface MapPointDao {
             "LIMIT 1")
     LiveData<MapPointEntity> getNearestLiveData(int xPos, int yPos, int floor);
 
-    @Query("SELECT nodes.id, floor, x, y, locationID FROM nodes JOIN quick_access_locations ON locationID = location_id WHERE quick_access_type = :quickAccessType")
+    @Query("SELECT nodes.id, floor, x, y, locationID, hardToReach FROM nodes JOIN quick_access_locations ON locationID = location_id WHERE quick_access_type = :quickAccessType")
     LiveData<List<MapPointEntity>> getQuickAccessPoints(int quickAccessType);
 
 }

@@ -1,8 +1,5 @@
 package bean.pwr.imskamieskiego.path_search;
 
-
-import android.arch.lifecycle.LiveData;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -13,7 +10,6 @@ import java.util.Map;
 
 import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.EdgeFactory;
-import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.model.map.MapPointFactory;
 import bean.pwr.imskamieskiego.repository.IMapGraphRepository;
@@ -32,15 +28,17 @@ public class StubGraphMapRepository implements IMapGraphRepository {
 
         //add regular nodes
         List<MapPoint> nodes = Arrays.asList(
-                MapPointFactory.create(1, 1, 1, 0, -1),
-                MapPointFactory.create(2, 1, 6, 0, -1),
-                MapPointFactory.create(3, 4, 1, 0, -1),
-                MapPointFactory.create(4, 4, 0, 0, -1),
-                MapPointFactory.create(5, 4, 0, 1, -1),
-                MapPointFactory.create(6, 4, 1, 1, -1),
-                MapPointFactory.create(7, 2, 4, 1, -1),
+                MapPointFactory.create(1, 1, 1, 0, -1, false),
+                MapPointFactory.create(2, 1, 6, 0, -1, false),
+                MapPointFactory.create(3, 4, 1, 0, -1, false),
+                MapPointFactory.create(4, 4, 0, 0, -1, true),
+                MapPointFactory.create(5, 4, 0, 1, -1, true),
+                MapPointFactory.create(6, 4, 1, 1, -1, false),
+                MapPointFactory.create(7, 2, 4, 1, -1, false),
+                MapPointFactory.create(9, 1, 12, 0, -1, false),
+                MapPointFactory.create(10, 2, 12, 1, -1, false),
                 //add orphaned node
-                MapPointFactory.create(8, 0, 0, 2, -1)
+                MapPointFactory.create(8, 0, 0, 2, -1, false)
         );
 
         return nodes;
@@ -54,7 +52,10 @@ public class StubGraphMapRepository implements IMapGraphRepository {
                 EdgeFactory.create(3, 4, 1),
                 EdgeFactory.create(5, 6, 1),
                 EdgeFactory.create(6, 7, 4),
-                EdgeFactory.create(4, 5, 1)
+                EdgeFactory.create(4, 5, 1),
+                EdgeFactory.create(2, 9, 11),
+                EdgeFactory.create(9, 10, 1),
+                EdgeFactory.create(7, 10, 13)
         );
         return addOppositeDirection(edges);
     }

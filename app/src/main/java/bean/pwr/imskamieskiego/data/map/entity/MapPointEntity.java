@@ -21,13 +21,15 @@ public class MapPointEntity implements MapPoint {
     private int x;
     private int y;
     private int locationID;
+    private boolean hardToReach;
 
-    public MapPointEntity(int id, int floor, int x, int y, int locationID) {
+    public MapPointEntity(int id, int floor, int x, int y, int locationID, boolean hardToReach) {
         this.id = id;
         this.floor = floor;
         this.x = x;
         this.y = y;
         this.locationID = locationID;
+        this.hardToReach = hardToReach;
     }
 
     @Override
@@ -56,6 +58,11 @@ public class MapPointEntity implements MapPoint {
     }
 
     @Override
+    public boolean isHardToReach() {
+        return hardToReach;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -64,12 +71,12 @@ public class MapPointEntity implements MapPoint {
                 floor == that.floor &&
                 x == that.x &&
                 y == that.y &&
-                locationID == that.locationID;
+                locationID == that.locationID &&
+                hardToReach == that.hardToReach;
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id, floor, x, y, locationID);
+        return Objects.hash(id, floor, x, y, locationID, hardToReach);
     }
 }

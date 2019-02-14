@@ -16,6 +16,8 @@ public interface PathSearchAlgorithm {
 
     void startSearch();
 
+    void setPenalizationFactor(int penalizationFactor);
+
     @NonNull List<MapPoint> getPath();
 
 }

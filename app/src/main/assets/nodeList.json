@@ -4,1357 +4,1551 @@
     "x": 519,
     "y": 72,
     "floor": 0,
-    "locationID": 36
+    "locationID": 36,
+    "hardToReach": false
   },
   {
     "id": 182,
     "x": 519,
     "y": 170,
     "floor": 0,
-    "locationID": 35
+    "locationID": 35,
+    "hardToReach": false
   },
   {
     "id": 180,
     "x": 584,
     "y": 72,
     "floor": 0,
-    "locationID": 37
+    "locationID": 37,
+    "hardToReach": false
   },
   {
     "id": 181,
     "x": 587,
     "y": 170,
     "floor": 0,
-    "locationID": 38
+    "locationID": 38,
+    "hardToReach": false
   },
   {
     "id": 179,
     "x": 554,
     "y": 170,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 178,
     "x": 554,
     "y": 72,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 177,
     "x": 554,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 175,
     "x": 665,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 176,
     "x": 752,
     "y": 263,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 174,
     "x": 714,
     "y": 163,
     "floor": 0,
-    "locationID": 39
+    "locationID": 39,
+    "hardToReach": false
   },
   {
     "id": 173,
     "x": 714,
     "y": 91,
     "floor": 0,
-    "locationID": 34
+    "locationID": 34,
+    "hardToReach": false
   },
   {
     "id": 172,
     "x": 714,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 171,
     "x": 752,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 170,
     "x": 844,
     "y": 71,
     "floor": 0,
-    "locationID": 40
+    "locationID": 40,
+    "hardToReach": false
   },
   {
     "id": 169,
     "x": 913,
     "y": 71,
     "floor": 0,
-    "locationID": 33
+    "locationID": 33,
+    "hardToReach": false
   },
   {
     "id": 168,
     "x": 882,
     "y": 71,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 167,
     "x": 882,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 166,
     "x": 835,
     "y": 174,
     "floor": 0,
-    "locationID": 1
+    "locationID": 1,
+    "hardToReach": false
   },
   {
     "id": 165,
     "x": 835,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 164,
     "x": 913,
     "y": 220,
     "floor": 0,
-    "locationID": 32
+    "locationID": 32,
+    "hardToReach": false
   },
   {
     "id": 163,
     "x": 878,
     "y": 220,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 162,
     "x": 979,
     "y": 466,
     "floor": 0,
-    "locationID": 31
+    "locationID": 31,
+    "hardToReach": false
   },
   {
     "id": 161,
     "x": 979,
     "y": 497,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 160,
     "x": 979,
     "y": 708,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 159,
     "x": 878,
     "y": 708,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 158,
     "x": 913,
     "y": 616,
     "floor": 0,
-    "locationID": 30
+    "locationID": 30,
+    "hardToReach": false
   },
   {
     "id": 157,
     "x": 878,
     "y": 616,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 156,
     "x": 913,
     "y": 407,
     "floor": 0,
-    "locationID": 31
+    "locationID": 31,
+    "hardToReach": false
   },
   {
     "id": 155,
     "x": 878,
     "y": 407,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 154,
     "x": 878,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 153,
     "x": 780,
     "y": 394,
     "floor": 0,
-    "locationID": 28
+    "locationID": 28,
+    "hardToReach": false
   },
   {
     "id": 152,
     "x": 780,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 151,
     "x": 727,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 150,
     "x": 758,
     "y": 505,
     "floor": 0,
-    "locationID": 29
+    "locationID": 29,
+    "hardToReach": false
   },
   {
     "id": 149,
     "x": 727,
     "y": 505,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 148,
     "x": 501,
     "y": 731,
     "floor": 0,
-    "locationID": 3
+    "locationID": 3,
+    "hardToReach": false
   },
   {
     "id": 147,
     "x": 501,
     "y": 853,
     "floor": 0,
-    "locationID": 4
+    "locationID": 4,
+    "hardToReach": false
   },
   {
     "id": 146,
     "x": 637,
     "y": 976,
     "floor": 0,
-    "locationID": 14
+    "locationID": 14,
+    "hardToReach": false
   },
   {
     "id": 145,
     "x": 815,
     "y": 942,
     "floor": 0,
-    "locationID": 15
+    "locationID": 15,
+    "hardToReach": false
   },
   {
     "id": 144,
     "x": 780,
     "y": 942,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 143,
     "x": 770,
     "y": 761,
     "floor": 0,
-    "locationID": 1
+    "locationID": 1,
+    "hardToReach": false
   },
   {
     "id": 141,
     "x": 540,
     "y": 731,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 140,
     "x": 540,
     "y": 853,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 139,
     "x": 540,
     "y": 942,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 138,
     "x": 637,
     "y": 942,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 137,
     "x": 727,
     "y": 942,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 136,
     "x": 727,
     "y": 761,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 135,
     "x": 727,
     "y": 707,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 134,
     "x": 727,
     "y": 684,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 133,
     "x": 540,
     "y": 684,
     "floor": 0,
-    "locationID": 49
+    "locationID": 49,
+    "hardToReach": false
   },
   {
     "id": 132,
     "x": 458,
     "y": 644,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 131,
     "x": 458,
     "y": 684,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 130,
     "x": 771,
     "y": 1005,
     "floor": 0,
-    "locationID": 16
+    "locationID": 16,
+    "hardToReach": false
   },
   {
     "id": 129,
     "x": 727,
     "y": 1005,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 128,
     "x": 501,
     "y": 982,
     "floor": 0,
-    "locationID": 7
+    "locationID": 7,
+    "hardToReach": false
   },
   {
     "id": 127,
     "x": 540,
     "y": 982,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 126,
     "x": 501,
     "y": 1099,
     "floor": 0,
-    "locationID": 8
+    "locationID": 8,
+    "hardToReach": false
   },
   {
     "id": 125,
     "x": 540,
     "y": 1099,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 124,
     "x": 442,
     "y": 1229,
     "floor": 0,
-    "locationID": 13
+    "locationID": 13,
+    "hardToReach": false
   },
   {
     "id": 123,
     "x": 442,
     "y": 1199,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 122,
     "x": 540,
     "y": 1199,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 121,
     "x": 771,
     "y": 1158,
     "floor": 0,
-    "locationID": 17
+    "locationID": 17,
+    "hardToReach": false
   },
   {
     "id": 120,
     "x": 727,
     "y": 1158,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 119,
     "x": 727,
     "y": 1199,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 118,
     "x": 687,
     "y": 1248,
     "floor": 0,
-    "locationID": 18
+    "locationID": 18,
+    "hardToReach": false
   },
   {
     "id": 117,
     "x": 727,
     "y": 1248,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 116,
     "x": 687,
     "y": 1330,
     "floor": 0,
-    "locationID": 45
+    "locationID": 45,
+    "hardToReach": false
   },
   {
     "id": 115,
     "x": 727,
     "y": 1330,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 114,
     "x": 727,
     "y": 1356,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 113,
     "x": 942,
     "y": 1322,
     "floor": 0,
-    "locationID": 22
+    "locationID": 22,
+    "hardToReach": false
   },
   {
     "id": 112,
     "x": 942,
     "y": 1356,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 111,
     "x": 1011,
     "y": 1356,
     "floor": 0,
-    "locationID": 24
+    "locationID": 24,
+    "hardToReach": false
   },
   {
     "id": 110,
     "x": 981,
     "y": 1356,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 109,
     "x": 946,
     "y": 1389,
     "floor": 0,
-    "locationID": 23
+    "locationID": 23,
+    "hardToReach": false
   },
   {
     "id": 108,
     "x": 981,
     "y": 1389,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 107,
     "x": 1041,
     "y": 1431,
     "floor": 0,
-    "locationID": 51
+    "locationID": 51,
+    "hardToReach": false
   },
   {
     "id": 106,
     "x": 981,
     "y": 1431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 105,
     "x": 888,
     "y": 1499,
     "floor": 0,
-    "locationID": 21
+    "locationID": 21,
+    "hardToReach": false
   },
   {
     "id": 104,
     "x": 981,
     "y": 1537,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 103,
     "x": 888,
     "y": 1537,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 102,
     "x": 708,
     "y": 1499,
     "floor": 0,
-    "locationID": 48
+    "locationID": 48,
+    "hardToReach": true
   },
   {
     "id": 101,
     "x": 708,
     "y": 1537,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 100,
     "x": 588,
     "y": 1499,
     "floor": 0,
-    "locationID": 19
+    "locationID": 19,
+    "hardToReach": false
   },
   {
     "id": 99,
     "x": 428,
     "y": 1499,
     "floor": 0,
-    "locationID": 20
+    "locationID": 20,
+    "hardToReach": false
   },
   {
     "id": 98,
     "x": 588,
     "y": 1537,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 97,
     "x": 428,
     "y": 1537,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 96,
     "x": 357,
     "y": 1537,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 95,
     "x": 318,
     "y": 1452,
     "floor": 0,
-    "locationID": 1
+    "locationID": 1,
+    "hardToReach": false
   },
   {
     "id": 94,
     "x": 357,
     "y": 1452,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 93,
     "x": 318,
     "y": 1297,
     "floor": 0,
-    "locationID": 12
+    "locationID": 12,
+    "hardToReach": false
   },
   {
     "id": 92,
     "x": 357,
     "y": 1297,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 89,
     "x": 357,
     "y": 1169,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 91,
     "x": 357,
     "y": 1199,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 90,
     "x": 318,
     "y": 1169,
     "floor": 0,
-    "locationID": 11
+    "locationID": 11,
+    "hardToReach": false
   },
   {
     "id": 88,
     "x": 394,
     "y": 1094,
     "floor": 0,
-    "locationID": 9
+    "locationID": 9,
+    "hardToReach": false
   },
   {
     "id": 87,
     "x": 357,
     "y": 1094,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 86,
     "x": 318,
     "y": 1066,
     "floor": 0,
-    "locationID": 10
+    "locationID": 10,
+    "hardToReach": false
   },
   {
     "id": 85,
     "x": 357,
     "y": 1066,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 84,
     "x": 318,
     "y": 999,
     "floor": 0,
-    "locationID": 47
+    "locationID": 47,
+    "hardToReach": true
   },
   {
     "id": 83,
     "x": 357,
     "y": 1002,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 82,
     "x": 357,
     "y": 942,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 81,
     "x": 318,
     "y": 845,
     "floor": 0,
-    "locationID": 6
+    "locationID": 6,
+    "hardToReach": false
   },
   {
     "id": 80,
     "x": 357,
     "y": 845,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 79,
     "x": 318,
     "y": 731,
     "floor": 0,
-    "locationID": 5
+    "locationID": 5,
+    "hardToReach": false
   },
   {
     "id": 78,
     "x": 356,
     "y": 731,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 77,
     "x": 658,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 75,
     "x": 639,
     "y": 385,
     "floor": 0,
-    "locationID": 42
+    "locationID": 42,
+    "hardToReach": false
   },
   {
     "id": 74,
     "x": 588,
     "y": 385,
     "floor": 0,
-    "locationID": 43
+    "locationID": 43,
+    "hardToReach": false
   },
   {
     "id": 73,
     "x": 539,
     "y": 385,
     "floor": 0,
-    "locationID": 44
+    "locationID": 44,
+    "hardToReach": false
   },
   {
     "id": 72,
     "x": 639,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 71,
     "x": 588,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 70,
     "x": 539,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 69,
     "x": 444,
     "y": 390,
     "floor": 0,
-    "locationID": 27
+    "locationID": 27,
+    "hardToReach": false
   },
   {
     "id": 68,
     "x": 443,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 67,
     "x": 356,
     "y": 684,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 66,
     "x": 356,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 65,
     "x": 356,
     "y": 462,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 64,
     "x": 132,
     "y": 684,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 62,
     "x": 256,
     "y": 556,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 63,
     "x": 230,
     "y": 527,
     "floor": 0,
-    "locationID": 26
+    "locationID": 26,
+    "hardToReach": false
   },
   {
     "id": 61,
     "x": 132,
     "y": 431,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 60,
     "x": 355,
     "y": 262,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 59,
     "x": 355,
     "y": 215,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 58,
     "x": 151,
     "y": 264,
     "floor": 0,
-    "locationID": 41
+    "locationID": 41,
+    "hardToReach": false
   },
   {
     "id": 56,
     "x": 132,
     "y": 215,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 57,
     "x": 132,
     "y": 263,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 55,
     "x": 132,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 54,
     "x": 402,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 53,
     "x": 334,
     "y": 128,
     "floor": 0,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 52,
     "x": 334,
     "y": 42,
     "floor": 0,
-    "locationID": 50
+    "locationID": 50,
+    "hardToReach": false
   },
   {
     "id": 555,
     "x": 961,
     "y": 856,
     "floor": 1,
-    "locationID": 515
+    "locationID": 515,
+    "hardToReach": false
   },
   {
     "id": 554,
     "x": 725,
     "y": 1055,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 553,
     "x": 748,
     "y": 917,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 552,
     "x": 790,
     "y": 842,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 551,
     "x": 863,
     "y": 811,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 550,
     "x": 961,
     "y": 811,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 549,
     "x": 404,
     "y": 1497,
     "floor": 1,
-    "locationID": 514
+    "locationID": 514,
+    "hardToReach": false
   },
   {
     "id": 548,
     "x": 271,
     "y": 1539,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 547,
     "x": 404,
     "y": 1539,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 546,
     "x": 481,
     "y": 1228,
     "floor": 1,
-    "locationID": 513
+    "locationID": 513,
+    "hardToReach": false
   },
   {
     "id": 545,
     "x": 271,
     "y": 1270,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 544,
     "x": 481,
     "y": 1270,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 543,
     "x": 302,
     "y": 536,
     "floor": 1,
-    "locationID": 512
+    "locationID": 512,
+    "hardToReach": false
   },
   {
     "id": 542,
     "x": 267,
     "y": 426,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 541,
     "x": 267,
     "y": 536,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 540,
     "x": 690,
     "y": 541,
     "floor": 1,
-    "locationID": 511
+    "locationID": 511,
+    "hardToReach": false
   },
   {
     "id": 539,
     "x": 726,
     "y": 427,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 538,
     "x": 726,
     "y": 541,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 537,
     "x": 387,
     "y": 710,
     "floor": 1,
-    "locationID": 1
+    "locationID": 1,
+    "hardToReach": false
   },
   {
     "id": 536,
     "x": 267,
     "y": 753,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 535,
     "x": 387,
     "y": 753,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 534,
     "x": 708,
     "y": 1490,
     "floor": 1,
-    "locationID": 506
+    "locationID": 506,
+    "hardToReach": true
   },
   {
     "id": 533,
     "x": 778,
     "y": 1539,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 532,
     "x": 708,
     "y": 1539,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 531,
     "x": 308,
     "y": 999,
     "floor": 1,
-    "locationID": 505
+    "locationID": 505,
+    "hardToReach": true
   },
   {
     "id": 530,
     "x": 271,
     "y": 999,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 529,
     "x": 772,
     "y": 700,
     "floor": 1,
-    "locationID": 504
+    "locationID": 504,
+    "hardToReach": true
   },
   {
     "id": 528,
     "x": 726,
     "y": 752,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 527,
     "x": 726,
     "y": 700,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 526,
     "x": 536,
     "y": 383,
     "floor": 1,
-    "locationID": 509
+    "locationID": 509,
+    "hardToReach": false
   },
   {
     "id": 525,
     "x": 587,
     "y": 383,
     "floor": 1,
-    "locationID": 508
+    "locationID": 508,
+    "hardToReach": false
   },
   {
     "id": 524,
     "x": 639,
     "y": 383,
     "floor": 1,
-    "locationID": 507
+    "locationID": 507,
+    "hardToReach": false
   },
   {
     "id": 523,
     "x": 536,
     "y": 426,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 522,
     "x": 587,
     "y": 426,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 521,
     "x": 639,
     "y": 426,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 520,
     "x": 681,
     "y": 1329,
     "floor": 1,
-    "locationID": 510
+    "locationID": 510,
+    "hardToReach": false
   },
   {
     "id": 519,
     "x": 779,
     "y": 1352,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 518,
     "x": 723,
     "y": 1270,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 517,
     "x": 723,
     "y": 1352,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 516,
     "x": 723,
     "y": 1329,
     "floor": 1,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 653,
     "x": 538,
     "y": 386,
     "floor": 2,
-    "locationID": 646
+    "locationID": 646,
+    "hardToReach": false
   },
   {
     "id": 652,
     "x": 588,
     "y": 386,
     "floor": 2,
-    "locationID": 645
+    "locationID": 645,
+    "hardToReach": false
   },
   {
     "id": 651,
     "x": 636,
     "y": 386,
     "floor": 2,
-    "locationID": 644
+    "locationID": 644,
+    "hardToReach": false
   },
   {
     "id": 650,
     "x": 538,
     "y": 424,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 649,
     "x": 588,
     "y": 424,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 648,
     "x": 636,
     "y": 424,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 666,
     "x": 863,
     "y": 1220,
     "floor": 2,
-    "locationID": 638
+    "locationID": 638,
+    "hardToReach": false
   },
   {
     "id": 665,
     "x": 819,
     "y": 1220,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 654,
     "x": 294,
     "y": 900,
     "floor": 2,
-    "locationID": 640
+    "locationID": 640,
+    "hardToReach": false
   },
   {
     "id": 655,
     "x": 294,
     "y": 813,
     "floor": 2,
-    "locationID": 641
+    "locationID": 641,
+    "hardToReach": false
   },
   {
     "id": 656,
     "x": 294,
     "y": 860,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 657,
     "x": 693,
     "y": 860,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 659,
     "x": 693,
     "y": 900,
     "floor": 2,
-    "locationID": 639
+    "locationID": 639,
+    "hardToReach": false
   },
   {
     "id": 658,
     "x": 819,
     "y": 860,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 660,
     "x": 819,
     "y": 612,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 661,
     "x": 855,
     "y": 612,
     "floor": 2,
-    "locationID": 642
+    "locationID": 642,
+    "hardToReach": false
   },
   {
     "id": 663,
     "x": 764,
     "y": 424,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 662,
     "x": 818,
     "y": 424,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 664,
     "x": 764,
     "y": 468,
     "floor": 2,
-    "locationID": 643
+    "locationID": 643,
+    "hardToReach": false
   },
   {
     "id": 667,
     "x": 818,
     "y": 1534,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 668,
     "x": 710,
     "y": 1534,
     "floor": 2,
-    "locationID": -1
+    "locationID": -1,
+    "hardToReach": false
   },
   {
     "id": 669,
     "x": 710,
     "y": 1499,
     "floor": 2,
-    "locationID": 647
+    "locationID": 647,
+    "hardToReach": true
   },
   {
     "id": 671,
     "x": 658,
     "y": 460,
     "floor": 0,
-    "locationID": 2
+    "locationID": 2,
+    "hardToReach": false
   },
   {
     "id": 672,
     "x": 757,
     "y": 707,
     "floor": 0,
-    "locationID": 46
+    "locationID": 46,
+    "hardToReach": true
   }
 ]

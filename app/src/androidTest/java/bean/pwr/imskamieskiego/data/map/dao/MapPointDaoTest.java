@@ -55,7 +55,7 @@ public class MapPointDaoTest {
         int records = 4;
         List<MapPointEntity> pointsList = new ArrayList<>();
         for (int i = 0; i < records; i++){
-            MapPointEntity point = new MapPointEntity(1+i, 0, i+2, i+1, i%4);
+            MapPointEntity point = new MapPointEntity(1+i, 0, i+2, i+1, i%4, false);
             pointsList.add(point);
         }
         return pointsList;

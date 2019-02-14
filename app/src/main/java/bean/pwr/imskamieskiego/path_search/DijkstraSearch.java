@@ -9,11 +9,15 @@ package bean.pwr.imskamieskiego.path_search;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Set;
 
+import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
 import bean.pwr.imskamieskiego.model.map.Edge;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.IMapGraphRepository;
@@ -23,6 +27,9 @@ import bean.pwr.imskamieskiego.repository.IMapGraphRepository;
  * @see PathSearcher
  */
 public class DijkstraSearch implements PathSearchAlgorithm {
+
+    public final static int DEFAULT_PENALIZATION = 1;
+    private int penalizationFactor = DEFAULT_PENALIZATION;
 
     private int startPointID;
     private int[] endPointIDs;
@@ -79,6 +86,11 @@ public class DijkstraSearch implements PathSearchAlgorithm {
         this.path = new ArrayList<>();
     }
 
+    @Override
+    public void setPenalizationFactor(int penalizationFactor) {
+        this.penalizationFactor = penalizationFactor;
+    }
+
     /**
      * Start path search between points given in constructor. Searching is a blocking operation
      * that can take a long time. Therefore, do not call it directly in the main thread.
@@ -95,10 +107,15 @@ public class DijkstraSearch implements PathSearchAlgorithm {
 
         Map<Integer, Integer> nodeVisitHistory = new HashMap<>();
         Map<Integer, Integer> distancesFromStart = new HashMap<>();
+        Set<Integer> hardToReachPoints = new HashSet<>();
+
         PriorityQueue<NodePriorityWrapper> pathToTravel = new PriorityQueue<>(100,
                 (dist1, dist2) -> dist1.distance-dist2.distance);
 
         Map<Integer, List<Edge>> outgoingEdges = new HashMap<>(fetchEdges(startPointID, initDepthFetch));
+        if (penalizationFactor != DEFAULT_PENALIZATION){
+            hardToReachPoints.addAll(fetchHardToReachNodes(new ArrayList<>(outgoingEdges.keySet())));
+        }
 
         //We start from a point without outgoing edges. There is nowhere to go.
         if (outgoingEdges.isEmpty()){
@@ -120,12 +137,17 @@ public class DijkstraSearch implements PathSearchAlgorithm {
             }
 
             if (!outgoingEdges.containsKey(from_id)){
-                outgoingEdges.putAll(fetchEdges(from_id, depthFetch));
+                Map<Integer, List<Edge>> fetchedEdges = fetchEdges(from_id, depthFetch);
+                outgoingEdges.putAll(fetchedEdges);
+                if (penalizationFactor != DEFAULT_PENALIZATION) {
+                    hardToReachPoints.addAll(fetchHardToReachNodes(new ArrayList<>(fetchedEdges.keySet())));
+                }
             }
 
             for (Edge edge:outgoingEdges.get(from_id)) {
 
-                int newBestDistance = edge.getLength() + distancesFromStart.get(from_id);
+                int edgeLength = edge.getLength() * (hardToReachPoints.contains(edge.getTo()) ? penalizationFactor : 1);
+                int newBestDistance = edgeLength + distancesFromStart.get(from_id);
                 int oldDistance = Integer.MAX_VALUE;
                 if (distancesFromStart.containsKey(edge.getTo())){
                     oldDistance = distancesFromStart.get(edge.getTo());
@@ -169,6 +191,17 @@ public class DijkstraSearch implements PathSearchAlgorithm {
             }
         }
         return false;
+    }
+
+    private Set<Integer> fetchHardToReachNodes(List<Integer> nodeIds){
+        List<MapPoint> nodes = graphRepository.getPointByID(nodeIds);
+        Set<Integer> hardToReachNodes = new HashSet<>();
+        for (MapPoint node:nodes) {
+            if (node.isHardToReach()){
+                hardToReachNodes.add(node.getId());
+            }
+        }
+        return hardToReachNodes;
     }
 
     private Map<Integer, List<Edge>> fetchEdges(int nodeID, int depth) {

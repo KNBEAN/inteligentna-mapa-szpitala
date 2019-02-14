@@ -19,10 +19,11 @@ public class MapPointFactory {
      * @param y
      * @param floor
      * @param locationId
+     * @param hardToReach
      * @return MapPoint object
      */
-    public static MapPoint create(int id, int x, int y, int floor, int locationId){
-        return new mapPointImpl(id, x, y, floor, locationId);
+    public static MapPoint create(int id, int x, int y, int floor, int locationId, boolean hardToReach){
+        return new mapPointImpl(id, x, y, floor, locationId, hardToReach);
     }
 
 
@@ -34,7 +35,7 @@ public class MapPointFactory {
      * @return MapPoint object
      */
     public static MapPoint create(int x, int y, int floor){
-        return create(-1, x, y, floor, -1);
+        return create(-1, x, y, floor, -1, false);
     }
 
     private static class mapPointImpl implements MapPoint{
@@ -43,13 +44,15 @@ public class MapPointFactory {
         private int y;
         private int floor;
         private int locationID;
+        private boolean hardToReach;
 
-        public mapPointImpl(int id, int x, int y, int floor, int locationID) {
+        public mapPointImpl(int id, int x, int y, int floor, int locationID, boolean hardToReach) {
             this.id = id;
             this.x = x;
             this.y = y;
             this.floor = floor;
             this.locationID = locationID;
+            this.hardToReach = hardToReach;
         }
 
         @Override
@@ -75,6 +78,11 @@ public class MapPointFactory {
         @Override
         public int getLocationID() {
             return locationID;
+        }
+
+        @Override
+        public boolean isHardToReach() {
+            return hardToReach;
         }
     }
 
