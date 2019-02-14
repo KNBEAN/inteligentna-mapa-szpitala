@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ This Source Code Form is subject to the terms of the Mozilla Public
   ~ License, v. 2.0. If a copy of the MPL was not distributed with this
   ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
@@ -13,116 +12,128 @@
     tools:showIn="@layout/nav_window">
 
 
-    <Button
-        android:id="@+id/startButton"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:enabled="false"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="@string/nav_window_button_start"
-        android:textColor="@color/fontColorWhite"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/textViewFrom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:text="@string/nav_window_from"
-            android:textAllCaps="false"
-            android:textColor="@color/fontColorBlack"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewTo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/nav_window_to"
-            android:textColor="@color/fontColorBlack"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewFrom"
-            app:layout_constraintVertical_bias="1.0" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="8dp"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textViewStart"
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/constraintLayout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:background="@drawable/back"
-            android:clickable="true"
-            android:gravity="start"
-            android:hint="@string/nav_window_start_hint"
-            android:paddingStart="16dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:textAllCaps="false"
-            android:textColor="@color/fontColorBlack"
-            android:textSize="18sp" />
+            android:layout_weight="1"
+            android:paddingBottom="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textViewDestination"
+            <TextView
+                android:id="@+id/textViewFrom"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical|end"
+                android:text="@string/nav_window_from"
+                android:textAllCaps="false"
+                android:textColor="@color/fontColorBlack"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewStart"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toEndOf="@+id/textViewFrom"
+                app:layout_constraintTop_toTopOf="@+id/textViewStart"
+                app:srcCompat="@drawable/start_point" />
+
+            <TextView
+                android:id="@+id/textViewStart"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back"
+                android:clickable="true"
+                android:gravity="start"
+                android:hint="@string/nav_window_start_hint"
+                android:paddingStart="16dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="2dp"
+                android:textAllCaps="false"
+                android:textColor="@color/fontColorBlack"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView4"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/back"
-            android:clickable="true"
-            android:gravity="start"
-            android:hint="@string/nav_window_destination_hint"
-            android:paddingStart="16dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-            android:textColor="@color/fontColorBlack"
-            android:textSize="18sp" />
+            android:layout_weight="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/view"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textViewTo"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center_vertical|end"
+                android:text="@string/nav_window_to"
+                android:textColor="@color/fontColorBlack"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/imageView5"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="@+id/textViewDestination"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toEndOf="@+id/textViewTo"
+                app:layout_constraintTop_toTopOf="@+id/textViewDestination"
+                app:srcCompat="@drawable/destination_point" />
+
+            <TextView
+                android:id="@+id/textViewDestination"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/back"
+                android:clickable="true"
+                android:gravity="start"
+                android:hint="@string/nav_window_destination_hint"
+                android:paddingStart="16dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/fontColorBlack"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView5"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
 
 
     </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/checkStairs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:enabled="false"
-        android:text="@string/nav_window_stairs"
-        android:textSize="18sp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/startButton" />
 
 
 </android.support.constraint.ConstraintLayout>

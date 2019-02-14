@@ -8,6 +8,7 @@ package bean.pwr.imskamieskiego.GUI;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,9 +18,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
+
+import java.util.Arrays;
+import java.util.List;
 
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.Location;
@@ -42,9 +47,11 @@ public class NavigationSetupFragment extends Fragment {
     private Toolbar toolbar;
     private TextView textViewStart;
     private TextView textViewDestination;
-    private CheckBox checkStairs;
+    private ImageButton settingButton;
     private Button startButton;
     private NavigationSetupListener listener;
+    private ViewGroup settingsLayout;
+    private RadioGroup modePathButtonGroup;
 
 
     public NavigationSetupFragment() {
@@ -101,10 +108,30 @@ public class NavigationSetupFragment extends Fragment {
         toolbar = view.findViewById(R.id.navi_setup_toolbar);
         textViewStart = view.findViewById(R.id.textViewStart);
         textViewDestination = view.findViewById(R.id.textViewDestination);
-        checkStairs = view.findViewById(R.id.checkStairs);
+        settingButton = view.findViewById(R.id.settingButton);
         startButton = view.findViewById(R.id.startButton);
-
-        startButton.setOnClickListener(view1 -> listener.startNavigation(checkStairs.isSelected()));
+        settingsLayout = view.findViewById(R.id.settingsLayout);
+        settingButton.setOnClickListener(view1 -> {
+            if (settingsLayout.getVisibility() == View.GONE) {
+                settingsLayout.setVisibility(View.VISIBLE);
+            } else {
+                settingsLayout.setVisibility(View.GONE);
+            }
+        });
+        modePathButtonGroup = view.findViewById(R.id.pathModeButtonGroup);
+        startButton.setOnClickListener(view1 -> {
+            switch (modePathButtonGroup.getCheckedRadioButtonId()) {
+                case R.id.fastPathButton:
+                    listener.startNavigation(NavigationSetupListener.FAST_PATH);
+                    break;
+                case R.id.optimalPathButton:
+                    listener.startNavigation(NavigationSetupListener.OPTIMAL_PATH);
+                    break;
+                case R.id.comfortPathButton:
+                    listener.startNavigation(NavigationSetupListener.COMFORT_PATH);
+                    break;
+            }
+        });
         textViewStart.setOnClickListener(view1 -> listener.startPointSearchRequest());
         toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null) {
@@ -118,7 +145,29 @@ public class NavigationSetupFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadUserPreferences();
         Snackbar.make(view.getRootView(), R.string.navigation_setup_snackbar_hint, Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        int pathSearchModeButtonID = modePathButtonGroup.getCheckedRadioButtonId();
+
+        SharedPreferences userSettings = getContext().getSharedPreferences("user_settings", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = userSettings.edit();
+        editor.putInt("path_search_mode", pathSearchModeButtonID);
+        editor.apply();
+
+        super.onDestroyView();
+    }
+
+    public void loadUserPreferences() {
+        SharedPreferences userSettings = getContext().getSharedPreferences("user_settings", Context.MODE_PRIVATE);
+        int pathSearchMode = userSettings.getInt("path_search_mode", -1);
+        List<Integer> optionButtons = Arrays.asList(R.id.fastPathButton, R.id.optimalPathButton, R.id.comfortPathButton);
+        if (optionButtons.contains(pathSearchMode)) {
+            modePathButtonGroup.check(pathSearchMode);
+        }
     }
 
     public void setStartLocation(Location startLocation) {
@@ -134,6 +183,10 @@ public class NavigationSetupFragment extends Fragment {
     }
 
     public interface NavigationSetupListener {
+        int FAST_PATH = 1;
+        int OPTIMAL_PATH = 2;
+        int COMFORT_PATH = 3;
+
         /**
          * Called, when navigation setup fragment need start location search functionality
          */
@@ -141,12 +194,14 @@ public class NavigationSetupFragment extends Fragment {
 
         /**
          * Called, when navigation setup fragment starts navigation
-         * @param avoidStairs
+         *
+         * @param pathSearchMode
          */
-        void startNavigation(boolean avoidStairs);
+        void startNavigation(int pathSearchMode);
 
         /**
          * Called, when navigation setup fragment selects start point
+         *
          * @param selectedStartPoint
          */
         void onStartPointSelected(MapPoint selectedStartPoint);

@@ -363,7 +363,7 @@ public class MapActivity extends AppCompatActivity
     }
 
     @Override
-    public void startNavigation(boolean avoidStairs) {
+    public void startNavigation(int pathSearchMode) {
         Log.i(TAG, "startNavigation: start navigation");
         NavigationSetupFragment navigationFragment = (NavigationSetupFragment) fragmentManager.findFragmentByTag(navigationSetupTag);
         if (navigationFragment != null) {
@@ -376,7 +376,25 @@ public class MapActivity extends AppCompatActivity
                 }
             }
 
-            pathSearchViewModel.startPathSearch(startPoint, targets, PathSearchViewModel.SearchMode.FAST_PATH);
+            PathSearchViewModel.SearchMode searchMode;
+            switch (pathSearchMode) {
+                case NavigationSetupFragment.NavigationSetupListener.FAST_PATH:
+                    searchMode = PathSearchViewModel.SearchMode.FAST_PATH;
+                    Log.i(TAG, "Fast path mode");
+                    break;
+                case NavigationSetupFragment.NavigationSetupListener.OPTIMAL_PATH:
+                    searchMode = PathSearchViewModel.SearchMode.OPTIMAL_PATH;
+                    Log.i(TAG, "Optimal path mode");
+                    break;
+                case NavigationSetupFragment.NavigationSetupListener.COMFORT_PATH:
+                    searchMode = PathSearchViewModel.SearchMode.COMFORTABLE_PATH;
+                    Log.i(TAG, "Comfort path mode");
+                    break;
+                default:
+                    searchMode = PathSearchViewModel.SearchMode.FAST_PATH;
+            }
+
+            pathSearchViewModel.startPathSearch(startPoint, targets, searchMode);
             FragmentTransaction fTransaction = fragmentManager.beginTransaction();
             NavigationRouteFragment routeFragment = NavigationRouteFragment.newInstance();
             fTransaction.replace(R.id.toolBarHolder, routeFragment, navigationRouteTag);
