@@ -63,6 +63,9 @@ public class MapActivity extends AppCompatActivity
 
     private static final String TAG = "MapActivity";
 
+    private static final String PREFERENCES_NAME = "user_settings";
+    private static final String SEARCH_MODE_PREFERENCE = "path_search_mode";
+
     //Fragments
     private FragmentManager fragmentManager;
     private SearchFragment searchFragment;
@@ -206,17 +209,17 @@ public class MapActivity extends AppCompatActivity
                 PathSearchMode.OPTIMAL_PATH,
                 PathSearchMode.COMFORTABLE_PATH).indexOf(searchMode);
 
-        SharedPreferences userSettings = getSharedPreferences("user_settings", Context.MODE_PRIVATE);
+        SharedPreferences userSettings = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = userSettings.edit();
-        editor.putInt("path_search_mode", indexOfSearchMode < 0 ? 1 : indexOfSearchMode);
+        editor.putInt(SEARCH_MODE_PREFERENCE, indexOfSearchMode < 0 ? 1 : indexOfSearchMode);
         editor.apply();
 
         super.onDestroy();
     }
 
     public void loadUserPreferences() {
-        SharedPreferences userSettings = getSharedPreferences("user_settings", Context.MODE_PRIVATE);
-        int pathSearchMode = userSettings.getInt("path_search_mode", 1);
+        SharedPreferences userSettings = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
+        int pathSearchMode = userSettings.getInt(SEARCH_MODE_PREFERENCE, 1);
         List<PathSearchMode> searchModes = Arrays.asList(PathSearchMode.FAST_PATH, PathSearchMode.OPTIMAL_PATH, PathSearchMode.COMFORTABLE_PATH);
         if (pathSearchMode < searchModes.size()) {
             searchMode = searchModes.get(pathSearchMode);
