@@ -18,6 +18,7 @@ import java.util.List;
 import bean.pwr.imskamieskiego.TestObserver;
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
+import bean.pwr.imskamieskiego.data.map.entity.LocationPointEntity;
 import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
 import bean.pwr.imskamieskiego.data.map.entity.QuickAccessEntity;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -51,11 +52,11 @@ public class MapPointDaoTest {
     }
 
 
-    private List<MapPointEntity> getTestData(){
+    private List<MapPointEntity> getTestData() {
         int records = 4;
         List<MapPointEntity> pointsList = new ArrayList<>();
-        for (int i = 0; i < records; i++){
-            MapPointEntity point = new MapPointEntity(1+i, 0, i+2, i+1, i%4, false);
+        for (int i = 0; i < records; i++) {
+            MapPointEntity point = new MapPointEntity(1 + i, 0, i + 2, i + 1, i % 4, false);
             pointsList.add(point);
         }
         return pointsList;
@@ -76,7 +77,7 @@ public class MapPointDaoTest {
         mapPointDao.insertAllPoints(data);
 
         List<Integer> pointIDs = new ArrayList<>();
-        for (MapPoint point:data) {
+        for (MapPoint point : data) {
             pointIDs.add(point.getId());
         }
 
@@ -86,15 +87,27 @@ public class MapPointDaoTest {
 
     @Test
     public void getMapPointByLocationID() {
-        List<MapPointEntity> data = new ArrayList<>();
-        for (MapPointEntity mapPoint:getTestData()) {
-            if (mapPoint.getLocationID() == 0)
-                data.add(mapPoint);
-        }
-        mapPointDao.insertAllPoints(data);
+        LocationDao locationDao = database.getLocationDao();
 
-        List<MapPointEntity> result = mapPointDao.getByLocationID(0);
-        assertEquals(data, result);
+        List<MapPointEntity> mapPointData = getTestData();
+        mapPointDao.insertAllPoints(mapPointData);
+        List<LocationEntity> locations = Arrays.asList(
+                new LocationEntity(1, "A", null),
+                new LocationEntity(2, "B", null));
+        locationDao.insertAllLocations(locations);
+        List<LocationPointEntity> locationPoints = Arrays.asList(
+                new LocationPointEntity(1, 2),
+                new LocationPointEntity(2, 3)
+        );
+        locationDao.insertAllLocationPoints(locationPoints);
+
+        MapPointEntity resultForID0 = mapPointDao.getByLocationID(1);
+        MapPointEntity resultForID1 = mapPointDao.getByLocationID(2);
+        MapPointEntity resultForID2 = mapPointDao.getByLocationID(3);
+
+        assertEquals(mapPointData.get(1), resultForID0);
+        assertEquals(mapPointData.get(2), resultForID1);
+        assertNull(resultForID2);
     }
 
     @Test
@@ -124,19 +137,13 @@ public class MapPointDaoTest {
     }
 
     @Test
-    public void getByNotExistingLocationID() {
-        List<MapPointEntity> result = mapPointDao.getByLocationID(5);
-        assertTrue(result.isEmpty());
-    }
-
-    @Test
     public void getPointsForQuickAccessCategory() {
 
         List<LocationEntity> locationList = Arrays.asList(
-                new LocationEntity(1, "A",null),
-                new LocationEntity(2, "B",null),
-                new LocationEntity(3, "C",null),
-                new LocationEntity(4, "D",null)
+                new LocationEntity(1, "A", null),
+                new LocationEntity(2, "B", null),
+                new LocationEntity(3, "C", null),
+                new LocationEntity(4, "D", null)
         );
         List<QuickAccessEntity> quickAccessList = Arrays.asList(
                 new QuickAccessEntity(1, 1, 1),
@@ -149,11 +156,11 @@ public class MapPointDaoTest {
         List<MapPointEntity> pointsForQAType3 = new ArrayList<>();
         List<MapPointEntity> pointsForQAType2 = new ArrayList<>();
 
-        for(MapPointEntity mapPoint:getTestData()){
-            if (mapPoint.getLocationID() == 3){
+        for (MapPointEntity mapPoint : getTestData()) {
+            if (mapPoint.getLocationID() == 3) {
                 pointsForQAType3.add(mapPoint);
             }
-            if (mapPoint.getLocationID() == 2 || mapPoint.getLocationID() == 3){
+            if (mapPoint.getLocationID() == 2 || mapPoint.getLocationID() == 3) {
                 pointsForQAType2.add(mapPoint);
             }
         }

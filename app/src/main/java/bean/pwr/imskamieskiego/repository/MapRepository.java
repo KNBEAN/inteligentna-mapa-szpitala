@@ -8,7 +8,6 @@ package bean.pwr.imskamieskiego.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Transformations;
-import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
@@ -43,10 +42,10 @@ public class MapRepository implements IMapRepository {
     }
 
     @Override
-    public LiveData<List<MapPoint>> getPointsByLocationID(int id) {
+    public LiveData<MapPoint> getPointByLocationID(int id) {
         return Transformations.map(
                 mapPointDao.getByLocationIDLiveData(id),
-                list-> new ArrayList<MapPoint>(list)
+                point -> point
         );
     }
 
@@ -54,7 +53,7 @@ public class MapRepository implements IMapRepository {
     public LiveData<Location> getLocationByID(int id) {
         return Transformations.map(
                 locationDao.getByID(id),
-                locationEntity-> locationEntity
+                locationEntity -> locationEntity
         );
     }
 
@@ -62,7 +61,7 @@ public class MapRepository implements IMapRepository {
     public LiveData<List<Location>> getLocationsListByName(@NonNull String name, int limit) {
         return Transformations.map(
                 locationDao.getListByTag(name.toLowerCase(), limit),
-                list-> new ArrayList<>(list)
+                list -> new ArrayList<>(list)
         );
     }
 

@@ -404,7 +404,7 @@
     "x": 458,
     "y": 644,
     "floor": 0,
-    "locationID": -1,
+    "locationID": 25,
     "hardToReach": false
   },
   {
@@ -1550,5 +1550,13 @@
     "floor": 0,
     "locationID": 46,
     "hardToReach": true
+  },
+  {
+    "id": 673,
+    "x": 635,
+    "y": 792,
+    "floor": 0,
+    "locationID": 49,
+    "hardToReach": false
   }
 ]

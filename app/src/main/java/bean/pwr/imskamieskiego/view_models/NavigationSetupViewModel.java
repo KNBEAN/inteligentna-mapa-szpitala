@@ -58,10 +58,10 @@ public class NavigationSetupViewModel extends AndroidViewModel {
 
         //Location comes from search
         startLocation.addSource(startLocationTrigger, location -> startLocation.setValue(location));
-        LiveData<List<MapPoint>> tmpStartPoints = Transformations.switchMap(startLocationTrigger, location ->
-                location != null ? mapRepository.getPointsByLocationID(location.getId()) : null
+        LiveData<MapPoint> tmpStartPoint = Transformations.switchMap(startLocationTrigger, location ->
+                location != null ? mapRepository.getPointByLocationID(location.getId()) : null
         );
-        startMapPoint.addSource(tmpStartPoints, mapPoint -> startMapPoint.setValue(mapPoint.get(0)));
+        startMapPoint.addSource(tmpStartPoint, mapPoint -> startMapPoint.setValue(mapPoint));
 
         //MapPoint comes from touch the map
         LiveData<MapPoint> nearestStartPoint = Transformations.switchMap(startMapPointTrigger,

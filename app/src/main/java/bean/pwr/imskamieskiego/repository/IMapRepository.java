@@ -28,11 +28,11 @@ public interface IMapRepository {
     LiveData<MapPoint> getNearestPoint(int x, int y, int floor);
 
     /**
-     * Returns list of points on map associated with location.
+     * Returns point on map associated with location as main point of location.
      * @param id location ID
      * @return return list of MapPoint. List can be empty if location hasn't any associated point.
      */
-    LiveData<List<MapPoint>> getPointsByLocationID(int id);
+    LiveData<MapPoint> getPointByLocationID(int id);
 
     /**
      * Returns location represented by the given ID.

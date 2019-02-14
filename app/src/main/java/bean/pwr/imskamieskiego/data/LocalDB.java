@@ -32,6 +32,7 @@ import bean.pwr.imskamieskiego.data.map.dao.MapPointDao;
 import bean.pwr.imskamieskiego.data.map.entity.EdgeEntity;
 import bean.pwr.imskamieskiego.data.map.entity.FloorInfoEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationEntity;
+import bean.pwr.imskamieskiego.data.map.entity.LocationPointEntity;
 import bean.pwr.imskamieskiego.data.map.entity.LocationTagEntity;
 import bean.pwr.imskamieskiego.data.map.entity.MapPointEntity;
 import bean.pwr.imskamieskiego.data.map.entity.QuickAccessEntity;
@@ -44,7 +45,8 @@ import bean.pwr.imskamieskiego.data.map.entity.QuickAccessEntity;
                 EdgeEntity.class,
                 FloorInfoEntity.class,
                 LocationTagEntity.class,
-                QuickAccessEntity.class
+                QuickAccessEntity.class,
+                LocationPointEntity.class
         },
         version = 1)
 @TypeConverters({IntegerConverter.class})
@@ -58,6 +60,7 @@ public abstract class LocalDB extends RoomDatabase {
     private static final String TAG_LIST_FILE = "tagList.json";
     private static final String FLOOR_LIST_FILE = "floorList.json";
     private static final String QUICK_ACCESS_LIST_FILE = "quickAccessList.json";
+    private static final String LOCATION_POINTS_LIST_FILE = "locationPointsList.json";
 
     public abstract MapPointDao getMapPointDao();
     public abstract LocationDao getLocationDao();
@@ -110,6 +113,9 @@ public abstract class LocalDB extends RoomDatabase {
 
                             List<QuickAccessEntity> quickAccessList = getEntityListFromJsonFile(context, QUICK_ACCESS_LIST_FILE, new TypeToken<List<QuickAccessEntity>>() {});
                             mapPointDao.insertAllQuickAccess(quickAccessList);
+
+                            List<LocationPointEntity> locationPointsList = getEntityListFromJsonFile(context, LOCATION_POINTS_LIST_FILE, new TypeToken<List<LocationPointEntity>>() {});
+                            locationDao.insertAllLocationPoints(locationPointsList);
 
                         });
                         Log.d(TAG, "onCreate: data loaded into database");
