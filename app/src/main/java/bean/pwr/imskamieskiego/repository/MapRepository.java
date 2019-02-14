@@ -42,6 +42,14 @@ public class MapRepository implements IMapRepository {
     }
 
     @Override
+    public LiveData<MapPoint> getPointByID(int id) {
+        return Transformations.map(
+                mapPointDao.getByIDLiveData(id),
+                point -> point
+        );
+    }
+
+    @Override
     public LiveData<MapPoint> getPointByLocationID(int id) {
         return Transformations.map(
                 mapPointDao.getByLocationIDLiveData(id),

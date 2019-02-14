@@ -28,6 +28,13 @@ public interface IMapRepository {
     LiveData<MapPoint> getNearestPoint(int x, int y, int floor);
 
     /**
+     * Returns map point represented by the given ID.
+     * @param id ID of point on the map
+     * @return MapPoint object. Can be null when object for passed ID not exist.
+     */
+    LiveData<MapPoint> getPointByID(int id);
+
+    /**
      * Returns point on map associated with location as main point of location.
      * @param id location ID
      * @return return list of MapPoint. List can be empty if location hasn't any associated point.
@@ -37,7 +44,7 @@ public interface IMapRepository {
     /**
      * Returns location represented by the given ID.
      * @param id ID of location
-     * @return Location object. Cab be null when object for passed ID not exist.
+     * @return Location object. Can be null when object for passed ID not exist.
      */
     LiveData<Location> getLocationByID(int id);
 

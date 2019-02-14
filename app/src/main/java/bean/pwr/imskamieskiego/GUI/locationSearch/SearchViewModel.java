@@ -12,24 +12,28 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.Location;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.repository.IMapRepository;
 import bean.pwr.imskamieskiego.repository.MapRepository;
 
 public class SearchViewModel extends AndroidViewModel {
-
+    private final String TAG = "Search View Model";
     private IMapRepository mapRepository;
 
     private MutableLiveData<String> suggestionQuery;
-    private MutableLiveData<String> submitQuery;
+    private MutableLiveData<String> submitLocationQuery;
+    private MutableLiveData<Integer> submitCodeQuery;
 
     private LiveData<List<String>> suggestionsList;
-    private LiveData<Location> queryResult;
+    private LiveData<Location> locationQueryResult;
+    private LiveData<MapPoint> codeQueryResult;
 
     public SearchViewModel(@NonNull Application application) {
         super(application);
@@ -37,42 +41,55 @@ public class SearchViewModel extends AndroidViewModel {
         mapRepository = new MapRepository(db);
 
         suggestionQuery = new MutableLiveData<>();
-        submitQuery = new MutableLiveData<>();
+        submitLocationQuery = new MutableLiveData<>();
+        submitCodeQuery = new MutableLiveData<>();
 
         LiveData<List<Location>> suggestedLocationsList = Transformations.switchMap(suggestionQuery,
-                input -> mapRepository.getLocationsListByName("%"+input+"%", 5));
+                input -> mapRepository.getLocationsListByName("%" + input + "%", 5));
 
         suggestionsList = Transformations.map(suggestedLocationsList,
                 locations -> {
                     List<String> locationNames = new ArrayList<>();
-                    for (Location location: locations) {
+                    for (Location location : locations) {
                         locationNames.add(location.getName());
                     }
                     return locationNames;
                 });
 
-        LiveData<List<Location>> rawSubmitQueryResult = Transformations.switchMap(submitQuery,
+        LiveData<List<Location>> rawSubmitQueryResult = Transformations.switchMap(submitLocationQuery,
                 input -> mapRepository.getLocationsListByName(input, 1));
 
-        queryResult = Transformations.map(rawSubmitQueryResult,
+        locationQueryResult = Transformations.map(rawSubmitQueryResult,
                 locationsList -> locationsList != null && locationsList.size() != 0 ? locationsList.get(0) : null);
+
+        codeQueryResult = Transformations.switchMap(submitCodeQuery,
+                mapRepository::getPointByID);
 
     }
 
-    void suggestionsQuery(String queryString){
+    void suggestionsQuery(String queryString) {
         suggestionQuery.postValue(queryString);
     }
 
-    LiveData<List<String>> getSuggestionsList(){
+    LiveData<List<String>> getSuggestionsList() {
         return suggestionsList;
     }
 
-    void submitQuery(String query){
-        submitQuery.postValue(query);
+    void submitQuery(String query) {
+        if (query.matches("#[0-9]+")) {
+            Log.i(TAG, "Regex match");
+            int pointCode = Integer.valueOf(query.substring(1));
+            submitCodeQuery.postValue(pointCode);
+        } else {
+            submitLocationQuery.postValue(query);
+        }
     }
 
-    LiveData<Location> getSubmitQueryResult(){
-        return queryResult;
+    LiveData<Location> getLocationQueryResult() {
+        return locationQueryResult;
     }
 
+    LiveData<MapPoint> getCodeQueryResult() {
+        return codeQueryResult;
+    }
 }
