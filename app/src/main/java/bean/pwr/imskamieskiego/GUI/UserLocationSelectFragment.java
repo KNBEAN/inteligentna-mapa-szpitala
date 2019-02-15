@@ -9,9 +9,11 @@ package bean.pwr.imskamieskiego.GUI;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
+import bean.pwr.imskamieskiego.QRCodeReader.QRCodeReaderActivity;
 import bean.pwr.imskamieskiego.R;
 
 /**
@@ -78,5 +81,11 @@ public class UserLocationSelectFragment extends Fragment {
 
         searchButton = view.findViewById(R.id.searchButton);
         searchButton.setOnClickListener(view1 -> searchListener.startSearch());
+
+        FloatingActionButton cameraButton = view.findViewById(R.id.cameraButton);
+        cameraButton.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getActivity(), QRCodeReaderActivity.class);
+            startActivity(intent);
+        });
     }
 }

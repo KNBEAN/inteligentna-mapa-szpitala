@@ -235,7 +235,7 @@ public class MapActivity extends AppCompatActivity
         if (fragmentManager.findFragmentByTag(userLocationSelectFragmentTag) == null) {
             FragmentTransaction fTransaction = fragmentManager.beginTransaction();
             UserLocationSelectFragment userLocationFragment = UserLocationSelectFragment.newInstance();
-            fTransaction.replace(R.id.toolBarHolder, userLocationFragment, userLocationSelectFragmentTag);
+            fTransaction.add(R.id.mainDrawerLayout, userLocationFragment, userLocationSelectFragmentTag);
 
             if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()) {
                 fTransaction.hide(quickAccessFragment);

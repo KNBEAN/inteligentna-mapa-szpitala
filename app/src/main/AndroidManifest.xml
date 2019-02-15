@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bean.pwr.imskamieskiego">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,46 +12,40 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".QRCodeReader.QRCodeReaderActivity"
+            android:parentActivityName=".MapActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".MapActivity"
             android:label="@string/title_activity_map"
-            android:theme="@style/AppTheme.NoActionBar">
-
-
-        </activity>
-        <activity android:name=".GUI.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".GUI.SplashActivity"
             android:theme="@style/AppTheme.SplashScreen">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".nav_window_activity.AboutHospitalActivity"
             android:label="@string/navigation_drawer_info"
-            android:theme="@style/AppTheme.ActionBar"
             android:parentActivityName=".MapActivity"
-
-            />
+            android:theme="@style/AppTheme.ActionBar" />
         <activity
             android:name=".nav_window_activity.AboutApp"
             android:label="@string/navigation_drawer_about_app"
-            android:theme="@style/AppTheme.ActionBar"
             android:parentActivityName=".MapActivity"
-
-            />
+            android:theme="@style/AppTheme.ActionBar" />
         <activity
             android:name=".nav_window_activity.AboutPatientAssistantActivity"
             android:label="@string/navigation_drawer_ap"
-            android:theme="@style/AppTheme.ActionBar"
             android:parentActivityName=".MapActivity"
+            android:theme="@style/AppTheme.ActionBar" />
 
-            />
-
+        <meta-data
+            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
+            android:value="barcode" />
     </application>
-
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
 </manifest>
