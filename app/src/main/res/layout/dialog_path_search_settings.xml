@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ This Source Code Form is subject to the terms of the Mozilla Public
+  ~ License, v. 2.0. If a copy of the MPL was not distributed with this
+  ~ file, You can obtain one at http://mozilla.org/MPL/2.0/.
+  -->
+
+<RadioGroup
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/modePathButtonGroup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="5dp">
+
+    <RadioButton
+        android:id="@+id/fastPathButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/fastest_path_option" />
+
+    <RadioButton
+        android:id="@+id/optimalPathButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/optimal_path_option" />
+
+    <RadioButton
+        android:id="@+id/comfortPathButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/comfortable_path_option" />
+</RadioGroup>

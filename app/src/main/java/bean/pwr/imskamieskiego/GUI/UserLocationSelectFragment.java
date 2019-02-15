@@ -4,11 +4,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-/*
- * This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/.
- */
 
 package bean.pwr.imskamieskiego.GUI;
 
@@ -50,7 +45,7 @@ public class UserLocationSelectFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof NavigationSetupFragment.NavigationSetupListener) {
+        if (context instanceof LocationSearchInterface) {
             searchListener = (LocationSearchInterface) context;
         } else {
             throw new RuntimeException(context.toString()
