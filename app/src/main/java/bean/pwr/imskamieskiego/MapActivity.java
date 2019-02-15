@@ -356,19 +356,21 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public void onLocationSearched(Location location) {
-        if (fragmentManager.getBackStackEntryCount() > 0) {
+    private void popFragmentBack(){
+        if (fragmentManager.getBackStackEntryCount() > 0){
             fragmentManager.popBackStack();
         }
+    }
+
+    @Override
+    public void onLocationSearched(Location location) {
+        popFragmentBack();
 
         UserLocationSelectFragment userLocationSelectFragment = (UserLocationSelectFragment) fragmentManager.findFragmentByTag(userLocationSelectFragmentTag);
         if (userLocationSelectFragment != null) {
             mapFragment.clearStartPoint();
             navigationPointsViewModel.setStartLocation(location);
-            if (fragmentManager.getBackStackEntryCount() > 0) {
-                fragmentManager.popBackStack();
-            }
+            popFragmentBack();
         } else {
             navigationPointsViewModel.setTargetLocation(location);
         }
@@ -376,9 +378,7 @@ public class MapActivity extends AppCompatActivity
 
     @Override
     public void onSearchByCode(MapPoint point) {
-        if (fragmentManager.getBackStackEntryCount() > 0) {
-            fragmentManager.popBackStack();
-        }
+        popFragmentBack();
         onMapClick(point);
     }
 
@@ -434,9 +434,7 @@ public class MapActivity extends AppCompatActivity
         if (navRouteFragment != null && navRouteFragment.isVisible()) {
             //Do nothing
         } else if (userLocationSelectFragment != null && userLocationSelectFragment.isVisible()) {
-            if (fragmentManager.getBackStackEntryCount() > 0) {
-                fragmentManager.popBackStack();
-            }
+            popFragmentBack();
             navigationPointsViewModel.setStartPoint(clickPoint);
         } else {
             navigationPointsViewModel.setTargetPoint(clickPoint);
