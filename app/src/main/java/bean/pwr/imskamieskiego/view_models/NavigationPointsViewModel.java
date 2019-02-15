@@ -28,16 +28,21 @@ import bean.pwr.imskamieskiego.utils.EventWrapper;
 /**
  * View model, which one control selection of target location/point for navigation.
  */
-public class LocationViewModel extends AndroidViewModel {
+public class NavigationPointsViewModel extends AndroidViewModel {
 
     public static final int TOILET_QA = 1;
     public static final int FOOD_QA = 2;
     public static final int PATIENT_ASSISTANT_QA = 3;
 
-    private static final String TAG = "LocationViewModel";
+    private static final String TAG = "NavigationPointsViewModel";
 
     private Application application;
     private MapRepository mapRepository;
+
+    private MutableLiveData<MapPoint> startMapPointTrigger;
+    private MutableLiveData<Location> startLocationTrigger;
+    private MediatorLiveData<Location> startLocation;
+    private MediatorLiveData<MapPoint> startMapPoint;
 
     private MutableLiveData<MapPoint> targetMapPointTrigger;
     private MutableLiveData<Location> targetLocationTrigger;
@@ -47,11 +52,16 @@ public class LocationViewModel extends AndroidViewModel {
 
     private boolean targetPointSelected = false;
 
-    public LocationViewModel(@NonNull Application application) {
+    public NavigationPointsViewModel(@NonNull Application application) {
         super(application);
         this.application = application;
         LocalDB dataBase = LocalDB.getDatabase(application.getApplicationContext());
         mapRepository = new MapRepository(dataBase);
+
+        startLocationTrigger = new MutableLiveData<>();
+        startMapPointTrigger = new MutableLiveData<>();
+        startLocation = new MediatorLiveData<>();
+        startMapPoint = new MediatorLiveData<>();
 
         targetLocationTrigger = new MutableLiveData<>();
         targetMapPointTrigger = new MutableLiveData<>();
@@ -60,7 +70,7 @@ public class LocationViewModel extends AndroidViewModel {
         targetMapPoints = new MediatorLiveData<>();
 
 
-        //Location comes from search
+        //Target Location comes from search
         targetLocation.addSource(targetLocationTrigger, location -> targetLocation.setValue(new EventWrapper<>(location)));
         LiveData<MapPoint> tmpTargetPoint = Transformations.switchMap(targetLocationTrigger, location ->
                 location != null ? mapRepository.getPointByLocationID(location.getId()) : null
@@ -71,6 +81,13 @@ public class LocationViewModel extends AndroidViewModel {
             }
             targetMapPoints.setValue(Arrays.asList(mapPoint));
         });
+
+        //Start Location comes from search
+        startLocation.addSource(startLocationTrigger, location -> startLocation.setValue(location));
+        LiveData<MapPoint> tmpStartPoint = Transformations.switchMap(startLocationTrigger, location ->
+                location != null ? mapRepository.getPointByLocationID(location.getId()) : null
+        );
+        startMapPoint.addSource(tmpStartPoint, mapPoint -> startMapPoint.setValue(mapPoint));
 
         //Data from quick access
         LiveData<List<MapPoint>> quickAccessMapPoints = Transformations.switchMap(targetQuickAccessType,
@@ -83,7 +100,7 @@ public class LocationViewModel extends AndroidViewModel {
             targetMapPoints.setValue(mapPoints);
         });
 
-        //MapPoint comes from touch the map
+        //Target MapPoint comes from touch the map
         LiveData<MapPoint> nearestTargetPoint = Transformations.switchMap(targetMapPointTrigger,
                 (mapPoint) -> mapRepository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor())
         );
@@ -104,6 +121,25 @@ public class LocationViewModel extends AndroidViewModel {
                 location = LocationFactory.create(application.getString(R.string.default_place_name), null);
             targetLocation.setValue(new EventWrapper<>(location));
         });
+
+
+        //Start MapPoint comes from touch the map
+        LiveData<MapPoint> nearestStartPoint = Transformations.switchMap(startMapPointTrigger,
+                (mapPoint) -> mapRepository.getNearestPoint(mapPoint.getX(), mapPoint.getY(), mapPoint.getFloor())
+        );
+
+        startMapPoint.addSource(nearestStartPoint, mapPoint -> startMapPoint.setValue(mapPoint));
+
+        LiveData<Location> tmpStartLocation = Transformations.switchMap(nearestStartPoint, mapPoint ->
+                mapPoint != null ? mapRepository.getLocationByID(mapPoint.getLocationID()) : null
+        );
+
+        startLocation.addSource(tmpStartLocation, location -> {
+            if (location == null)
+                location = LocationFactory.create(application.getString(R.string.default_place_name), null);
+            startLocation.setValue(location);
+        });
+
     }
 
     /**
@@ -113,6 +149,14 @@ public class LocationViewModel extends AndroidViewModel {
      */
     public LiveData<List<MapPoint>> getTargetPoint() {
         return targetMapPoints;
+    }
+
+    /**
+     * Returns selected start point as LiveData
+     * @return LiveData with actual selected start point
+     */
+    public LiveData<MapPoint> getStartPoint() {
+        return startMapPoint;
     }
 
     /**
@@ -127,6 +171,16 @@ public class LocationViewModel extends AndroidViewModel {
     }
 
     /**
+     * Returns the selected starting location. If the starting point was selected from the map and
+     * this starting point is not assigned to any location, the location will be generated as the
+     * location with the default name.
+     * @return selected location as LiveData
+     */
+    public LiveData<Location> getStartLocation() {
+        return startLocation;
+    }
+
+    /**
      * Set target point. If passed map point isn't exact point in database,
      * the nearest point will be set as the destination.
      *
@@ -137,12 +191,29 @@ public class LocationViewModel extends AndroidViewModel {
     }
 
     /**
+     * Set start point. If passed map point isn't exact point in database,
+     * the nearest point will be set as the start point.
+     * @param startMapPoint start point
+     */
+    public void setStartPoint(MapPoint startMapPoint){
+        startMapPointTrigger.setValue(startMapPoint);
+    }
+
+    /**
      * Set target location
      *
      * @param targetLocation target location
      */
     public void setTargetLocation(Location targetLocation) {
         targetLocationTrigger.setValue(targetLocation);
+    }
+
+    /**
+     * Sets start location
+     * @param startLocation start location
+     */
+    public void setStartLocation(Location startLocation){
+        startLocationTrigger.setValue(startLocation);
     }
 
     /**
@@ -185,6 +256,14 @@ public class LocationViewModel extends AndroidViewModel {
         targetLocation.setValue(null);
         targetMapPoints.setValue(null);
         targetPointSelected = false;
+    }
+
+    /**
+     * clear start selection
+     */
+    public void clearStartPointSelection(){
+        startLocation.setValue(null);
+        startMapPoint.setValue(null);
     }
 
 }

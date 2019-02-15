@@ -14,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +27,8 @@ import android.support.v7.widget.Toolbar;
 import java.util.Arrays;
 import java.util.List;
 
+import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.R;
-import bean.pwr.imskamieskiego.model.map.Location;
-import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.view_models.NavigationSetupViewModel;
 import bean.pwr.imskamieskiego.view_models.NavigationSetupViewModelFactory;
 
@@ -39,8 +39,10 @@ public class NavigationSetupFragment extends Fragment {
 
     private static final String TAG = "NavSetupFragment";
     private static final String TARGET_LOCATION_PARAM = "targetLocationName";
+    private static final String START_LOCATION_PARAM = "startLocationName";
 
     private String targetLocationName;
+    private String startLocationName;
 
     private NavigationSetupViewModel viewModel;
 
@@ -58,10 +60,11 @@ public class NavigationSetupFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static NavigationSetupFragment newInstance(String targetLocationName) {
+    public static NavigationSetupFragment newInstance(String startLocationName, String targetLocationName) {
         NavigationSetupFragment fragment = new NavigationSetupFragment();
         Bundle args = new Bundle();
         args.putString(TARGET_LOCATION_PARAM, targetLocationName);
+        args.putString(START_LOCATION_PARAM, startLocationName);
         fragment.setArguments(args);
         return fragment;
     }
@@ -69,16 +72,7 @@ public class NavigationSetupFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        viewModel.getStartLocation().observe(this, location -> {
-            if (location != null) {
-                textViewStart.setText(location.getName());
-                startButton.setEnabled(true);
-            }
-        });
 
-        viewModel.getTargetLocationName().observe(this, textViewDestination::setText);
-
-        viewModel.getStartPoint().observe(this, listener::onStartPointSelected);
 
     }
 
@@ -94,11 +88,12 @@ public class NavigationSetupFragment extends Fragment {
 
         if (getArguments() != null) {
             targetLocationName = getArguments().getString(TARGET_LOCATION_PARAM);
+            startLocationName = getArguments().getString(START_LOCATION_PARAM);
         }
 
         viewModel = ViewModelProviders.of(
                 this,
-                new NavigationSetupViewModelFactory(getActivity().getApplication(), targetLocationName))
+                new NavigationSetupViewModelFactory(getActivity().getApplication(), targetLocationName, startLocationName))
                 .get(NavigationSetupViewModel.class);
     }
 
@@ -111,6 +106,16 @@ public class NavigationSetupFragment extends Fragment {
         settingButton = view.findViewById(R.id.settingButton);
         startButton = view.findViewById(R.id.startButton);
         settingsLayout = view.findViewById(R.id.settingsLayout);
+
+        if (viewModel.getStartLocationName() != null) {
+            textViewStart.setText(viewModel.getStartLocationName());
+            startButton.setEnabled(true);
+        }
+
+        if (viewModel.getTargetLocationName() != null) {
+            textViewDestination.setText(viewModel.getTargetLocationName());
+        }
+
         settingButton.setOnClickListener(view1 -> {
             if (settingsLayout.getVisibility() == View.GONE) {
                 settingsLayout.setVisibility(View.VISIBLE);
@@ -132,7 +137,7 @@ public class NavigationSetupFragment extends Fragment {
                     break;
             }
         });
-        textViewStart.setOnClickListener(view1 -> listener.startPointSearchRequest());
+        textViewStart.setOnClickListener(view1 -> listener.startSearch());
         toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null) {
                 getActivity().onBackPressed();
@@ -146,7 +151,9 @@ public class NavigationSetupFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadUserPreferences();
-        Snackbar.make(view.getRootView(), R.string.navigation_setup_snackbar_hint, Snackbar.LENGTH_LONG).show();
+        if (viewModel.getStartLocationName() == null) {
+            Snackbar.make(view.getRootView(), R.string.navigation_setup_snackbar_hint, Snackbar.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -170,27 +177,25 @@ public class NavigationSetupFragment extends Fragment {
         }
     }
 
-    public void setStartLocation(Location startLocation) {
-        viewModel.setStartLocation(startLocation);
+    public void setStartLocationName(String startLocationName) {
+        viewModel.setStartLocation(startLocationName);
+        textViewStart.setText(viewModel.getStartLocationName());
+        if (startLocationName != null) {
+            startButton.setEnabled(true);
+        } else {
+            startButton.setEnabled(false);
+        }
     }
 
-    public void setStartPoint(MapPoint startPoint) {
-        viewModel.setStartPoint(startPoint);
+    public void setTargetLocationName(String targetLocationName) {
+        viewModel.setTargetLocationName(targetLocationName);
+        textViewDestination.setText(viewModel.getTargetLocationName());
     }
 
-    public MapPoint getStartPoint() {
-        return viewModel.getStartPoint().getValue();
-    }
-
-    public interface NavigationSetupListener {
+    public interface NavigationSetupListener extends LocationSearchInterface {
         int FAST_PATH = 1;
         int OPTIMAL_PATH = 2;
         int COMFORT_PATH = 3;
-
-        /**
-         * Called, when navigation setup fragment need start location search functionality
-         */
-        void startPointSearchRequest();
 
         /**
          * Called, when navigation setup fragment starts navigation
@@ -198,13 +203,6 @@ public class NavigationSetupFragment extends Fragment {
          * @param pathSearchMode
          */
         void startNavigation(int pathSearchMode);
-
-        /**
-         * Called, when navigation setup fragment selects start point
-         *
-         * @param selectedStartPoint
-         */
-        void onStartPointSelected(MapPoint selectedStartPoint);
     }
 
 }

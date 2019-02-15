@@ -67,5 +67,6 @@ Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pac
     <string name="optimal_path_option">Optymalna</string>
     <string name="comfortable_path_option">Wygodna</string>
     <string name="navigation_settings">ustawienia nawigacji</string>
+    <string name="user_location_selection_title">Podaj swoją pozycję</string>
 
 </resources>
