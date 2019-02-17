@@ -42,10 +42,7 @@
             android:label="@string/navigation_drawer_ap"
             android:parentActivityName=".MapActivity"
             android:theme="@style/AppTheme.ActionBar" />
-
-        <meta-data
-            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="barcode" />
+        
     </application>
 
 </manifest>
