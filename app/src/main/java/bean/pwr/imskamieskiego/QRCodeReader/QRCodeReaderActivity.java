@@ -29,6 +29,9 @@ import bean.pwr.imskamieskiego.R;
 
 public class QRCodeReaderActivity extends AppCompatActivity {
 
+    public static final int QR_READER_CODE = 101;
+    public static final String QR_READER_RESULT_KEY = "result";
+
     private static final String TAG = "QRCodeReaderActivity";
     private CodeScanner codeScanner;
     private static final int PERMISSION_REQUEST_CODE = 100;
@@ -70,7 +73,7 @@ public class QRCodeReaderActivity extends AppCompatActivity {
     private void processResult(String result) {
         if (result.matches("#[0-9]+")) {
             Intent data = new Intent();
-            data.putExtra("result", Integer.valueOf(result.substring(1)));
+            data.putExtra(QR_READER_RESULT_KEY, Integer.valueOf(result.substring(1)));
             setResult(RESULT_OK, data);
             finish();
         } else {

@@ -121,16 +121,16 @@ public class UserLocationSelectFragment extends Fragment {
         FloatingActionButton cameraButton = view.findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(view1 -> {
             Intent intent = new Intent(getActivity(), QRCodeReaderActivity.class);
-            startActivityForResult(intent, 101);
+            startActivityForResult(intent, QRCodeReaderActivity.QR_READER_CODE);
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 101 && resultCode == Activity.RESULT_OK) {
-            int pointCode = data.getExtras().getInt("result");
-            Log.i(TAG, "onActivityResult: recived from QR code: " + pointCode);
+        if (requestCode == QRCodeReaderActivity.QR_READER_CODE && resultCode == Activity.RESULT_OK) {
+            int pointCode = data.getExtras().getInt(QRCodeReaderActivity.QR_READER_RESULT_KEY);
+            Log.i(TAG, "onActivityResult: received from QR code: " + pointCode);
             viewModel.searchPointByCode(pointCode);
         }
     }
