@@ -8,8 +8,8 @@ package bean.pwr.imskamieskiego.QRCodeReader;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -17,14 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
-import android.widget.Toast;
 
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
-import com.budiyev.android.codescanner.DecodeCallback;
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.Result;
 
 import java.util.Arrays;
 
@@ -63,14 +60,30 @@ public class QRCodeReaderActivity extends AppCompatActivity {
         CodeScannerView scannerView = findViewById(R.id.scanner_view);
         codeScanner = new CodeScanner(this, scannerView);
         codeScanner.setFormats(Arrays.asList(BarcodeFormat.QR_CODE));
-        codeScanner.setDecodeCallback(new DecodeCallback() {
-            @Override
-            public void onDecoded(@NonNull final Result result) {
-                QRCodeReaderActivity.this.runOnUiThread(
-                        () -> Toast.makeText(QRCodeReaderActivity.this, result.getText(), Toast.LENGTH_SHORT).show());
-            }
-        });
+        codeScanner.setDecodeCallback(
+                result -> QRCodeReaderActivity.this.runOnUiThread(() -> processResult(result.getText()))
+        );
         scannerView.setOnClickListener(view -> codeScanner.startPreview());
+    }
+
+
+    private void processResult(String result) {
+        if (result.matches("#[0-9]+")) {
+            Intent data = new Intent();
+            data.putExtra("result", Integer.valueOf(result.substring(1)));
+            setResult(RESULT_OK, data);
+            finish();
+        } else {
+            Snackbar.make(findViewById(R.id.cameraLayout), R.string.incorrect_qr_code, Snackbar.LENGTH_SHORT)
+                    .setCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar transientBottomBar, int event) {
+                            super.onDismissed(transientBottomBar, event);
+                            codeScanner.startPreview();
+                        }
+                    })
+                    .show();
+        }
     }
 
 
@@ -118,7 +131,7 @@ public class QRCodeReaderActivity extends AppCompatActivity {
     }
 
     private void showNoCameraMessage() {
-        Snackbar.make(findViewById(R.id.cameraLayout), "Kamera jest niedostępna", Snackbar.LENGTH_INDEFINITE).show();
+        Snackbar.make(findViewById(R.id.cameraLayout), R.string.camera_not_available, Snackbar.LENGTH_INDEFINITE).show();
     }
 
     private void showRequestPermissionRationale() {

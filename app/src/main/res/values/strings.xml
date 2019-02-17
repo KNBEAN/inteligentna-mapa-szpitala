@@ -62,5 +62,8 @@ Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pac
     <string name="user_location_selection_title">Podaj swoją pozycję</string>
     <string name="path_settings_confirm_button">OK</string>
     <string name="camera_permission_request_rationale">Musisz zezwolić na dostęp do kamery, aby móc zeskanować kod.</string>
+    <string name="camera_not_available">Kamera jest niedostępna</string>
+    <string name="incorrect_qr_code">Kod jest niepoprawny</string>
+    <string name="unknow_map_point">Szukanego miejsca nie ma na mapie!</string>
 
 </resources>

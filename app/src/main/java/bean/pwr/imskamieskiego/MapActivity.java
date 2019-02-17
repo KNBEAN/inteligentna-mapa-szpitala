@@ -43,6 +43,7 @@ import bean.pwr.imskamieskiego.GUI.UserLocationButtonFragment;
 import bean.pwr.imskamieskiego.GUI.UserLocationSelectFragment;
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchResultListener;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutApp;
@@ -56,7 +57,7 @@ import bean.pwr.imskamieskiego.view_models.PathSearchViewModel;
 
 public class MapActivity extends AppCompatActivity
         implements QuickAccessFragment.QuickAccessListener,
-        SearchFragment.SearchListener, LocationSearchInterface,
+        SearchResultListener, LocationSearchInterface,
         InfoSheet.InfoSheetListener,
         NavigationView.OnNavigationItemSelectedListener,
         MapFragment.OnMapInteractionListener {
@@ -356,8 +357,8 @@ public class MapActivity extends AppCompatActivity
         }
     }
 
-    private void popFragmentBack(){
-        if (fragmentManager.getBackStackEntryCount() > 0){
+    private void popFragmentBack() {
+        if (fragmentManager.getBackStackEntryCount() > 0) {
             fragmentManager.popBackStack();
         }
     }

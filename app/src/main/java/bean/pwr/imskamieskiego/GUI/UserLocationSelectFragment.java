@@ -8,22 +8,29 @@
 package bean.pwr.imskamieskiego.GUI;
 
 
+import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
+import bean.pwr.imskamieskiego.GUI.locationSearch.SearchResultListener;
 import bean.pwr.imskamieskiego.QRCodeReader.QRCodeReaderActivity;
 import bean.pwr.imskamieskiego.R;
+import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.view_models.UserLocationSelectViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,9 +39,15 @@ import bean.pwr.imskamieskiego.R;
  */
 public class UserLocationSelectFragment extends Fragment {
 
+    private static final String TAG = "UserLocationSelection";
     private Toolbar toolbar;
     private ImageButton searchButton;
     private LocationSearchInterface searchListener;
+
+    private UserLocationSelectViewModel viewModel;
+    private SearchResultListener pointFromCodeListener;
+
+    private View fragmentLayout;
 
 
     public UserLocationSelectFragment() {
@@ -52,13 +65,35 @@ public class UserLocationSelectFragment extends Fragment {
             searchListener = (LocationSearchInterface) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement NavWindowListener");
+                    + " must implement LocationSearchInterface");
+        }
+        if (context instanceof SearchResultListener) {
+            pointFromCodeListener = (SearchResultListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement SearchResultListener");
         }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(UserLocationSelectViewModel.class);
+        viewModel.getSearchResult().observe(this, mapPointEvent -> {
+
+            if (mapPointEvent != null && !mapPointEvent.isHandled()) {
+                MapPoint mapPoint = mapPointEvent.handleData();
+
+                if (mapPoint == null) {
+                    Log.i(TAG, "onActivityCreated: point form QR code is null");
+                    Snackbar.make(fragmentLayout, R.string.unknow_map_point, Snackbar.LENGTH_SHORT).show();
+                } else {
+                    if (pointFromCodeListener != null) {
+                        pointFromCodeListener.onSearchByCode(mapPoint);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -71,6 +106,7 @@ public class UserLocationSelectFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.fragmentLayout = view.findViewById(R.id.userLocationSelectLayout);
         toolbar = view.findViewById(R.id.userLocationToolbar);
         toolbar.setNavigationOnClickListener(view1 -> {
             if (getActivity() != null) {
@@ -85,7 +121,17 @@ public class UserLocationSelectFragment extends Fragment {
         FloatingActionButton cameraButton = view.findViewById(R.id.cameraButton);
         cameraButton.setOnClickListener(view1 -> {
             Intent intent = new Intent(getActivity(), QRCodeReaderActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, 101);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101 && resultCode == Activity.RESULT_OK) {
+            int pointCode = data.getExtras().getInt("result");
+            Log.i(TAG, "onActivityResult: recived from QR code: " + pointCode);
+            viewModel.searchPointByCode(pointCode);
+        }
     }
 }

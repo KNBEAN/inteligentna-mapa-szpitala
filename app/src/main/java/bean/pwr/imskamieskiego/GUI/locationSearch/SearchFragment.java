@@ -35,7 +35,7 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     private SearchViewModel searchViewModel;
     private ListView suggestionsListView;
     private SearchView searchView;
-    private SearchListener listener;
+    private SearchResultListener listener;
 
     public static SearchFragment newInstance() {
         SearchFragment searchFragment = new SearchFragment();
@@ -55,8 +55,8 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof SearchListener) {
-            listener = (SearchListener) context;
+        if (context instanceof SearchResultListener) {
+            listener = (SearchResultListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement SearchListener");
@@ -108,7 +108,6 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
                 row.setOnClickListener(SearchFragment.this::selectSuggestionItem);
                 return row;
             }
-
         };
         suggestionsListView.setAdapter(adapter);
     }
@@ -150,11 +149,5 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
             searchViewModel.suggestionsQuery(null);
         }
         return true;
-    }
-
-
-    public interface SearchListener {
-        void onLocationSearched(Location location);
-        void onSearchByCode(MapPoint point);
     }
 }
