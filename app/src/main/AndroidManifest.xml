@@ -42,7 +42,7 @@
             android:label="@string/navigation_drawer_ap"
             android:parentActivityName=".MapActivity"
             android:theme="@style/AppTheme.ActionBar" />
-        
+
     </application>
 
 </manifest>

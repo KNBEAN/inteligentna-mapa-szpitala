@@ -47,7 +47,6 @@ public class QRCodeReaderActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_qrcode_reader);
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         Log.i(TAG, "onCreate: activity created");
 
         if (checkPermission()) {
