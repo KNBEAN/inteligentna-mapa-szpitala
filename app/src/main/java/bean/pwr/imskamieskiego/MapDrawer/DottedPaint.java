@@ -14,10 +14,10 @@ public class DottedPaint extends Paint {
     private DashPathEffect dotsEffect = new DashPathEffect(new float[]{1, 30, 1}, 0);
 
     public DottedPaint() {
-        setStyle(Paint.Style.STROKE);
+        setStyle(Style.STROKE);
         setPathEffect(dotsEffect);
-        setStrokeJoin(Paint.Join.ROUND);
-        setStrokeCap(Paint.Cap.ROUND);
+        setStrokeJoin(Join.ROUND);
+        setStrokeCap(Cap.ROUND);
         setAntiAlias(true);
         setDither(true);
     }
