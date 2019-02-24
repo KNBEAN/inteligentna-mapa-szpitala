@@ -50,6 +50,7 @@ import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutApp;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutHospitalActivity;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutPatientAssistantActivity;
+import bean.pwr.imskamieskiego.utils.Preferences;
 import bean.pwr.imskamieskiego.view_models.FloorViewModel;
 import bean.pwr.imskamieskiego.view_models.NavigationPointsViewModel;
 import bean.pwr.imskamieskiego.view_models.PathSearchMode;
@@ -64,9 +65,6 @@ public class MapActivity extends AppCompatActivity
         MapFragment.OnMapInteractionListener {
 
     private static final String TAG = "MapActivity";
-
-    private static final String PREFERENCES_NAME = "user_settings";
-    private static final String SEARCH_MODE_PREFERENCE = "path_search_mode";
 
     //Fragments
     private FragmentManager fragmentManager;
@@ -215,17 +213,12 @@ public class MapActivity extends AppCompatActivity
                 PathSearchMode.OPTIMAL_PATH,
                 PathSearchMode.COMFORTABLE_PATH).indexOf(searchMode);
 
-        SharedPreferences userSettings = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = userSettings.edit();
-        editor.putInt(SEARCH_MODE_PREFERENCE, indexOfSearchMode < 0 ? 1 : indexOfSearchMode);
-        editor.apply();
-
+        Preferences.setSearchMode(this, indexOfSearchMode < 0 ? 1 : indexOfSearchMode);
         super.onDestroy();
     }
 
     public void loadUserPreferences() {
-        SharedPreferences userSettings = getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE);
-        int pathSearchMode = userSettings.getInt(SEARCH_MODE_PREFERENCE, 1);
+        int pathSearchMode = Preferences.getSearchMode(this);
         List<PathSearchMode> searchModes = Arrays.asList(PathSearchMode.FAST_PATH, PathSearchMode.OPTIMAL_PATH, PathSearchMode.COMFORTABLE_PATH);
         if (pathSearchMode < searchModes.size()) {
             searchMode = searchModes.get(pathSearchMode);
@@ -315,6 +308,8 @@ public class MapActivity extends AppCompatActivity
                 pathSettingsDialog.setListener(searchMode -> this.searchMode = searchMode);
             }
             pathSettingsDialog.show(searchMode);
+        } else if (id == R.id.tutorial) {
+            ShowcaseController.resetTutorial(this);
         } else if (id == R.id.nav_search) {
 
         }

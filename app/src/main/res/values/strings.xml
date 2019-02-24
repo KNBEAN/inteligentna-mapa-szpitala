@@ -65,5 +65,6 @@ Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pac
     <string name="camera_not_available">Kamera jest niedostępna</string>
     <string name="incorrect_qr_code">Kod jest niepoprawny</string>
     <string name="unknow_map_point">Szukanego miejsca nie ma na mapie!</string>
+    <string name="navigation_drawer_tutorial">Samouczek</string>
 
 </resources>

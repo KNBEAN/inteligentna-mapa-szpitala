@@ -18,10 +18,22 @@ import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 import org.jetbrains.annotations.NotNull;
 
 import bean.pwr.imskamieskiego.R;
+import bean.pwr.imskamieskiego.utils.Preferences;
 
 public class ShowcaseController {
+    private static final int WELCOME = 0;
+    private static final int USER_LOCATION = 1;
+    private static final int TARGET_SELECTION = 2;
+    private static final int TARGET_INFO = 3;
+    private static final int END = 4;
+
+    private static int tutorialStage = 0;
 
     public static void welcomeStage(Activity activity) {
+        if (tutorialStage > WELCOME || !Preferences.isRunTutorial(activity)){
+            return;
+        }
+        tutorialStage = WELCOME;
         BubbleShowCaseBuilder helloMessage = new BubbleShowCaseBuilder(activity)
                 .title("Witaj!")
                 .description("Witamy w interaktywnej mapie szpitala. W tym samouczku chcielibyśmy przybliżyć Ci działanie aplikacji.\n" +
@@ -66,6 +78,10 @@ public class ShowcaseController {
     }
 
     public static void userLocationStage(Activity activity) {
+        if (tutorialStage > USER_LOCATION || !Preferences.isRunTutorial(activity)){
+            return;
+        }
+        tutorialStage = USER_LOCATION;
         BubbleShowCaseBuilder mapTouch = new BubbleShowCaseBuilder(activity)
                 .title("Twoja lokalizacja")
                 .description("Swoją lokalizację można zaznaczyć na kilka sposobów. Jednym z nich jest naciśnięcie i przytrzymanie miejsca na mapie")
@@ -146,6 +162,10 @@ public class ShowcaseController {
     }
 
     public static void targetSelectStage(Activity activity) {
+        if (tutorialStage > TARGET_SELECTION || !Preferences.isRunTutorial(activity)){
+            return;
+        }
+        tutorialStage = TARGET_SELECTION;
         BubbleShowCaseBuilder selectTarget = new BubbleShowCaseBuilder(activity)
                 .title("Cel trasy")
                 .description("Teraz musimy wyznaczyć cel naszej trasy. Podobnie jak wcześniej, cel możemy zaznaczyć na mapie lub wyszukać po nazwie.")
@@ -183,6 +203,10 @@ public class ShowcaseController {
     }
 
     public static void infoSheetStage(Activity activity) {
+        if (tutorialStage > TARGET_INFO || !Preferences.isRunTutorial(activity)){
+            return;
+        }
+        tutorialStage = TARGET_INFO;
         BubbleShowCaseBuilder infoSheet = new BubbleShowCaseBuilder(activity)
                 .title("Szczegóły lokacji")
                 .description("Możesz zobaczyć szczegóły dotyczące wybranej lokacji, klikając na ten przycisk.")
@@ -245,16 +269,21 @@ public class ShowcaseController {
     }
 
     public static void finishStage(Activity activity) {
+        if (tutorialStage > END || !Preferences.isRunTutorial(activity)){
+            return;
+        }
+        tutorialStage = END;
         new BubbleShowCaseBuilder(activity)
                 .title("Gratulacje!")
                 .description("Trasa została wyznaczona! To już koniec naszego samouczka. Samouczek możesz uruchomić ponownie w menu bocznym.\nWszystkiego dobrego i powodzenia!")
                 .imageResourceId(R.drawable.ic_face_smile_white_24dp)
                 .backgroundColorResourceId(R.color.colorAccent)
+                .disableCloseAction(true)
                 .listener(new ShowCaseListenerWrapper() {
                     @Override
-                    public void onCloseActionImageClick(@NotNull BubbleShowCase bubbleShowCase) {
-                        super.onCloseActionImageClick(bubbleShowCase);
-                        closeMessage(activity);
+                    public void onBubbleClick(@NotNull BubbleShowCase bubbleShowCase) {
+                        super.onBubbleClick(bubbleShowCase);
+                        Preferences.setRunTutorial(activity, false);
                     }
                 })
                 .show();
@@ -268,8 +297,14 @@ public class ShowcaseController {
                 .backgroundColorResourceId(R.color.colorPrimary)
                 .listener(new ShowCaseListenerWrapper())
                 .show();
+        Preferences.setRunTutorial(activity, false);
     }
 
+    public static void resetTutorial(Activity activity){
+        Preferences.setRunTutorial(activity, true);
+        tutorialStage = WELCOME;
+        welcomeStage(activity);
+    }
 
     private static View getNavigationButton(Toolbar toolbar) {
         for (int i = 0; i < toolbar.getChildCount(); i++)

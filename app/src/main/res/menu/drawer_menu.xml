@@ -37,6 +37,11 @@
             android:icon="@drawable/ic_supervisor_account_black_24dp"
             android:title="@string/navigation_drawer_about_app"
             />
+        <item
+            android:id="@+id/tutorial"
+            android:icon="@drawable/ic_help_outline_white_24dp"
+            android:title="@string/navigation_drawer_tutorial"
+            />
     </group>
 
 

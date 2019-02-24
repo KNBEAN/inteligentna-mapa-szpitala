@@ -16,11 +16,13 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -38,7 +40,7 @@ import bean.pwr.imskamieskiego.view_models.UserLocationSelectViewModel;
  * Use the {@link UserLocationSelectFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserLocationSelectFragment extends Fragment {
+public class UserLocationSelectFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final String TAG = "UserLocationSelection";
     private Toolbar toolbar;
@@ -127,6 +129,8 @@ public class UserLocationSelectFragment extends Fragment {
         ShowcaseController.userLocationStage(this.getActivity());
     }
 
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -135,5 +139,11 @@ public class UserLocationSelectFragment extends Fragment {
             Log.i(TAG, "onActivityResult: received from QR code: " + pointCode);
             viewModel.searchPointByCode(pointCode);
         }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        Log.i(TAG, "onNavigationItemSelected: Potato");
+        return false;
     }
 }
