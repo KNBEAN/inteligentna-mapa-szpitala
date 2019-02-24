@@ -234,7 +234,7 @@ public class MapActivity extends AppCompatActivity
         if (fragmentManager.findFragmentByTag(userLocationSelectFragmentTag) == null) {
             FragmentTransaction fTransaction = fragmentManager.beginTransaction();
             UserLocationSelectFragment userLocationFragment = UserLocationSelectFragment.newInstance();
-            fTransaction.add(R.id.mainDrawerLayout, userLocationFragment, userLocationSelectFragmentTag);
+            fTransaction.add(R.id.coordinatorMainLayout, userLocationFragment, userLocationSelectFragmentTag);
 
             if (quickAccessFragment.isAdded() && !quickAccessFragment.isHidden()) {
                 fTransaction.hide(quickAccessFragment);
@@ -400,7 +400,7 @@ public class MapActivity extends AppCompatActivity
         if (searchFragment.isAdded()) {
             fTransaction.show(searchFragment);
         } else {
-            fTransaction.add(R.id.mainDrawerLayout, searchFragment, searchFragmentTag);
+            fTransaction.add(R.id.coordinatorMainLayout, searchFragment, searchFragmentTag);
         }
 
         fTransaction.addToBackStack(null).commit();
