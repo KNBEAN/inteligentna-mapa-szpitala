@@ -27,6 +27,7 @@ import android.widget.ImageButton;
 
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchResultListener;
+import bean.pwr.imskamieskiego.GUI.showcase.ShowcaseController;
 import bean.pwr.imskamieskiego.QRCodeReader.QRCodeReaderActivity;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -123,6 +124,7 @@ public class UserLocationSelectFragment extends Fragment {
             Intent intent = new Intent(getActivity(), QRCodeReaderActivity.class);
             startActivityForResult(intent, QRCodeReaderActivity.QR_READER_CODE);
         });
+        ShowcaseController.userLocationStage(this.getActivity());
     }
 
     @Override

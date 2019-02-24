@@ -44,6 +44,7 @@ import bean.pwr.imskamieskiego.GUI.UserLocationSelectFragment;
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchResultListener;
+import bean.pwr.imskamieskiego.GUI.showcase.ShowcaseController;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 import bean.pwr.imskamieskiego.nav_window_activity.AboutApp;
@@ -131,6 +132,7 @@ public class MapActivity extends AppCompatActivity
         navigationPointsViewModel.getStartPoint().observe(this, mapPoint -> {
             if (mapPoint != null) {
                 mapFragment.setStartPoint(mapPoint);
+                ShowcaseController.targetSelectStage(MapActivity.this);
             }
         });
 
@@ -145,6 +147,7 @@ public class MapActivity extends AppCompatActivity
                 }
                 Log.d(TAG, stringBuilder.toString());
                 mapFragment.setRoute(mapPoints);
+                ShowcaseController.finishStage(this);
             }
         });
 
@@ -200,6 +203,8 @@ public class MapActivity extends AppCompatActivity
         hamburgerButton.syncState();
 
         loadUserPreferences();
+
+        ShowcaseController.welcomeStage(this);
     }
 
     @Override

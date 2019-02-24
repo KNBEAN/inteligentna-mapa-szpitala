@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import bean.pwr.imskamieskiego.GUI.showcase.ShowcaseController;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.Location;
 
@@ -111,6 +112,8 @@ public class InfoSheet extends Fragment {
 
         guideToButton.setOnClickListener(v -> listener.infoSheetAction());
         expandSheetButton.setOnClickListener(v -> toggleDescriptionShow());
+
+        ShowcaseController.infoSheetStage(getActivity());
     }
 
     /**
