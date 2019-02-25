@@ -75,6 +75,6 @@ public class ShowCaseSequenceItem implements BubbleShowCaseListener {
 
     @Override
     public void onTargetClick(@NotNull BubbleShowCase bubbleShowCase) {
-
+        dismiss();
     }
 }

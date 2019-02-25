@@ -7,19 +7,14 @@
 package bean.pwr.imskamieskiego.GUI.showcase;
 
 import android.app.Activity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageButton;
-import android.support.v7.widget.Toolbar;
 
 import com.elconfidencial.bubbleshowcase.BubbleShowCase;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseBuilder;
-import com.elconfidencial.bubbleshowcase.BubbleShowCaseSequence;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.utils.Preferences;
@@ -61,7 +56,6 @@ public class ShowcaseController {
                     @Override
                     public void onTargetClick(@NotNull BubbleShowCase bubbleShowCase) {
                         super.onTargetClick(bubbleShowCase);
-                        super.dismiss();
                         activity.findViewById(R.id.my_position_button).callOnClick();
                     }
                 })
@@ -158,7 +152,7 @@ public class ShowcaseController {
 
         BubbleShowCaseBuilder pathOptions = new BubbleShowCaseBuilder(activity)
                 .title("Ustawienia")
-                .description("W bocznym menu możesz znaleźć przydatne opcje takie jak unikanie schodów podcza nawigacji.")
+                .description("W bocznym menu możesz znaleźć przydatne opcje takie jak unikanie schodów podczas nawigacji.")
                 .imageResourceId(R.drawable.ic_path_setting_black_24dp)
                 .backgroundColorResourceId(R.color.colorPrimaryLight)
                 .textColorResourceId(R.color.fontColorBlack)
@@ -177,7 +171,6 @@ public class ShowcaseController {
                     @Override
                     public void onTargetClick(@NotNull BubbleShowCase bubbleShowCase) {
                         super.onTargetClick(bubbleShowCase);
-                        super.dismiss();
                         activity.findViewById(R.id.info_button).callOnClick();
                     }
                 })
@@ -186,32 +179,31 @@ public class ShowcaseController {
                     @Override
                     public void onTargetClick(@NotNull BubbleShowCase bubbleShowCase) {
                         super.onTargetClick(bubbleShowCase);
-                        super.dismiss();
                         activity.findViewById(R.id.guide_to_button).callOnClick();
                     }
                 })
                 .setCloseListener(() -> closeMessage(activity));
     }
 
-    public static void finishStage(Activity activity) {
-        if (tutorialStage > END || !Preferences.isRunTutorial(activity)) {
-            return;
+    public static ShowCaseSequence finishStage(Activity activity) {
+        if (tutorialStage > END || tutorialStage < TARGET_INFO || !Preferences.isRunTutorial(activity)) {
+            return new ShowCaseSequence();
         }
         tutorialStage = END;
-        new BubbleShowCaseBuilder(activity)
+        BubbleShowCaseBuilder end_message = new BubbleShowCaseBuilder(activity)
                 .title("Gratulacje!")
                 .description("Trasa została wyznaczona! To już koniec naszego samouczka. Samouczek możesz uruchomić ponownie w menu bocznym.\nWszystkiego dobrego i powodzenia!")
                 .imageResourceId(R.drawable.ic_face_smile_white_24dp)
                 .backgroundColorResourceId(R.color.colorAccent)
-                .disableCloseAction(true)
-                .listener(new ShowCaseListenerWrapper() {
+                .disableCloseAction(true);
+        return new ShowCaseSequence()
+                .addItem(new ShowCaseSequenceItem(end_message){
                     @Override
                     public void onBubbleClick(@NotNull BubbleShowCase bubbleShowCase) {
                         super.onBubbleClick(bubbleShowCase);
                         Preferences.setRunTutorial(activity, false);
                     }
-                })
-                .show();
+                });
     }
 
     private static void closeMessage(Activity activity) {
@@ -229,7 +221,7 @@ public class ShowcaseController {
     public static void resetTutorial(Activity activity) {
         Preferences.setRunTutorial(activity, true);
         tutorialStage = WELCOME;
-        welcomeStage(activity);
+        welcomeStage(activity).start();
     }
 
     private static View getNavigationButton(Toolbar toolbar) {

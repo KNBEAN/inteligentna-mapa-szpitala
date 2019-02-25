@@ -42,7 +42,9 @@ public class ShowCaseSequence implements SequenceItemListener {
 
     public void stop() {
         if (sequenceCount >= 0 && sequenceCount < showCaseSequenceItemList.size()) {
-            showCaseSequenceItemList.get(sequenceCount).dismiss();
+            ShowCaseSequenceItem currencyShownItem = showCaseSequenceItemList.get(sequenceCount);
+            sequenceCount = -1;
+            currencyShownItem.dismiss();
             showCaseSequenceItemList.clear();
         }
     }
@@ -50,7 +52,7 @@ public class ShowCaseSequence implements SequenceItemListener {
     @Override
     public void onDismiss() {
         sequenceCount++;
-        if (sequenceCount < showCaseSequenceItemList.size()) {
+        if (sequenceCount < showCaseSequenceItemList.size() && sequenceCount > 0) {
             showCaseSequenceItemList.get(sequenceCount)
                     .setSequenceItemListener(this)
                     .show();
