@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import bean.pwr.imskamieskiego.GUI.showcase.ShowCaseSequence;
 import bean.pwr.imskamieskiego.GUI.showcase.ShowcaseController;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.Location;
@@ -40,7 +41,7 @@ public class InfoSheet extends Fragment {
     private TextView placeInfo;
     private boolean descriptionIsVisible = false;
 
-
+    private ShowCaseSequence tutorialSequence;
 
     public InfoSheet() {
         // Required empty public constructor
@@ -113,7 +114,8 @@ public class InfoSheet extends Fragment {
         guideToButton.setOnClickListener(v -> listener.infoSheetAction());
         expandSheetButton.setOnClickListener(v -> toggleDescriptionShow());
 
-        ShowcaseController.infoSheetStage(getActivity());
+        tutorialSequence = ShowcaseController.infoSheetStage(getActivity());
+        tutorialSequence.start();
     }
 
     /**
@@ -156,5 +158,9 @@ public class InfoSheet extends Fragment {
         void infoSheetAction();
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        tutorialSequence.stop();
+    }
 }

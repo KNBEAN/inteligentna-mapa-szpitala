@@ -29,6 +29,7 @@ import android.widget.ImageButton;
 
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchResultListener;
+import bean.pwr.imskamieskiego.GUI.showcase.ShowCaseSequence;
 import bean.pwr.imskamieskiego.GUI.showcase.ShowcaseController;
 import bean.pwr.imskamieskiego.QRCodeReader.QRCodeReaderActivity;
 import bean.pwr.imskamieskiego.R;
@@ -40,7 +41,7 @@ import bean.pwr.imskamieskiego.view_models.UserLocationSelectViewModel;
  * Use the {@link UserLocationSelectFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserLocationSelectFragment extends Fragment implements NavigationView.OnNavigationItemSelectedListener {
+public class UserLocationSelectFragment extends Fragment {
 
     private static final String TAG = "UserLocationSelection";
     private Toolbar toolbar;
@@ -52,6 +53,7 @@ public class UserLocationSelectFragment extends Fragment implements NavigationVi
 
     private View fragmentLayout;
 
+    private ShowCaseSequence showCaseSequence;
 
     public UserLocationSelectFragment() {
         // Required empty public constructor
@@ -126,10 +128,9 @@ public class UserLocationSelectFragment extends Fragment implements NavigationVi
             Intent intent = new Intent(getActivity(), QRCodeReaderActivity.class);
             startActivityForResult(intent, QRCodeReaderActivity.QR_READER_CODE);
         });
-        ShowcaseController.userLocationStage(this.getActivity());
+        showCaseSequence = ShowcaseController.userLocationStage(this.getActivity());
+        showCaseSequence.start();
     }
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -142,8 +143,8 @@ public class UserLocationSelectFragment extends Fragment implements NavigationVi
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Log.i(TAG, "onNavigationItemSelected: Potato");
-        return false;
+    public void onDestroyView() {
+        super.onDestroyView();
+        showCaseSequence.stop();
     }
 }

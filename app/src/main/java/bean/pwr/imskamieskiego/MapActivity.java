@@ -44,6 +44,7 @@ import bean.pwr.imskamieskiego.GUI.UserLocationSelectFragment;
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchFragment;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchResultListener;
+import bean.pwr.imskamieskiego.GUI.showcase.ShowCaseSequence;
 import bean.pwr.imskamieskiego.GUI.showcase.ShowcaseController;
 import bean.pwr.imskamieskiego.model.map.Location;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -130,7 +131,7 @@ public class MapActivity extends AppCompatActivity
         navigationPointsViewModel.getStartPoint().observe(this, mapPoint -> {
             if (mapPoint != null) {
                 mapFragment.setStartPoint(mapPoint);
-                ShowcaseController.targetSelectStage(MapActivity.this);
+                ShowcaseController.targetSelectStage(this).start();
             }
         });
 
@@ -202,7 +203,7 @@ public class MapActivity extends AppCompatActivity
 
         loadUserPreferences();
 
-        ShowcaseController.welcomeStage(this);
+        ShowcaseController.welcomeStage(this).start();
     }
 
     @Override
