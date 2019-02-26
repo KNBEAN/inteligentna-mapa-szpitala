@@ -10,17 +10,12 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Environment;
-import android.graphics.Rect;
 
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -31,22 +26,13 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Hashtable;
-
 import java.util.List;
 
-import bean.pwr.imskamieskiego.MapDrawer.DottedPaint;
-
-import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 
@@ -56,19 +42,7 @@ public class MapDrawer extends View {
     private Bitmap originalMap;
     private Context context;
     private PointF pointFlast;
-
-    private PointF pointToShow;
-    private HashSet<MapPoint> mapPoints;
-
-
-
-    private Hashtable<MapPoint, Integer> mapPointsTypes;
-    private List<MapPoint> pathPoints;
-    private ArrayList<Bitmap> tackTextures;
-    private int resourceTacksId[];
     private int measureWidth, measureHeight;
-    private int currentlyDisplayedFloor;
-    private float originalScale;
     private float deltaX, deltaY;
     private float offsetX, offsetY;
     private final int ADDITIONAL_SPACE = 400;
@@ -86,20 +60,12 @@ public class MapDrawer extends View {
     private int mode;
 
     private final String MAP_DRAWER = "map_drawer";
-    private Paint paintPath;
     private Matrix canvasMatrix;
-    private Matrix additonalMatrix;
-    private Matrix additonalMatrixCopy;
     private MapDrawerGestureListener mapDrawerGestureListener;
 
     private Observer<RegionBitmap> regionObserver;
     private MapProvider mapProvider;
-    private Rect displayedRect;
-    private Rect displayedRectCopy;
-    private Rect decodedRect;
-    private Rect decodedRectCopy;
     private Point pointDecode;
-    private boolean isNewBitmapDecoded;
 
 
 
@@ -111,18 +77,6 @@ public class MapDrawer extends View {
 
     public MapDrawer(Context context, AttributeSet attrs){
         super(context, attrs);
-
-        TypedArray a = context.getTheme().obtainStyledAttributes(
-                attrs,
-                R.styleable.MapDrawer,
-                0, 0);
-        resourceTacksId = new int[a.length()];
-        for (int i = 0; i < a.length(); i++) {
-            resourceTacksId[i] = a.getResourceId(i, 0);
-        }
-        a.recycle();
-
-        this.context = context;
         SharedConstructing();
     }
 
@@ -130,27 +84,15 @@ public class MapDrawer extends View {
     private void SharedConstructing() {
         setLongClickable(true);
         setClickable(true);
-        loadTackTextures();
-        originalScale = 1;
         offsetX = 0;
         offsetY = 0;
-        paintPath = new DottedPaint();
         pointFlast = new PointF();
         pointDecode= new Point();
         scaleDetector = 1.f;
-        pathPoints = new ArrayList<>();
-        mapPoints = new HashSet<>();
-        mapPointsTypes = new Hashtable<>();
-        decodedRect = new Rect();
-        displayedRect = new Rect();
-        displayedRectCopy = new Rect();
-        decodedRectCopy = new Rect();
-        additonalMatrix = new Matrix();
-        additonalMatrixCopy = new Matrix();
         canvasMatrix = new Matrix();
         scaleGestureDetector = new ScaleGestureDetector(context, new ScaleListener());
         gestureDetector  = new GestureDetector(context,new GestureListener());
-        RectM.setAdditionalSpace(ADDITIONAL_SPACE);
+
 
         setOnTouchListener(new OnTouchListener() {
 
@@ -198,23 +140,7 @@ public class MapDrawer extends View {
             @Override
             public void onChanged(@Nullable RegionBitmap regionBitmap) {
                 Log.i(MAP_DRAWER, "RegionObserver: RegionMapChanged!");
-                if (regionBitmap.isDecodedAlready()){
-                    if (displayedRect.isEmpty()){
-                        displayedRect.set(RectM.insetRect(regionBitmap.getRect(),false));
-                        displayedRectCopy.set(displayedRect);
-                    }
-                    if (regionBitmap.getBitmap()!=null){
-                        setOriginalMap(regionBitmap.getBitmap());
-                    }
 
-                } else {
-                    if (regionBitmap.getRect() == null) return;
-                    decodedRect = regionBitmap.getRect();
-                    decodedRect.set(RectM.fitRectToScreen(decodedRect,measureWidth,measureHeight));
-                    decodedRect.set(RectM.insetRect(decodedRect,true));
-                    decodedRectCopy.set(decodedRect);
-                    mapProvider.setRegionBitmap(decodedRect);
-                }
 
             }
         };
@@ -222,27 +148,6 @@ public class MapDrawer extends View {
     }
 
 
-
-    private Rect fitDecodingToScreen(Rect rect){
-        Rect fitRect = new Rect();
-        fitRect.left = Math.round((rect.right - measureWidth )/2);
-        fitRect.top = Math.round((rect.bottom - measureHeight) / 2);
-        fitRect.right = fitRect.left + measureWidth;
-        fitRect.bottom = fitRect.top + measureHeight;
-        return fitRect;
-    }
-
-    private Rect insetRect(Rect rect, boolean makeWider){
-        Rect broadenRect = new Rect();
-        broadenRect.set(rect);
-        if (makeWider) {
-            broadenRect.inset(-ADDITIONAL_SPACE,-ADDITIONAL_SPACE);
-        } else {
-            broadenRect.inset(ADDITIONAL_SPACE,ADDITIONAL_SPACE);
-        }
-        return broadenRect;
-
-    }
 
 
 
@@ -255,50 +160,6 @@ public class MapDrawer extends View {
     public void setMapProvider(MapProvider mapProvider){
      this.mapProvider = mapProvider;
      setRegionObserver(mapProvider.getRegionBitmap());
-    }
-
-    private void setOriginalMap(Bitmap bitmap){
-        originalMap = bitmap;
-        isNewBitmapDecoded = true;
-        invalidate();
-    }
-
-
-
-
-
-
-
-    private Bitmap convertBitmapToMutable(Bitmap bitmap){
-
-        try {
-            File file = new File(Environment.getExternalStorageDirectory() + File.separator + "temp.tmp");
-            RandomAccessFile randomAccessFile = new RandomAccessFile(file,"rw");
-
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            Bitmap.Config type = bitmap.getConfig();
-
-            FileChannel channel = randomAccessFile.getChannel();
-            MappedByteBuffer map = channel.map(FileChannel.MapMode.READ_WRITE, 0, bitmap.getRowBytes()*height);
-            bitmap.copyPixelsToBuffer(map);
-
-            bitmap.recycle();
-
-            bitmap = Bitmap.createBitmap(width, height, type);
-            map.position(0);
-
-            bitmap.copyPixelsFromBuffer(map);
-
-            channel.close();
-            randomAccessFile.close();
-
-            file.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
     }
 
 
@@ -314,7 +175,6 @@ public class MapDrawer extends View {
         int moveX = 0;
         int moveY = 0;
         canvasMatrix.postTranslate(-ADDITIONAL_SPACE,-ADDITIONAL_SPACE);
-        displayedRect.set(displayedRectCopy);
         switch (mode) {
 
             case START:
@@ -327,7 +187,6 @@ public class MapDrawer extends View {
             case DRAG:
                 moveX = (int) offsetX + (int)deltaX;
                 moveY = (int) offsetY + (int) deltaY;
-                displayedRect.offset(-moveX,-moveY);
                 canvasMatrix.postTranslate(moveX,moveY);
                 break;
 
@@ -336,50 +195,15 @@ public class MapDrawer extends View {
                 break;
 
         }
-        if (isNewBitmapDecoded) {
-            pointDecode = getChangedPointOfDecoding();
-            askIfNewMapNeeded();
 
-        }
         canvas.concat(canvasMatrix);
         Log.i(MAP_DRAWER, "onDraw: PointDecode.x =" + pointDecode.x+ " .y =" +pointDecode.y);
         canvas.drawBitmap(originalMap,pointDecode.x,pointDecode.y , null);
     }
 
-    private void askIfNewMapNeeded(){
-        if (!decodedRect.contains(displayedRect)) {
-            Log.i(MAP_DRAWER, "onDraw: DISPLAY OUT OF DECODED IMAGE");
-            isNewBitmapDecoded = false;
-            decodedRect.set(RectM.insetRect(displayedRect, true));
-            mapProvider.setRegionBitmap(decodedRect);
-        }
-    }
-
-    private Point getChangedPointOfDecoding(){
-        return new Point(-(decodedRectCopy.left - decodedRect.left)
-                ,-(decodedRectCopy.top-decodedRect.top));
-
-    }
 
 
 
-    /**
-     * If resources for tack hadn't been
-     * initialized in .xml file or
-     * constructor was only with Context argument
-     * this method allows to set up Tack textures after
-     * creating instance of MapDrawer.
-     * @param startTackId   id of drawable which will be set to starting points
-     * @param endTackId     id of drawable which will be set to ending points
-     * @param defaultTackId id of drawable which will be set for default points
-     */
-    public void addTackResources(int defaultTackId, int startTackId, int endTackId) {
-        resourceTacksId = new int[3];
-        resourceTacksId[0] = defaultTackId;
-        resourceTacksId[1] = startTackId;
-        resourceTacksId[2] = endTackId;
-        loadTackTextures();
-    }
 
 
     /**
@@ -412,33 +236,10 @@ public class MapDrawer extends View {
         }
     }
 
-    private void loadTackTextures() {
-        Bitmap texture;
-        int tackWidth = 100;
-        int tackHeight = 100;
-        tackTextures = new ArrayList<>();
-        try {
-            for (int resourceName : resourceTacksId) {
-                Resources res = context.getResources();
-                texture = BitmapDecoder.decodeSampledBitmapFromResource(res
-                        , resourceName
-                        , tackWidth
-                        , tackHeight);
-                tackTextures.add(Bitmap.createScaledBitmap(texture,
-                        (tackWidth),
-                        (tackHeight),
-                        false));
-            }
-        } catch (Exception o) {
-
-        }
-    }
-
-    private Bitmap getTackTexture(int type) {
-        return tackTextures.get(type);
-    }
 
 
+
+    public void showFloor(int floor, Bitmap bitmap){}
 
     /**
      * Add mappoint which will be drawn
@@ -448,18 +249,12 @@ public class MapDrawer extends View {
      *  in xml file or resources in method addTackResources
      */
     public void addMapPoint(MapPoint tack, Integer type) {
-        mapPoints.add(tack);
-        mapPointsTypes.put(tack, type);
-        invalidate();
     }
 
     /**
      * Clear mappoint arraylist
      */
     public void removeAllMapPoints() {
-        mapPoints.clear();
-        mapPointsTypes.clear();
-        invalidate();
     }
 
 
@@ -468,9 +263,6 @@ public class MapDrawer extends View {
      * @param mapPoint object to remove
      */
     public void removeMapPoint(MapPoint mapPoint) {
-        mapPoints.remove(mapPoint);
-        mapPointsTypes.remove(mapPoint);
-        invalidate();
     }
 
     /**
@@ -478,16 +270,13 @@ public class MapDrawer extends View {
      * @param trace array of mappoints to be drawn
      */
     public void setTrace(List<MapPoint> trace) {
-        pathPoints = trace;
-        invalidate();
     }
 
     /**
      * Clear trace to be drawn as path to destined place
      */
     public void removeTrace() {
-        pathPoints = new ArrayList<>();
-        invalidate();
+
     }
 
     /**

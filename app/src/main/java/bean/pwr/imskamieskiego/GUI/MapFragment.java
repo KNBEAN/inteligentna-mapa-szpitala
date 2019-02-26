@@ -19,8 +19,11 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import bean.pwr.imskamieskiego.MapDrawer.MapDrawer;
+import bean.pwr.imskamieskiego.MapDrawer.MapProvider;
 import bean.pwr.imskamieskiego.R;
+import bean.pwr.imskamieskiego.data.LocalDB;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
+import bean.pwr.imskamieskiego.repository.FloorDataRepository;
 import bean.pwr.imskamieskiego.view_models.MapViewModel;
 
 /**
@@ -31,6 +34,8 @@ public class MapFragment extends Fragment {
     private final static String TAG = "MapFragment";
     
     private MapDrawer mapDrawer;
+
+    private MapProvider mapProvider;
 
     private MapViewModel viewModel;
 
@@ -55,6 +60,9 @@ public class MapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
         mapDrawer = view.findViewById(R.id.mapdrawer);
         mapDrawer.setOnLongPressListener(listener::onMapClick);
+        FloorDataRepository floorDataRepository = new FloorDataRepository(LocalDB.getDatabase(getContext()),getContext());
+        mapProvider = new MapProvider(getContext(), floorDataRepository.getMapImage(0));
+        mapDrawer.setMapProvider(mapProvider);
         restoreMap();
         return view;
     }
