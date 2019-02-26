@@ -63,7 +63,7 @@ public class MapFragment extends Fragment {
         FloorDataRepository floorDataRepository = new FloorDataRepository(LocalDB.getDatabase(getContext()),getContext());
         mapProvider = new MapProvider(getContext(), floorDataRepository.getMapImage(0));
         mapDrawer.setMapProvider(mapProvider);
-        restoreMap();
+        //restoreMap();
         return view;
     }
 
@@ -114,9 +114,7 @@ public class MapFragment extends Fragment {
      * @param mapImage the image of floor
      */
     public void showFloor(int floorNumber, Bitmap mapImage){
-        if (mapDrawer != null){
-            mapDrawer.showFloor(floorNumber, mapImage);
-        }
+
     }
 
     /**

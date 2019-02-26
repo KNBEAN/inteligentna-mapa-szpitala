@@ -16,6 +16,8 @@
         android:id="@+id/mapdrawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-         />
+        app:defaultTackDrawable="@drawable/destination_point"
+        app:endTackDrawable="@drawable/destination_point"
+        app:startTackDrawable="@drawable/start_point" />
 
 </FrameLayout>

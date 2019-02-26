@@ -10,6 +10,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -33,6 +34,7 @@ import java.nio.channels.FileChannel;
 
 import java.util.List;
 
+import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
 
 
@@ -75,8 +77,12 @@ public class MapDrawer extends View {
         SharedConstructing();
     }
 
-    public MapDrawer(Context context, AttributeSet attrs){
+    public MapDrawer(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+
+
+        this.context = context;
         SharedConstructing();
     }
 
