@@ -6,7 +6,7 @@
 
 package bean.pwr.imskamieskiego.GUI.showcase;
 
-public interface SequenceItemListener {
+interface SequenceItemListener {
     void onDismiss();
     void onClose();
 }

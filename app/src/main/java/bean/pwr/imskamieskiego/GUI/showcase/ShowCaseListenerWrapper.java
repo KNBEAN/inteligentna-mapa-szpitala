@@ -10,6 +10,9 @@ import com.elconfidencial.bubbleshowcase.BubbleShowCase;
 import com.elconfidencial.bubbleshowcase.BubbleShowCaseListener;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Implement basic behavior for BubbleShowCase.
+ */
 public class ShowCaseListenerWrapper implements BubbleShowCaseListener {
 
     @Override

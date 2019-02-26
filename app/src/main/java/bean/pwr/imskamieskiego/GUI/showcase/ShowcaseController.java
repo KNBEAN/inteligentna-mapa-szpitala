@@ -19,6 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.utils.Preferences;
 
+/**
+ * This class provides methods which shows user tutorial steps
+ */
 public class ShowcaseController {
     private static final int WELCOME = 0;
     private static final int USER_LOCATION = 1;
@@ -28,6 +31,12 @@ public class ShowcaseController {
 
     private static int tutorialStage = 0;
 
+    /**
+     * Creates sequence of first stage of user tutorial. If this stage was finished, next call of
+     * this method will return empty sequence.
+     * @param activity
+     * @return sequence of tutorial
+     */
     public static ShowCaseSequence welcomeStage(Activity activity) {
         if (tutorialStage > WELCOME || !Preferences.isRunTutorial(activity)) {
             return new ShowCaseSequence();
@@ -62,6 +71,12 @@ public class ShowcaseController {
                 .setCloseListener(() -> closeMessage(activity));
     }
 
+    /**
+     * Creates sequence of second stage of user tutorial. If this stage was finished, next call of
+     * this method will return empty sequence.
+     * @param activity
+     * @return sequence of tutorial
+     */
     public static ShowCaseSequence userLocationStage(Activity activity) {
         if (tutorialStage > USER_LOCATION || !Preferences.isRunTutorial(activity)) {
             return new ShowCaseSequence();
@@ -112,6 +127,12 @@ public class ShowcaseController {
                 .setCloseListener(() -> closeMessage(activity));
     }
 
+    /**
+     * Creates sequence of third stage of user tutorial. If this stage was finished, next call of
+     * this method will return empty sequence.
+     * @param activity
+     * @return sequence of tutorial
+     */
     public static ShowCaseSequence targetSelectStage(Activity activity) {
         if (tutorialStage > TARGET_SELECTION || !Preferences.isRunTutorial(activity)) {
             return new ShowCaseSequence();
@@ -138,6 +159,12 @@ public class ShowcaseController {
                 .setCloseListener(() -> closeMessage(activity));
     }
 
+    /**
+     * Creates sequence of fourth stage of user tutorial. If this stage was finished, next call of
+     * this method will return empty sequence.
+     * @param activity
+     * @return sequence of tutorial
+     */
     public static ShowCaseSequence infoSheetStage(Activity activity) {
         if (tutorialStage > TARGET_INFO || !Preferences.isRunTutorial(activity)) {
             return new ShowCaseSequence();
@@ -185,6 +212,12 @@ public class ShowcaseController {
                 .setCloseListener(() -> closeMessage(activity));
     }
 
+    /**
+     * Creates sequence of end stage of user tutorial. If this stage was finished, next call of
+     * this method will return empty sequence.
+     * @param activity
+     * @return sequence of tutorial
+     */
     public static ShowCaseSequence finishStage(Activity activity) {
         if (tutorialStage > END || tutorialStage < TARGET_INFO || !Preferences.isRunTutorial(activity)) {
             return new ShowCaseSequence();
@@ -206,6 +239,16 @@ public class ShowcaseController {
                 });
     }
 
+    /**
+     * Reset tutorial and show first stage.
+     * @param activity
+     */
+    public static void resetTutorial(Activity activity) {
+        Preferences.setRunTutorial(activity, true);
+        tutorialStage = WELCOME;
+        welcomeStage(activity).start();
+    }
+
     private static void closeMessage(Activity activity) {
         new BubbleShowCaseBuilder(activity)
                 .title("Samouczek")
@@ -216,12 +259,6 @@ public class ShowcaseController {
                 .listener(new ShowCaseListenerWrapper())
                 .show();
         Preferences.setRunTutorial(activity, false);
-    }
-
-    public static void resetTutorial(Activity activity) {
-        Preferences.setRunTutorial(activity, true);
-        tutorialStage = WELCOME;
-        welcomeStage(activity).start();
     }
 
     private static View getNavigationButton(Toolbar toolbar) {

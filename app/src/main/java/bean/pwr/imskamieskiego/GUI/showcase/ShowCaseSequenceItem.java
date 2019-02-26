@@ -12,6 +12,11 @@ import com.elconfidencial.bubbleshowcase.BubbleShowCaseListener;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This class is a wrapper for BubbleShowCase. This wrapper with ShowCaseSequence class are hack for
+ * BubbleShowCase sequence limitations like for ex. inability to finish sequence, when back button
+ * is pressed.
+ */
 public class ShowCaseSequenceItem implements BubbleShowCaseListener {
 
     private BubbleShowCaseBuilder builder;
@@ -19,37 +24,48 @@ public class ShowCaseSequenceItem implements BubbleShowCaseListener {
 
     private SequenceItemListener sequenceItemListener;
 
+    /**
+     * Create new wrapper object. If a listener has been set to the builder object, it will be
+     * overwritten via wrapper. If custom listener is required, have to overwrite listener methods
+     * implemented in this class.
+     *
+     * @param builder object of BubbleShowCaseBuilder
+     */
     public ShowCaseSequenceItem(BubbleShowCaseBuilder builder) {
         this.builder = builder;
     }
 
-    public BubbleShowCase show() {
+    /**
+     * Show showcase item
+     * @return BubbleShowCase item
+     */
+    BubbleShowCase show() {
         builder.listener(this);
         showCaseItem = builder.show();
         return showCaseItem;
     }
 
-    public void dismiss(){
-        if (showCaseItem != null){
+    void dismiss() {
+        if (showCaseItem != null) {
             showCaseItem.dismiss();
             showCaseItem = null;
         }
-        if (sequenceItemListener != null){
+        if (sequenceItemListener != null) {
             sequenceItemListener.onDismiss();
         }
     }
 
-    public ShowCaseSequenceItem setSequenceItemListener(SequenceItemListener sequenceItemListener) {
+    ShowCaseSequenceItem setSequenceItemListener(SequenceItemListener sequenceItemListener) {
         this.sequenceItemListener = sequenceItemListener;
         return this;
     }
 
-    public void close(){
-        if (showCaseItem != null){
+    public void close() {
+        if (showCaseItem != null) {
             showCaseItem.dismiss();
             showCaseItem = null;
         }
-        if (sequenceItemListener != null){
+        if (sequenceItemListener != null) {
             sequenceItemListener.onClose();
         }
     }
