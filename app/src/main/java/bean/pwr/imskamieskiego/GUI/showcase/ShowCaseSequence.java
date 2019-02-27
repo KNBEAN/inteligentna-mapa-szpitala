@@ -92,7 +92,7 @@ public class ShowCaseSequence implements SequenceItemListener {
     }
 
     /**
-     * Set listener whose method is called when the sequence is skipp.
+     * Set listener whose method is called when the sequence is skip.
      * @param closeListener
      * @return showcase sequence object
      */

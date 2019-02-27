@@ -43,14 +43,13 @@ public class ShowcaseController {
         }
         tutorialStage = WELCOME;
         BubbleShowCaseBuilder helloMessage = new BubbleShowCaseBuilder(activity)
-                .title("Witaj!")
-                .description("Witamy w interaktywnej mapie szpitala. W tym samouczku chcielibyśmy przybliżyć Ci działanie aplikacji.\n" +
-                        "Aby pominąć samouczek naciśnij X w górnym prawym rogu.\nAby kontynuować, naciśnij tą wiadomość.")
+                .title(activity.getString(R.string.tutorial_s1_title1))
+                .description(activity.getString(R.string.tutorial_s1_message1))
                 .imageResourceId(R.drawable.splash_icon);
 
         BubbleShowCaseBuilder userLocationMessage = new BubbleShowCaseBuilder(activity)
-                .title("Twoja lokalizacja")
-                .description("Na początek warto zaznaczyć gdzie aktualnie się znajdujesz. Aby to zrobić, nacisnąć wskazany przycisk")
+                .title(activity.getString(R.string.tutorial_s1_title2))
+                .description(activity.getString(R.string.tutorial_s1_message2))
                 .imageResourceId(R.drawable.ic_my_location_white_24dp)
                 .targetView(activity.findViewById(R.id.my_position_button))
                 .backgroundColorResourceId(R.color.colorPrimaryDark);
@@ -83,14 +82,14 @@ public class ShowcaseController {
         }
         tutorialStage = USER_LOCATION;
         BubbleShowCaseBuilder mapTouch = new BubbleShowCaseBuilder(activity)
-                .title("Twoja lokalizacja")
-                .description("Swoją lokalizację można zaznaczyć na kilka sposobów. Jednym z nich jest naciśnięcie i przytrzymanie miejsca na mapie")
+                .title(activity.getString(R.string.tutorial_s2_title1))
+                .description(activity.getString(R.string.tutorial_s2_message1))
                 .imageResourceId(R.drawable.ic_touch_app_white_24dp)
                 .backgroundColorResourceId(R.color.colorPrimary);
 
         BubbleShowCaseBuilder floorChange = new BubbleShowCaseBuilder(activity)
-                .title("Wyświetlane piętro")
-                .description("Klikając tutaj, możesz zmienić aktualnie wyświetlane piętro")
+                .title(activity.getString(R.string.tutorial_s2_title2))
+                .description(activity.getString(R.string.tutorial_s2_message2))
                 .imageResourceId(R.drawable.ic_layers_black_24dp)
                 .targetView(activity.findViewById(R.id.floors_button))
                 .backgroundColorResourceId(R.color.colorPrimaryLight)
@@ -98,22 +97,22 @@ public class ShowcaseController {
                 .textColorResourceId(R.color.fontColorBlack);
 
         BubbleShowCaseBuilder search = new BubbleShowCaseBuilder(activity)
-                .title("Wyszukiwanie")
-                .description("Możesz również wyznaczyć swoją pozycję wyszukując miejsce po nazwie")
+                .title(activity.getString(R.string.tutorial_s2_title3))
+                .description(activity.getString(R.string.tutorial_s2_message3))
                 .imageResourceId(R.drawable.ic_search_black_24dp)
                 .backgroundColorResourceId(R.color.colorAccent)
                 .targetView(activity.findViewById(R.id.searchButton));
 
         BubbleShowCaseBuilder qrCodeScanner = new BubbleShowCaseBuilder(activity)
-                .title("Skaner kodów")
-                .description("Możesz także zeskanować kod z najbliższego plakatu.")
+                .title(activity.getString(R.string.tutorial_s2_title4))
+                .description(activity.getString(R.string.tutorial_s2_message4))
                 .imageResourceId(R.drawable.ic_photo_camera_white_24dp)
                 .backgroundColorResourceId(R.color.colorPrimaryDark)
                 .targetView(activity.findViewById(R.id.cameraButton));
 
         BubbleShowCaseBuilder selectOwnPosition = new BubbleShowCaseBuilder(activity)
-                .title("Twoja lokalizacja")
-                .description("Teraz Twoja kolej! Zaznacz swoją pozycję.")
+                .title(activity.getString(R.string.tutorial_s2_title5))
+                .description(activity.getString(R.string.tutorial_s2_message5))
                 .imageResourceId(R.drawable.start_point)
                 .backgroundColorResourceId(R.color.colorPrimary);
 
@@ -139,14 +138,14 @@ public class ShowcaseController {
         }
         tutorialStage = TARGET_SELECTION;
         BubbleShowCaseBuilder selectTarget = new BubbleShowCaseBuilder(activity)
-                .title("Cel trasy")
-                .description("Teraz musimy wyznaczyć cel naszej trasy. Podobnie jak wcześniej, cel możemy zaznaczyć na mapie lub wyszukać po nazwie.")
+                .title(activity.getString(R.string.tutorial_s3_title1))
+                .description(activity.getString(R.string.tutorial_s3_message1))
                 .imageResourceId(R.drawable.destination_point)
                 .backgroundColorResourceId(R.color.colorAccent);
 
         BubbleShowCaseBuilder fastTravelButtons = new BubbleShowCaseBuilder(activity)
-                .title("Szybki dostęp")
-                .description("Klikając tutaj, możesz zaznaczyć \"szybkie lokacje\", takie jak najbliższe toalety, stanowisko asystenta pacjęta czy bufet.")
+                .title(activity.getString(R.string.tutorial_s3_title2))
+                .description(activity.getString(R.string.tutorial_s3_message2))
                 .imageResourceId(R.drawable.ic_widgets_black_24dp)
                 .targetView(activity.findViewById(R.id.quickAccessFragment))
                 .highlightMode(BubbleShowCase.HighlightMode.VIEW_SURFACE)
@@ -171,23 +170,23 @@ public class ShowcaseController {
         }
         tutorialStage = TARGET_INFO;
         BubbleShowCaseBuilder infoSheet = new BubbleShowCaseBuilder(activity)
-                .title("Szczegóły lokacji")
-                .description("Możesz zobaczyć szczegóły dotyczące wybranej lokacji, klikając na ten przycisk.")
+                .title(activity.getString(R.string.tutorial_s4_title1))
+                .description(activity.getString(R.string.tutorial_s4_message1))
                 .imageResourceId(R.drawable.ic_pin_drop_white_24dp)
                 .backgroundColorResourceId(R.color.colorPrimaryDark)
                 .targetView(activity.findViewById(R.id.info_button));
 
         BubbleShowCaseBuilder pathOptions = new BubbleShowCaseBuilder(activity)
-                .title("Ustawienia")
-                .description("W bocznym menu możesz znaleźć przydatne opcje takie jak unikanie schodów podczas nawigacji.")
+                .title(activity.getString(R.string.tutorial_s4_title2))
+                .description(activity.getString(R.string.tutorial_s4_message2))
                 .imageResourceId(R.drawable.ic_path_setting_black_24dp)
                 .backgroundColorResourceId(R.color.colorPrimaryLight)
                 .textColorResourceId(R.color.fontColorBlack)
                 .targetView(getNavigationButton(((Toolbar) activity.findViewById(R.id.toolbar))));
 
         BubbleShowCaseBuilder startPathSearch = new BubbleShowCaseBuilder(activity)
-                .title("Trasa")
-                .description("Aby wyznaczyć trasę, wystarczy kliknąć na wskazany przycisk")
+                .title(activity.getString(R.string.tutorial_s4_title3))
+                .description(activity.getString(R.string.tutorial_s4_message3))
                 .imageResourceId(R.drawable.ic_run_path_search_white_24dp)
                 .targetView(activity.findViewById(R.id.guide_to_button))
                 .backgroundColorResourceId(R.color.colorPrimaryDark);
@@ -224,8 +223,8 @@ public class ShowcaseController {
         }
         tutorialStage = END;
         BubbleShowCaseBuilder end_message = new BubbleShowCaseBuilder(activity)
-                .title("Gratulacje!")
-                .description("Trasa została wyznaczona! To już koniec naszego samouczka. Samouczek możesz uruchomić ponownie w menu bocznym.\nWszystkiego dobrego i powodzenia!")
+                .title(activity.getString(R.string.tutorial_finish_title))
+                .description(activity.getString(R.string.tutorial_finish_message))
                 .imageResourceId(R.drawable.ic_face_smile_white_24dp)
                 .backgroundColorResourceId(R.color.colorAccent)
                 .disableCloseAction(true);
@@ -251,8 +250,8 @@ public class ShowcaseController {
 
     private static void closeMessage(Activity activity) {
         new BubbleShowCaseBuilder(activity)
-                .title("Samouczek")
-                .description("Możesz ponownie uruchomić samouczek w menu bocznym.")
+                .title(activity.getString(R.string.tutorial_skip_title))
+                .description(activity.getString(R.string.tutorial_skip_message))
                 .imageResourceId(R.drawable.ic_help_outline_white_24dp)
                 .backgroundColorResourceId(R.color.colorPrimary)
                 .disableCloseAction(true)
