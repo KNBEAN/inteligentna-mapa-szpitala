@@ -43,16 +43,12 @@ public class ShowcaseController {
         }
         tutorialStage = WELCOME;
         BubbleShowCaseBuilder helloMessage = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s1_title1))
-                .description(activity.getString(R.string.tutorial_s1_message1))
-                .imageResourceId(R.drawable.splash_icon);
-
+                .title(activity.getString(R.string.tutorial_welcome_title))
+                .description(activity.getString(R.string.tutorial_welcome_message));
         BubbleShowCaseBuilder userLocationMessage = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s1_title2))
-                .description(activity.getString(R.string.tutorial_s1_message2))
-                .imageResourceId(R.drawable.ic_my_location_white_24dp)
-                .targetView(activity.findViewById(R.id.my_position_button))
-                .backgroundColorResourceId(R.color.colorPrimaryDark);
+                .title(activity.getString(R.string.tutorial_user_location_title))
+                .description(activity.getString(R.string.tutorial_user_location_message))
+                .targetView(activity.findViewById(R.id.my_position_button));
 
         return new ShowCaseSequence()
                 .addItem(new ShowCaseSequenceItem(helloMessage))
@@ -82,46 +78,36 @@ public class ShowcaseController {
         }
         tutorialStage = USER_LOCATION;
         BubbleShowCaseBuilder mapTouch = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s2_title1))
-                .description(activity.getString(R.string.tutorial_s2_message1))
-                .imageResourceId(R.drawable.ic_touch_app_white_24dp)
-                .backgroundColorResourceId(R.color.colorPrimary);
+                .title(activity.getString(R.string.tutorial_touch_map_title))
+                .description(activity.getString(R.string.tutorial_touch_map_message));
 
+
+        BubbleShowCaseBuilder search = new BubbleShowCaseBuilder(activity)
+                .title(activity.getString(R.string.tutorial_search_title))
+                .description(activity.getString(R.string.tutorial_search_message))
+                .targetView(activity.findViewById(R.id.searchButton));
+
+        BubbleShowCaseBuilder qrCodeScanner = new BubbleShowCaseBuilder(activity)
+                .title(activity.getString(R.string.tutorial_qr_code_title))
+                .description(activity.getString(R.string.tutorial_qr_code_message))
+                .targetView(activity.findViewById(R.id.cameraButton));
+
+        BubbleShowCaseBuilder selectOwnPosition = new BubbleShowCaseBuilder(activity)
+                .title(activity.getString(R.string.tutorial_your_turn_title))
+                .description(activity.getString(R.string.tutorial_your_turn_message));
         BubbleShowCaseBuilder floorChange = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s2_title2))
-                .description(activity.getString(R.string.tutorial_s2_message2))
-                .imageResourceId(R.drawable.ic_layers_black_24dp)
+                .title(activity.getString(R.string.tutorial_floor_change_title))
+                .description(activity.getString(R.string.tutorial_floor_change_message))
                 .targetView(activity.findViewById(R.id.floors_button))
                 .backgroundColorResourceId(R.color.colorPrimaryLight)
                 .highlightMode(BubbleShowCase.HighlightMode.VIEW_SURFACE)
                 .textColorResourceId(R.color.fontColorBlack);
 
-        BubbleShowCaseBuilder search = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s2_title3))
-                .description(activity.getString(R.string.tutorial_s2_message3))
-                .imageResourceId(R.drawable.ic_search_black_24dp)
-                .backgroundColorResourceId(R.color.colorAccent)
-                .targetView(activity.findViewById(R.id.searchButton));
-
-        BubbleShowCaseBuilder qrCodeScanner = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s2_title4))
-                .description(activity.getString(R.string.tutorial_s2_message4))
-                .imageResourceId(R.drawable.ic_photo_camera_white_24dp)
-                .backgroundColorResourceId(R.color.colorPrimaryDark)
-                .targetView(activity.findViewById(R.id.cameraButton));
-
-        BubbleShowCaseBuilder selectOwnPosition = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s2_title5))
-                .description(activity.getString(R.string.tutorial_s2_message5))
-                .imageResourceId(R.drawable.start_point)
-                .backgroundColorResourceId(R.color.colorPrimary);
-
-
         return new ShowCaseSequence()
                 .addItem(new ShowCaseSequenceItem(mapTouch))
-                .addItem(new ShowCaseSequenceItem(floorChange))
                 .addItem(new ShowCaseSequenceItem(search))
                 .addItem(new ShowCaseSequenceItem(qrCodeScanner))
+                .addItem(new ShowCaseSequenceItem(floorChange))
                 .addItem(new ShowCaseSequenceItem(selectOwnPosition))
                 .setCloseListener(() -> closeMessage(activity));
     }
@@ -138,19 +124,14 @@ public class ShowcaseController {
         }
         tutorialStage = TARGET_SELECTION;
         BubbleShowCaseBuilder selectTarget = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s3_title1))
-                .description(activity.getString(R.string.tutorial_s3_message1))
-                .imageResourceId(R.drawable.destination_point)
-                .backgroundColorResourceId(R.color.colorAccent);
+                .title(activity.getString(R.string.tutorial_target_title))
+                .description(activity.getString(R.string.tutorial_target_message));
 
         BubbleShowCaseBuilder fastTravelButtons = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s3_title2))
-                .description(activity.getString(R.string.tutorial_s3_message2))
-                .imageResourceId(R.drawable.ic_widgets_black_24dp)
+                .title(activity.getString(R.string.tutorial_quick_access_title))
+                .description(activity.getString(R.string.tutorial_quick_access_message))
                 .targetView(activity.findViewById(R.id.quickAccessFragment))
-                .highlightMode(BubbleShowCase.HighlightMode.VIEW_SURFACE)
-                .backgroundColorResourceId(R.color.colorPrimaryLight)
-                .textColorResourceId(R.color.fontColorBlack);
+                .highlightMode(BubbleShowCase.HighlightMode.VIEW_SURFACE);
 
         return new ShowCaseSequence()
                 .addItem(new ShowCaseSequenceItem(selectTarget))
@@ -170,26 +151,21 @@ public class ShowcaseController {
         }
         tutorialStage = TARGET_INFO;
         BubbleShowCaseBuilder infoSheet = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s4_title1))
-                .description(activity.getString(R.string.tutorial_s4_message1))
-                .imageResourceId(R.drawable.ic_pin_drop_white_24dp)
-                .backgroundColorResourceId(R.color.colorPrimaryDark)
+                .title(activity.getString(R.string.tutorial_info_sheet_title))
+                .description(activity.getString(R.string.tutorial_info_sheet_message))
                 .targetView(activity.findViewById(R.id.info_button));
 
         BubbleShowCaseBuilder pathOptions = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s4_title2))
-                .description(activity.getString(R.string.tutorial_s4_message2))
-                .imageResourceId(R.drawable.ic_path_setting_black_24dp)
+                .title(activity.getString(R.string.tutorial_path_settings_title))
+                .description(activity.getString(R.string.tutorial_path_settings_message))
                 .backgroundColorResourceId(R.color.colorPrimaryLight)
                 .textColorResourceId(R.color.fontColorBlack)
                 .targetView(getNavigationButton(((Toolbar) activity.findViewById(R.id.toolbar))));
 
         BubbleShowCaseBuilder startPathSearch = new BubbleShowCaseBuilder(activity)
-                .title(activity.getString(R.string.tutorial_s4_title3))
-                .description(activity.getString(R.string.tutorial_s4_message3))
-                .imageResourceId(R.drawable.ic_run_path_search_white_24dp)
-                .targetView(activity.findViewById(R.id.guide_to_button))
-                .backgroundColorResourceId(R.color.colorPrimaryDark);
+                .title(activity.getString(R.string.tutorial_start_path_title))
+                .description(activity.getString(R.string.tutorial_start_path_message))
+                .targetView(activity.findViewById(R.id.guide_to_button));
 
 
         return new ShowCaseSequence()
@@ -224,10 +200,7 @@ public class ShowcaseController {
         tutorialStage = END;
         BubbleShowCaseBuilder end_message = new BubbleShowCaseBuilder(activity)
                 .title(activity.getString(R.string.tutorial_finish_title))
-                .description(activity.getString(R.string.tutorial_finish_message))
-                .imageResourceId(R.drawable.ic_face_smile_white_24dp)
-                .backgroundColorResourceId(R.color.colorAccent)
-                .disableCloseAction(true);
+                .description(activity.getString(R.string.tutorial_finish_message));
         return new ShowCaseSequence()
                 .addItem(new ShowCaseSequenceItem(end_message){
                     @Override
@@ -252,9 +225,6 @@ public class ShowcaseController {
         new BubbleShowCaseBuilder(activity)
                 .title(activity.getString(R.string.tutorial_skip_title))
                 .description(activity.getString(R.string.tutorial_skip_message))
-                .imageResourceId(R.drawable.ic_help_outline_white_24dp)
-                .backgroundColorResourceId(R.color.colorPrimary)
-                .disableCloseAction(true)
                 .listener(new ShowCaseListenerWrapper())
                 .show();
         Preferences.setRunTutorial(activity, false);
