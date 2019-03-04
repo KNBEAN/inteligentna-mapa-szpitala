@@ -18,6 +18,11 @@
             android:title="@string/navigation_drawer_search"
             />
         <item
+            android:id="@+id/tutorial"
+            android:icon="@drawable/ic_help_outline_white_24dp"
+            android:title="@string/navigation_drawer_tutorial"
+            />
+        <item
             android:id="@+id/path_search_settings"
             android:icon="@drawable/ic_path_setting_black_24dp"
             android:title="@string/path_search_options" />

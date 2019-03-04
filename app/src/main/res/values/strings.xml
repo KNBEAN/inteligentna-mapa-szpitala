@@ -46,10 +46,20 @@
     <string name="contact">Kontakt: </string>
     <string name="phone_number">71 327 01 00</string>
     <string name="hospital_mail_address">sekretariat@wssk.wroc.pl</string>
-    <string name="about_hospital">Pierwszy w Polsce ośrodek wykonujący operacje z użyciem robota chirurgicznego da Vinci. Jeden z najbardziej wyspecjalizowanych szpitali w regionie.</string>
-    <string name="ap_description">W dniu 24 kwietnia 2017 roku w Wojewódzkim Szpitalu Specjalistycznym Ośrodku Badawczo-Rozwojowym ruszył pilotażowy projekt praktyk zawodowych Asystent Pacjenta dla studentów Inżynierii Biomedycznej. Projekt uruchomiono w wyniku podpisanego porozumienia pomiędzy Katedrą Inżynierii Biomedycznej na Wydziale Podstawowych Problemów Techniki reprezentowaną przez prof. Arkadiusza Wójsa oraz prof. Halinę Podbielską a Wojewódzkim Szpitalem Specjalistycznym Ośrodkiem Badawczo-Rozwojowym we Wrocławiu reprezentowanym przez prof. Wojciecha Witkiewicza. W organizację praktyk zawodowych bardzo aktywnie włączyli się sami studenci należący do Koła Naukowego “MICELA”. Bezpośredni nadzór merytoryczny ze strony PWr pełni dr inż. Magdalena Przybyło oraz prof. Marek Langner. Od strony studentów Tomasz Klimek (III rok IB), Karolina Koszmider (III rok IB) Piotr Narecki (II rok IB) 2017/2018 . Natomiast w Szpitalu Pani Patrycja Jędrzejczak.
-
-Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pacjenta, mogą poznać organizację i funkcjonowanie Szpitala, jego strukturę organizacyjną, zaplecze sprzętowe oraz potrzeby pacjentów i kadry medycznej w zakresie inżynierii biomedycznej. Rozpoczęcie praktyk poprzedza cykl szkoleń przeprowadzonych przez pracowników Wojewódzkiego Szpitala Specjalistycznego, dotyczących: organizacji pracy szpitala, historii Wojewódzkiego Szpitala Specjalistycznego Ośrodka Badawczo-Rozwojowego, zasad finansowania służby zdrowia, przepisów BHP obowiązujących w Szpitalu oraz ochrony danych osobowych.</string>
+    <string name="about_hospital">Pierwszy w Polsce ośrodek wykonujący operacje z użyciem robota chirurgicznego da Vinci.
+        Jeden z najbardziej wyspecjalizowanych szpitali w regionie.</string>
+    <string name="ap_description">W dniu 24 kwietnia 2017 roku w Wojewódzkim Szpitalu Specjalistycznym Ośrodku Badawczo-Rozwojowym
+        ruszył pilotażowy projekt praktyk zawodowych Asystent Pacjenta dla studentów Inżynierii Biomedycznej. Projekt uruchomiono w
+        wyniku podpisanego porozumienia pomiędzy Katedrą Inżynierii Biomedycznej na Wydziale Podstawowych Problemów Techniki reprezentowaną
+        przez prof. Arkadiusza Wójsa oraz prof. Halinę Podbielską a Wojewódzkim Szpitalem Specjalistycznym Ośrodkiem Badawczo-Rozwojowym we
+        Wrocławiu reprezentowanym przez prof. Wojciecha Witkiewicza. W organizację praktyk zawodowych bardzo aktywnie włączyli się sami studenci
+        należący do Koła Naukowego “MICELA”. Bezpośredni nadzór merytoryczny ze strony PWr pełni dr inż. Magdalena Przybyło oraz prof. Marek Langner.
+        Od strony studentów Tomasz Klimek (III rok IB), Karolina Koszmider (III rok IB) Piotr Narecki (II rok IB) 2017/2018 . Natomiast w Szpitalu
+        Pani Patrycja Jędrzejczak. Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pacjenta, mogą poznać organizację i
+        funkcjonowanie Szpitala, jego strukturę organizacyjną, zaplecze sprzętowe oraz potrzeby pacjentów i kadry medycznej w zakresie inżynierii biomedycznej.
+        Rozpoczęcie praktyk poprzedza cykl szkoleń przeprowadzonych przez pracowników Wojewódzkiego Szpitala Specjalistycznego, dotyczących: organizacji pracy szpitala,
+        historii Wojewódzkiego Szpitala Specjalistycznego Ośrodka Badawczo-Rozwojowego, zasad finansowania służby zdrowia, przepisów BHP obowiązujących w Szpitalu
+        oraz ochrony danych osobowych.</string>
     <string name="source">Źródło:</string>
     <string name="ibam_website">http://lbam.pwr.edu.pl/</string>
     <string name="quick_access_wc_desc">Znajdź trasę do najbliższej toalety</string>
@@ -58,12 +68,41 @@ Studenci w trakcie studenckich praktyk zawodowych, pełniąc rolę Asystenta Pac
     <string name="path_search_options">Opcje wyszukiwania trasy</string>
     <string name="fastest_path_option">Szybka</string>
     <string name="optimal_path_option">Optymalna</string>
-    <string name="comfortable_path_option">Wygodna</string>
+    <string name="comfortable_path_option">Z pominięciem schodów</string>
     <string name="user_location_selection_title">Podaj swoją pozycję</string>
     <string name="path_settings_confirm_button">OK</string>
     <string name="camera_permission_request_rationale">Musisz zezwolić na dostęp do kamery, aby móc zeskanować kod.</string>
     <string name="camera_not_available">Kamera jest niedostępna</string>
     <string name="incorrect_qr_code">Kod jest niepoprawny</string>
     <string name="unknow_map_point">Szukanego miejsca nie ma na mapie!</string>
+    <string name="navigation_drawer_tutorial">Samouczek</string>
+    <string name="tutorial_welcome_title">Witaj!</string>
+    <string name="tutorial_welcome_message">Witamy w interaktywnej mapie szpitala. Samouczek przybliży Ci działanie aplikacji.\nAby kontynuować, naciśnij na wiadomość.\nAby pominąć samouczek naciśnij X.</string>
+    <string name="tutorial_user_location_title">Twoja lokalizacja</string>
+    <string name="tutorial_user_location_message">Aby zaznaczyć swoją lokalizację, naciśnij wskazany przycisk.</string>
+    <string name="tutorial_touch_map_title">Jak zaznaczyć swoją lokalizację?</string>
+    <string name="tutorial_touch_map_message">Swoją lokalizację można zaznaczyć na trzy sposoby. Jednym z nich jest naciśnięcie i przytrzymanie miejsca na mapie.</string>
+    <string name="tutorial_floor_change_title">Wyświetlane piętro</string>
+    <string name="tutorial_floor_change_message">Klikając tutaj, możesz zmienić aktualnie wyświetlane piętro.</string>
+    <string name="tutorial_search_title">Wyszukiwanie</string>
+    <string name="tutorial_search_message">Możesz również wyznaczyć swoją pozycję wpisując nazwę miejsca w którym jesteś.</string>
+    <string name="tutorial_qr_code_title">Skaner kodów</string>
+    <string name="tutorial_qr_code_message">Możesz także zeskanować kod z najbliższego plakatu.</string>
+    <string name="tutorial_your_turn_title">Teraz Twoja kolej!</string>
+    <string name="tutorial_your_turn_message">Zaznacz swoją pozycję.</string>
+    <string name="tutorial_target_title">Cel trasy</string>
+    <string name="tutorial_target_message">Teraz wyznacz cel trasy. Podobnie jak wcześniej, cel możesz zaznaczyć na mapie lub wyszukać wpisując nazwę miejsca.</string>
+    <string name="tutorial_quick_access_title">Szybki dostęp</string>
+    <string name="tutorial_quick_access_message">Klikając tutaj, możesz szybko zaznaczyć popularne miejsca, takie jak najbliższe toalety, stanowisko asystenta pacjenta czy bufet.</string>
+    <string name="tutorial_info_sheet_title">Szczegóły lokacji</string>
+    <string name="tutorial_info_sheet_message">Możesz zobaczyć szczegóły dotyczące wybranej lokacji, klikając na ten przycisk.</string>
+    <string name="tutorial_path_settings_title">Ustawienia</string>
+    <string name="tutorial_path_settings_message">W bocznym menu możesz znaleźć przydatne opcje takie jak unikanie schodów podczas nawigacji.</string>
+    <string name="tutorial_start_path_title">Trasa</string>
+    <string name="tutorial_start_path_message">Aby wyznaczyć trasę, wystarczy kliknąć na wskazany przycisk.</string>
+    <string name="tutorial_finish_title">Gratulacje!</string>
+    <string name="tutorial_finish_message">Trasa została wyznaczona! To już koniec naszego samouczka. Możesz go uruchomić ponownie w menu bocznym.\nWszystkiego dobrego i powodzenia!</string>
+    <string name="tutorial_skip_title">Samouczek</string>
+    <string name="tutorial_skip_message">Możesz ponownie uruchomić samouczek w menu bocznym.</string>
 
 </resources>

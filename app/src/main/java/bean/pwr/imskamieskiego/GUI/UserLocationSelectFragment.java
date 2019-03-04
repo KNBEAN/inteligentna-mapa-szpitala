@@ -27,6 +27,8 @@ import android.widget.ImageButton;
 
 import bean.pwr.imskamieskiego.GUI.locationSearch.LocationSearchInterface;
 import bean.pwr.imskamieskiego.GUI.locationSearch.SearchResultListener;
+import bean.pwr.imskamieskiego.GUI.showcase.ShowCaseSequence;
+import bean.pwr.imskamieskiego.GUI.showcase.ShowcaseController;
 import bean.pwr.imskamieskiego.QRCodeReader.QRCodeReaderActivity;
 import bean.pwr.imskamieskiego.R;
 import bean.pwr.imskamieskiego.model.map.MapPoint;
@@ -49,6 +51,7 @@ public class UserLocationSelectFragment extends Fragment {
 
     private View fragmentLayout;
 
+    private ShowCaseSequence showCaseSequence;
 
     public UserLocationSelectFragment() {
         // Required empty public constructor
@@ -123,6 +126,8 @@ public class UserLocationSelectFragment extends Fragment {
             Intent intent = new Intent(getActivity(), QRCodeReaderActivity.class);
             startActivityForResult(intent, QRCodeReaderActivity.QR_READER_CODE);
         });
+        showCaseSequence = ShowcaseController.userLocationStage(this.getActivity());
+        showCaseSequence.start();
     }
 
     @Override
@@ -133,5 +138,11 @@ public class UserLocationSelectFragment extends Fragment {
             Log.i(TAG, "onActivityResult: received from QR code: " + pointCode);
             viewModel.searchPointByCode(pointCode);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        showCaseSequence.stop();
     }
 }
